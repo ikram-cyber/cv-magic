@@ -1,16 +1,18 @@
 export const State = {
     data: {
-        photo: "", // Wadah Pas Foto
-        name: "Ikram Cyber",
-        role: "Tenaga Teknis Kefarmasian & Developer",
-        email: "ikram.cyber@matrix.com",
-        phone: "+62 812-3456-7890",
-        summary: "Profesional hybrid dengan latar belakang Kefarmasian dan keahlian mendalam di bidang Software Development.",
+        photo: "",
+        name: "Nana Suryana",
+        role: "Petugas Keamanan (Security)",
+        email: "nana.suryana@matrix.com",
+        phone: "0838-2356-5202",
+        address: "Dusun Cihanyir Landeuh, RT/RW 04/03 Desa Cipicung, Kec. Jatigede, Kab. Sumedang",
+        summary: "Petugas Satuan Pengamanan (Security) berpengalaman 16 tahun dalam pengamanan area kerja. Terbiasa bekerja disiplin, tegas, dan bertanggung jawab. Memahami prosedur keamanan, patroli, pengawasan akses, serta penanganan situasi darurat. Siap bekerja shift & lembur.",
         experiences: [
-            { title: "Freelance Developer", company: "ZYNC Tech", date: "Jan 2025 - Sekarang" },
-            { title: "Asisten Apoteker (Intern)", company: "Kimia Farma", date: "Mei 2023 - Jun 2023" }
+            { title: "Melakukan penjagaan dan patroli rutin area kerja", company: "J.O SINOHYDRO-PP", date: "01 JUNI 2015 S/D 29 NOVEMBER 2025" }
         ],
-        template: "pro"
+        skills: "Patroli & pengamanan area\nKontrol akses & pemeriksaan\nDisiplin, loyal, dan kerja tim",
+        education: "Pendidikan terakhir : SMK PASUNDAN 2 BANDUNG (2002)",
+        template: "classic"
     },
     listeners: [],
     update(key, value) { this.data[key] = value; this.notify(); },

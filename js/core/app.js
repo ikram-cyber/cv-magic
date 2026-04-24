@@ -18,13 +18,15 @@ class DocuMagicApp {
         PDFEngine.init();
         this.setupMobileTabs();
 
+        // Tombol Tema
+        document.getElementById('btn-theme-classic').onclick = () => State.update('template', 'classic');
         document.getElementById('btn-theme-ats').onclick = () => State.update('template', 'ats');
         document.getElementById('btn-theme-pro').onclick = () => State.update('template', 'pro');
         document.getElementById('btn-theme-tech').onclick = () => State.update('template', 'tech');
     }
 
     syncForms(data) {
-        ['name', 'role', 'email', 'phone', 'summary'].forEach(key => {
+        ['name', 'role', 'email', 'phone', 'address', 'summary', 'skills', 'education'].forEach(key => {
             const el = document.getElementById(`input-${key}`);
             if(el && document.activeElement !== el) el.value = data[key] || '';
         });
