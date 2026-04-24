@@ -13,7 +13,7 @@ export const FormEditor = {
         });
 
         // Input Standar
-        ['name', 'dob', 'role', 'email', 'phone', 'address', 'link', 'summary', 'skills', 'education'].forEach(key => {
+        ['name', 'dob', 'role', 'email', 'phone', 'address', 'link', 'summary', 'skills', 'education', 'certifications', 'projects', 'languages', 'organizations', 'readiness'].forEach(key => {
             document.getElementById(`input-${key}`)?.addEventListener('input', (e) => State.update(key, e.target.value));
         });
         document.getElementById('input-color')?.addEventListener('input', (e) => State.update('color', e.target.value));
