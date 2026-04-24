@@ -40,7 +40,7 @@ export const FormEditor = {
         document.getElementById('btn-mode-cv')?.addEventListener('click', () => { State.update('mode', 'cv'); updateUI('btn-mode-cv', modes, modClsA, modClsI); });
         document.getElementById('btn-mode-cl')?.addEventListener('click', () => { State.update('mode', 'cover-letter'); updateUI('btn-mode-cl', modes, modClsA, modClsI); });
 
-        document.getElementById('btn-ai-writer')?.addEventListener('click', () => { const t = Magic.generateSummary(State.data.role, State.data.lang); State.update('summary', t); document.getElementById('input-summary').value = t; });
+        document.getElementById('btn-ai-writer')?.addEventListener('click', () => { const t = Magic.generateSummary(State.data); State.update('summary', t); document.getElementById('input-summary').value = t; });
         document.getElementById('btn-lang-toggle')?.addEventListener('click', () => State.update('lang', State.data.lang === 'id' ? 'en' : 'id'));
         
         this.renderExp();
