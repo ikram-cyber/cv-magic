@@ -16,23 +16,23 @@ export const TemplateCLASSIC = {
                         <h3 class="font-bold text-sm mb-2">DATA PRIBADI</h3>
                         <table class="text-sm w-full">
                             <tr>
-                                <td class="whitespace-nowrap pr-3 pb-2 font-bold align-top pt-0.5"><span class="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle mb-0.5" style="background-color: ${data.color || '#000'}"></span>${t.name}</td>
-                                <td class="w-3 pb-2 align-top pt-0.5">:</td>
+                                <td class="whitespace-nowrap w-[1%] pr-2 pb-2 font-bold align-top pt-0.5"><span class="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle mb-0.5" style="background-color: ${data.color || '#000'}"></span>${t.name}</td>
+                                <td class="w-[1%] px-2 pb-2 align-top pt-0.5">:</td>
                                 <td class="pb-2 align-top pt-0.5 leading-relaxed">${data.name || '-'}</td>
                             </tr>
                             <tr>
-                                <td class="whitespace-nowrap pr-3 pb-2 font-bold align-top pt-0.5"><span class="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle mb-0.5" style="background-color: ${data.color || '#000'}"></span>${t.dob}</td>
-                                <td class="w-3 pb-2 align-top pt-0.5">:</td>
+                                <td class="whitespace-nowrap w-[1%] pr-2 pb-2 font-bold align-top pt-0.5"><span class="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle mb-0.5" style="background-color: ${data.color || '#000'}"></span>${t.dob}</td>
+                                <td class="w-[1%] px-2 pb-2 align-top pt-0.5">:</td>
                                 <td class="pb-2 align-top pt-0.5 leading-relaxed">${data.dob || '-'}</td>
                             </tr>
                             <tr>
-                                <td class="whitespace-nowrap pr-3 pb-2 font-bold align-top pt-0.5"><span class="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle mb-0.5" style="background-color: ${data.color || '#000'}"></span>${t.phone}</td>
-                                <td class="w-3 pb-2 align-top pt-0.5">:</td>
+                                <td class="whitespace-nowrap w-[1%] pr-2 pb-2 font-bold align-top pt-0.5"><span class="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle mb-0.5" style="background-color: ${data.color || '#000'}"></span>${t.phone}</td>
+                                <td class="w-[1%] px-2 pb-2 align-top pt-0.5">:</td>
                                 <td class="pb-2 align-top pt-0.5 leading-relaxed">${data.phone || '-'}</td>
                             </tr>
                             <tr>
-                                <td class="whitespace-nowrap pr-3 pb-2 font-bold align-top pt-0.5"><span class="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle mb-0.5" style="background-color: ${data.color || '#000'}"></span>${t.address}</td>
-                                <td class="w-3 pb-2 align-top pt-0.5">:</td>
+                                <td class="whitespace-nowrap w-[1%] pr-2 pb-2 font-bold align-top pt-0.5"><span class="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle mb-0.5" style="background-color: ${data.color || '#000'}"></span>${t.address}</td>
+                                <td class="w-[1%] px-2 pb-2 align-top pt-0.5">:</td>
                                 <td class="pb-2 align-top pt-0.5 leading-relaxed text-justify pr-4">${data.address || '-'}</td>
                             </tr>
                         </table>
