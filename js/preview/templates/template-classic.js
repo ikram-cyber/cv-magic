@@ -13,7 +13,6 @@ export const TemplateCLASSIC = {
             </div>
         `).join('');
 
-        // Mengubah baris baru (enter) menjadi list HTML untuk Keahlian & Pendidikan
         const formatList = (text) => {
             if (!text) return '<li>-</li>';
             return text.split('\n').filter(t => t.trim() !== '').map(t => `<li>${t}</li>`).join('');
@@ -26,10 +25,22 @@ export const TemplateCLASSIC = {
                     <div class="flex-1 pt-2">
                         <h2 class="font-bold text-sm mb-4 uppercase">CURRICULUM VITAE (CV)</h2>
                         <h3 class="font-bold text-sm mb-2">DATA PRIBADI</h3>
-                        <table class="text-sm">
-                            <tr><td class="w-20 pb-2 font-bold flex items-center"><span class="w-1.5 h-1.5 bg-black rounded-full mr-2"></span> Nama</td><td class="pb-2">: ${data.name || '-'}</td></tr>
-                            <tr><td class="pb-2 font-bold flex items-center"><span class="w-1.5 h-1.5 bg-black rounded-full mr-2"></span> No. HP</td><td class="pb-2">: ${data.phone || '-'}</td></tr>
-                            <tr><td class="pb-2 font-bold flex items-center align-top"><span class="w-1.5 h-1.5 bg-black rounded-full mr-2 mt-1.5"></span> Alamat</td><td class="pb-2">: ${data.address || '-'}</td></tr>
+                        <table class="text-sm w-full">
+                            <tr>
+                                <td class="w-20 pb-2 font-bold align-top pt-0.5"><span class="inline-block w-1.5 h-1.5 bg-black rounded-full mr-2 align-middle mb-0.5"></span>Nama</td>
+                                <td class="w-3 pb-2 align-top pt-0.5">:</td>
+                                <td class="pb-2 align-top pt-0.5">${data.name || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td class="w-20 pb-2 font-bold align-top pt-0.5"><span class="inline-block w-1.5 h-1.5 bg-black rounded-full mr-2 align-middle mb-0.5"></span>No. HP</td>
+                                <td class="w-3 pb-2 align-top pt-0.5">:</td>
+                                <td class="pb-2 align-top pt-0.5">${data.phone || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td class="w-20 pb-2 font-bold align-top pt-0.5"><span class="inline-block w-1.5 h-1.5 bg-black rounded-full mr-2 align-middle mb-0.5"></span>Alamat</td>
+                                <td class="w-3 pb-2 align-top pt-0.5">:</td>
+                                <td class="pb-2 align-top pt-0.5 leading-relaxed text-justify pr-4">${data.address || '-'}</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
