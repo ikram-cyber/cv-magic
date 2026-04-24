@@ -12,108 +12,120 @@
 <body class="bg-[#020617] text-white h-screen overflow-hidden flex flex-col md:flex-row font-sans">
 
     <div class="md:hidden flex bg-[#0f172a] border-b border-slate-800 z-50 shrink-0">
-        <button id="tab-edit" class="flex-1 py-4 text-cyan-400 font-bold border-b-2 border-cyan-400 text-xs tracking-widest"><i class="fas fa-edit mr-2"></i>EDIT</button>
+        <button id="tab-edit" class="flex-1 py-4 text-cyan-400 font-bold border-b-2 border-cyan-400 text-xs tracking-widest"><i class="fas fa-pen-nib mr-2"></i>EDITOR</button>
         <button id="tab-view" class="flex-1 py-4 text-slate-500 font-bold border-b-2 border-transparent text-xs tracking-widest"><i class="fas fa-eye mr-2"></i>PREVIEW</button>
     </div>
 
-    <div id="panel-edit" class="w-full md:w-1/3 h-full bg-slate-900 flex flex-col z-10 transition-all md:block">
-        <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#0f172a] hidden md:flex shrink-0">
-            <h1 class="text-xl font-black tracking-widest text-white"><i class="fas fa-magic text-cyan-400 mr-2"></i>DOCU<span class="text-cyan-400">MAGIC</span></h1>
-            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded border border-emerald-500/50">ELITE TIER</span>
+    <div id="panel-edit" class="w-full md:w-1/3 h-full bg-slate-900 flex flex-col z-10 transition-all md:block shadow-2xl">
+        <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#0f172a] hidden md:flex shrink-0 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent"></div>
+            <h1 class="text-xl font-black tracking-widest text-white relative z-10"><i class="fas fa-bolt text-cyan-400 mr-2"></i>DOCU<span class="text-cyan-400">MAGIC</span></h1>
+            <span class="text-[10px] bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded border border-cyan-500/50 font-bold relative z-10">GOD TIER</span>
         </div>
         <div class="px-6 py-3 bg-[#0f172a] border-b border-slate-800 hidden md:block shrink-0">
-            <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-1"><span>KEKUATAN CV</span><span id="cv-score-text" class="text-emerald-400">0%</span></div>
-            <div class="w-full bg-slate-800 rounded-full h-1.5"><div id="cv-score-bar" class="bg-emerald-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+            <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-1 tracking-wider"><span>KEKUATAN PROFIL</span><span id="cv-score-text" class="text-emerald-400">0%</span></div>
+            <div class="w-full bg-slate-800 rounded-full h-1.5"><div id="cv-score-bar" class="bg-emerald-500 h-1.5 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)] transition-all duration-500" style="width: 0%"></div></div>
         </div>
         
         <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar pb-32 md:pb-6">
             
             <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <h3 class="text-[10px] font-bold text-cyan-500 uppercase tracking-widest mb-2 border-b border-slate-700 pb-1">Pas Foto</h3>
-                    <label class="flex items-center justify-center w-full h-12 transition bg-slate-800 border border-slate-600 border-dashed rounded cursor-pointer hover:border-cyan-500">
-                        <i class="fas fa-camera text-slate-400 mr-2"></i><span class="text-xs text-slate-400">Upload</span>
+                <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+                    <h3 class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2"><i class="fas fa-camera mr-1"></i> Pas Foto</h3>
+                    <label class="flex items-center justify-center w-full h-10 transition bg-slate-900 border border-slate-600 border-dashed rounded cursor-pointer hover:border-cyan-500 hover:bg-slate-800 text-slate-400 hover:text-cyan-400">
+                        <span class="text-[10px] font-bold tracking-wider">PILIH FOTO</span>
                         <input type="file" id="input-photo" accept="image/*" class="hidden">
                     </label>
                 </div>
-                <div>
-                    <h3 class="text-[10px] font-bold text-cyan-500 uppercase tracking-widest mb-2 border-b border-slate-700 pb-1">Tanda Tangan</h3>
-                    <label class="flex items-center justify-center w-full h-12 transition bg-slate-800 border border-slate-600 border-dashed rounded cursor-pointer hover:border-cyan-500">
-                        <i class="fas fa-file-signature text-slate-400 mr-2"></i><span class="text-xs text-slate-400">Upload</span>
+                <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+                    <h3 class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2"><i class="fas fa-signature mr-1"></i> Tanda Tangan</h3>
+                    <label class="flex items-center justify-center w-full h-10 transition bg-slate-900 border border-slate-600 border-dashed rounded cursor-pointer hover:border-cyan-500 hover:bg-slate-800 text-slate-400 hover:text-cyan-400">
+                        <span class="text-[10px] font-bold tracking-wider">PILIH TTD</span>
                         <input type="file" id="input-signature" accept="image/*" class="hidden">
                     </label>
                 </div>
             </div>
 
             <div>
-                <h3 class="text-xs font-bold text-cyan-500 uppercase tracking-widest mb-3 border-b border-slate-700 pb-1">Identitas Inti</h3>
-                <input type="text" id="input-name" class="form-input" placeholder="Nama Lengkap">
+                <h3 class="text-[11px] font-bold text-cyan-500 uppercase tracking-widest mb-3 border-b border-slate-700 pb-1">Identitas Inti</h3>
+                <input type="text" id="input-name" class="form-input bg-slate-800/50 text-sm font-bold" placeholder="Nama Lengkap">
                 <input type="text" id="input-dob" class="form-input mt-2" placeholder="Tempat, Tanggal Lahir">
                 <input type="text" id="input-role" class="form-input mt-2" placeholder="Posisi / Profesi">
                 <div class="grid grid-cols-2 gap-2 mt-2">
                     <input type="text" id="input-email" class="form-input" placeholder="Email">
                     <input type="text" id="input-phone" class="form-input" placeholder="No. HP">
                     <input type="text" id="input-address" class="form-input col-span-2" placeholder="Alamat Lengkap">
-                    <input type="text" id="input-link" class="form-input col-span-2 border-cyan-500/30" placeholder="Link Portofolio (Untuk QR Code)">
+                    <input type="text" id="input-link" class="form-input col-span-2 border-cyan-500/30" placeholder="Link Portofolio (Biar Muncul QR Code)">
                 </div>
             </div>
 
-            <div>
-                <div class="flex justify-between border-b border-slate-700 pb-1 mb-3"><h3 class="text-xs font-bold text-cyan-500 uppercase tracking-widest">Ringkasan Profil</h3><button id="btn-ai-writer" class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/50 hover:bg-emerald-500 hover:text-slate-900 transition-all"><i class="fas fa-magic"></i> AI Auto-Write</button></div>
-                <textarea id="input-summary" class="form-input h-24 resize-none" placeholder="Deskripsi singkat..."></textarea>
+            <div class="bg-slate-800/30 p-4 rounded-lg border border-slate-700/50">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-[11px] font-bold text-cyan-500 uppercase tracking-widest">Profil Profesional</h3>
+                    <button id="btn-ai-writer" class="text-[10px] bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-900 font-bold px-3 py-1 rounded shadow-lg hover:shadow-emerald-500/30 transition-all transform hover:scale-105"><i class="fas fa-magic"></i> AI WRITE</button>
+                </div>
+                <textarea id="input-summary" class="form-input h-24 resize-none bg-slate-900/50" placeholder="Tulis deskripsi atau gunakan AI..."></textarea>
             </div>
 
             <div>
                 <div class="flex justify-between items-center mb-3 border-b border-slate-700 pb-1">
-                    <h3 class="text-xs font-bold text-cyan-500 uppercase tracking-widest">Pengalaman</h3>
-                    <button id="btn-add-exp" class="text-xs bg-slate-800 text-cyan-400 px-2 py-1 rounded"><i class="fas fa-plus"></i></button>
+                    <h3 class="text-[11px] font-bold text-cyan-500 uppercase tracking-widest">Pengalaman</h3>
+                    <button id="btn-add-exp" class="text-[10px] font-bold bg-cyan-500/20 border border-cyan-500/50 text-cyan-400 px-3 py-1 rounded hover:bg-cyan-500 hover:text-slate-900 transition-all"><i class="fas fa-plus mr-1"></i> TAMBAH</button>
                 </div>
                 <div id="exp-container" class="space-y-4"></div>
             </div>
 
             <div>
-                <h3 class="text-xs font-bold text-cyan-500 uppercase tracking-widest mb-3 border-b border-slate-700 pb-1">Detail Tambahan</h3>
-                <textarea id="input-certifications" class="form-input h-16 resize-none mb-2" placeholder="Lisensi & Sertifikasi (Pisahkan dgn Enter)"></textarea>
-                <textarea id="input-projects" class="form-input h-16 resize-none mb-2" placeholder="Proyek & Portofolio (Pisahkan dgn Enter)"></textarea>
-                <textarea id="input-skills" class="form-input h-20 resize-none mb-2" placeholder="Keahlian Utama (Pisahkan dgn Enter)"></textarea>
-                <textarea id="input-languages" class="form-input h-16 resize-none mb-2" placeholder="Penguasaan Bahasa (Pisahkan dgn Enter)"></textarea>
-                <textarea id="input-organizations" class="form-input h-16 resize-none mb-2" placeholder="Pengalaman Organisasi (Pisahkan dgn Enter)"></textarea>
-                <textarea id="input-education" class="form-input h-16 resize-none mb-2" placeholder="Riwayat Pendidikan (Pisahkan dgn Enter)"></textarea>
-                <textarea id="input-readiness" class="form-input h-16 resize-none border-emerald-500/50" placeholder="Kesiapan Kerja (Pisahkan dgn Enter. Cth: Siap Shift)"></textarea>
+                <h3 class="text-[11px] font-bold text-cyan-500 uppercase tracking-widest mb-3 border-b border-slate-700 pb-1">Detail Ekstra (Kosongkan = Hilang)</h3>
+                <div class="space-y-2">
+                    <textarea id="input-certifications" class="form-input h-14 resize-none" placeholder="Lisensi & Sertifikasi (Enter)"></textarea>
+                    <textarea id="input-projects" class="form-input h-14 resize-none" placeholder="Proyek & Portofolio (Enter)"></textarea>
+                    <textarea id="input-skills" class="form-input h-14 resize-none" placeholder="Keahlian Utama (Enter)"></textarea>
+                    <textarea id="input-languages" class="form-input h-14 resize-none" placeholder="Penguasaan Bahasa (Enter)"></textarea>
+                    <textarea id="input-organizations" class="form-input h-14 resize-none" placeholder="Pengalaman Organisasi (Enter)"></textarea>
+                    <textarea id="input-education" class="form-input h-14 resize-none" placeholder="Riwayat Pendidikan (Enter)"></textarea>
+                    <textarea id="input-readiness" class="form-input h-14 resize-none border-emerald-500/40" placeholder="Kesiapan Kerja (Enter)"></textarea>
+                </div>
             </div>
             
-            <div>
-                <h3 class="text-xs font-bold text-cyan-500 uppercase tracking-widest mb-3 border-b border-slate-700 pb-1">Tipografi & Tema</h3>
-                <div class="grid grid-cols-3 gap-2 mb-3">
-                    <button id="btn-font-modern" class="bg-slate-800 text-white text-xs py-2 rounded border border-slate-600 font-sans">Modern</button>
-                    <button id="btn-font-classic" class="bg-slate-800 text-white text-xs py-2 rounded border border-slate-600 font-serif">Classic</button>
-                    <button id="btn-font-tech" class="bg-slate-800 text-white text-xs py-2 rounded border border-slate-600 font-mono">Tech</button>
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-inner">
+                <h3 class="text-[11px] font-bold text-white uppercase tracking-widest mb-4 flex items-center"><i class="fas fa-paint-roller text-cyan-400 mr-2"></i> Studio Desain</h3>
+                
+                <div class="flex gap-2 bg-slate-900 p-1 rounded-lg mb-4">
+                    <button id="btn-font-modern" class="flex-1 py-1.5 rounded-md bg-slate-700 text-white font-bold text-[10px] tracking-widest font-sans transition-all">SANS</button>
+                    <button id="btn-font-classic" class="flex-1 py-1.5 rounded-md text-slate-400 hover:text-white font-bold text-[10px] tracking-widest font-serif transition-all">SERIF</button>
+                    <button id="btn-font-tech" class="flex-1 py-1.5 rounded-md text-slate-400 hover:text-white font-bold text-[10px] tracking-widest font-mono transition-all">MONO</button>
                 </div>
-                <div class="grid grid-cols-4 gap-2 mb-3">
-                    <button id="btn-theme-classic" class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold py-2 rounded border border-slate-600">CLASSIC</button>
-                    <button id="btn-theme-ats" class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold py-2 rounded border border-slate-600">ATS</button>
-                    <button id="btn-theme-pro" class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold py-2 rounded border border-slate-600">PRO</button>
-                    <button id="btn-theme-tech" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 text-[10px] font-bold py-2 rounded border border-cyan-500/50">TECH</button>
+
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <button id="btn-theme-classic" class="py-2 border border-cyan-500 bg-cyan-500/10 text-cyan-400 rounded text-[10px] font-bold tracking-widest transition-all"><i class="fas fa-university mr-1"></i> CLASSIC</button>
+                    <button id="btn-theme-pro" class="py-2 border border-slate-600 bg-transparent text-slate-400 rounded text-[10px] font-bold tracking-widest hover:border-slate-400 transition-all"><i class="fas fa-briefcase mr-1"></i> PRO</button>
+                    <button id="btn-theme-ats" class="py-2 border border-slate-600 bg-transparent text-slate-400 rounded text-[10px] font-bold tracking-widest hover:border-slate-400 transition-all"><i class="fas fa-robot mr-1"></i> ATS</button>
+                    <button id="btn-theme-tech" class="py-2 border border-slate-600 bg-transparent text-slate-400 rounded text-[10px] font-bold tracking-widest hover:border-slate-400 transition-all"><i class="fas fa-code mr-1"></i> TECH</button>
                 </div>
-                <div class="flex items-center justify-between bg-slate-800 px-3 py-2 rounded border border-slate-700">
-                    <span class="text-xs font-bold text-slate-300">Warna Aksen:</span>
-                    <input type="color" id="input-color" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0">
+
+                <div class="flex items-center justify-between bg-slate-900 px-3 py-2 rounded-lg border border-slate-700">
+                    <span class="text-[10px] font-bold text-slate-400 tracking-widest uppercase">Warna Dokumen</span>
+                    <input type="color" id="input-color" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0">
                 </div>
             </div>
         </div>
         
         <div class="p-4 border-t border-slate-800 bg-[#0f172a] fixed md:static bottom-0 left-0 w-full z-20 shrink-0">
-            <button id="btn-export" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-black py-3 rounded-lg uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(34,211,238,0.4)]"><i class="fas fa-file-pdf mr-2"></i> Cetak PDF</button>
+            <button id="btn-export" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-black py-3 rounded-lg uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] transform hover:scale-[1.02]"><i class="fas fa-print mr-2"></i> CETAK DOKUMEN</button>
         </div>
     </div>
 
-    <div id="panel-view" class="hidden md:flex w-full md:w-2/3 h-full bg-slate-800/50 overflow-y-auto justify-center py-6 md:py-10 custom-scrollbar relative pb-32 md:pb-10">
-        <div class="absolute top-4 right-8 flex gap-2 z-50">
-            <button id="btn-mode-cv" class="bg-cyan-500 text-slate-900 text-xs font-bold px-3 py-1.5 rounded shadow">CV MODE</button>
-            <button id="btn-mode-cl" class="bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded border border-slate-600">COVER LETTER</button>
-            <button id="btn-lang-toggle" class="bg-indigo-500 text-white text-xs font-bold px-3 py-1.5 rounded shadow ml-4"><i class="fas fa-globe"></i> ID/EN</button>
+    <div id="panel-view" class="hidden md:flex w-full md:w-2/3 h-full bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] bg-[#020617] overflow-y-auto justify-center py-6 md:py-20 custom-scrollbar relative pb-32 md:pb-10">
+        
+        <div class="fixed top-6 md:top-8 flex bg-slate-900/80 backdrop-blur-md p-1.5 rounded-full border border-slate-700 shadow-2xl z-50">
+            <button id="btn-mode-cv" class="bg-cyan-500 text-slate-900 text-[11px] font-black px-5 py-2 rounded-full shadow-lg transition-all tracking-widest"><i class="fas fa-file-alt mr-1"></i> CV</button>
+            <button id="btn-mode-cl" class="text-slate-400 hover:text-white text-[11px] font-bold px-5 py-2 rounded-full transition-all tracking-widest"><i class="fas fa-envelope-open-text mr-1"></i> SURAT</button>
+            <div class="w-px bg-slate-700 mx-1 my-1"></div>
+            <button id="btn-lang-toggle" class="text-indigo-400 hover:text-indigo-300 text-[11px] font-bold px-5 py-2 rounded-full transition-all tracking-widest"><i class="fas fa-language mr-1"></i> ID/EN</button>
         </div>
-        <div id="cv-paper" class="a4-paper bg-white shadow-2xl flex flex-col overflow-hidden transition-all duration-300"></div>
+
+        <div id="cv-paper" class="a4-paper bg-white shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden transition-all duration-500 transform origin-top"></div>
     </div>
 
     <script type="module" src="js/core/app.js"></script>
