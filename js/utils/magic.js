@@ -20,11 +20,14 @@ export const Magic = {
         const ttdHTML = data.signature ? `<img src="${data.signature}" class="h-20 mt-4 mb-2 object-contain mix-blend-multiply">` : `<br><br><br><br>`;
         const mainColor = data.color || '#0ea5e9';
         
+        // Logika Kondisional: Role hanya muncul jika diisi
+        const roleHTML = data.role ? `<h2 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-5">${data.role}</h2>` : '<div class="mb-5"></div>';
+        
         return `
             <div class="bg-white min-h-[297mm] text-slate-900 relative flex flex-col">
                 <div class="p-10 pb-8 border-b-[6px]" style="border-color: ${mainColor}; background-color: #f8fafc;">
                     <h1 class="text-4xl font-black uppercase tracking-widest mb-2" style="color: ${mainColor}">${data.name || 'NAMA LENGKAP'}</h1>
-                    <h2 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-5">${data.role || 'PROFESIONAL'}</h2>
+                    ${roleHTML}
                     <div class="flex gap-5 text-xs font-semibold text-slate-600">
                         ${data.phone ? `<span class="flex items-center"><i class="fas fa-phone mr-2" style="color: ${mainColor}"></i>${data.phone}</span>` : ''}
                         ${data.email ? `<span class="flex items-center"><i class="fas fa-envelope mr-2" style="color: ${mainColor}"></i>${data.email}</span>` : ''}
