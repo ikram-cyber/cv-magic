@@ -11,22 +11,23 @@
 </head>
 <body class="bg-[#020617] text-white h-screen overflow-hidden flex flex-col md:flex-row font-sans">
 
-    <div class="md:hidden flex bg-[#0f172a] border-b border-slate-800 z-50">
+    <div class="md:hidden flex bg-[#0f172a] border-b border-slate-800 z-50 shrink-0">
         <button id="tab-edit" class="flex-1 py-4 text-cyan-400 font-bold border-b-2 border-cyan-400 text-xs tracking-widest"><i class="fas fa-edit mr-2"></i>EDIT</button>
         <button id="tab-view" class="flex-1 py-4 text-slate-500 font-bold border-b-2 border-transparent text-xs tracking-widest"><i class="fas fa-eye mr-2"></i>PREVIEW</button>
     </div>
 
     <div id="panel-edit" class="w-full md:w-1/3 h-full bg-slate-900 flex flex-col z-10 transition-all md:block">
-        <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#0f172a] hidden md:flex">
+        <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#0f172a] hidden md:flex shrink-0">
             <h1 class="text-xl font-black tracking-widest text-white"><i class="fas fa-magic text-cyan-400 mr-2"></i>DOCU<span class="text-cyan-400">MAGIC</span></h1>
             <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded border border-emerald-500/50">ELITE TIER</span>
         </div>
-        <div class="px-6 py-3 bg-[#0f172a] border-b border-slate-800 hidden md:block">
+        <div class="px-6 py-3 bg-[#0f172a] border-b border-slate-800 hidden md:block shrink-0">
             <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-1"><span>KEKUATAN CV</span><span id="cv-score-text" class="text-emerald-400">0%</span></div>
             <div class="w-full bg-slate-800 rounded-full h-1.5"><div id="cv-score-bar" class="bg-emerald-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div></div>
         </div>
         
         <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar pb-32 md:pb-6">
+            
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <h3 class="text-[10px] font-bold text-cyan-500 uppercase tracking-widest mb-2 border-b border-slate-700 pb-1">Pas Foto</h3>
@@ -53,7 +54,7 @@
                     <input type="text" id="input-email" class="form-input" placeholder="Email">
                     <input type="text" id="input-phone" class="form-input" placeholder="No. HP">
                     <input type="text" id="input-address" class="form-input col-span-2" placeholder="Alamat Lengkap">
-                    <input type="text" id="input-link" class="form-input col-span-2 border-cyan-500/30" placeholder="Link LinkedIn / Portofolio (Untuk QR Code)">
+                    <input type="text" id="input-link" class="form-input col-span-2 border-cyan-500/30" placeholder="Link Portofolio (Untuk QR Code)">
                 </div>
             </div>
 
@@ -71,20 +72,17 @@
             </div>
 
             <div>
-                <h3 class="text-xs font-bold text-cyan-500 uppercase tracking-widest mb-3 border-b border-slate-700 pb-1">Keahlian & Pendidikan</h3>
-                <textarea id="input-skills" class="form-input h-20 resize-none mb-2" placeholder="Keahlian Utama (Pisahkan dengan Enter)"></textarea>
-                <textarea id="input-education" class="form-input h-16 resize-none" placeholder="Riwayat Pendidikan (Pisahkan dengan Enter)"></textarea>
-                <textarea id="input-readiness" class="form-input h-16 resize-none border-cyan-500/30" placeholder="Kesiapan Kerja (Pisahkan dgn Enter. Cth: Siap Shift)"></textarea>
+                <h3 class="text-xs font-bold text-cyan-500 uppercase tracking-widest mb-3 border-b border-slate-700 pb-1">Detail Tambahan</h3>
+                <textarea id="input-certifications" class="form-input h-16 resize-none mb-2" placeholder="Lisensi & Sertifikasi (Pisahkan dgn Enter)"></textarea>
+                <textarea id="input-projects" class="form-input h-16 resize-none mb-2" placeholder="Proyek & Portofolio (Pisahkan dgn Enter)"></textarea>
+                <textarea id="input-skills" class="form-input h-20 resize-none mb-2" placeholder="Keahlian Utama (Pisahkan dgn Enter)"></textarea>
+                <textarea id="input-languages" class="form-input h-16 resize-none mb-2" placeholder="Penguasaan Bahasa (Pisahkan dgn Enter)"></textarea>
+                <textarea id="input-organizations" class="form-input h-16 resize-none mb-2" placeholder="Pengalaman Organisasi (Pisahkan dgn Enter)"></textarea>
+                <textarea id="input-education" class="form-input h-16 resize-none mb-2" placeholder="Riwayat Pendidikan (Pisahkan dgn Enter)"></textarea>
+                <textarea id="input-readiness" class="form-input h-16 resize-none border-emerald-500/50" placeholder="Kesiapan Kerja (Pisahkan dgn Enter. Cth: Siap Shift)"></textarea>
             </div>
             
             <div>
-            <div>
-                <h3 class="text-xs font-bold text-cyan-500 uppercase tracking-widest mb-3 border-b border-slate-700 pb-1">Detail Tambahan</h3>
-                <textarea id="input-certifications" class="form-input h-16 resize-none mb-2" placeholder="Lisensi & Sertifikasi"></textarea>
-                <textarea id="input-projects" class="form-input h-16 resize-none mb-2" placeholder="Proyek & Portofolio"></textarea>
-                <textarea id="input-languages" class="form-input h-16 resize-none mb-2" placeholder="Penguasaan Bahasa"></textarea>
-                <textarea id="input-organizations" class="form-input h-16 resize-none" placeholder="Pengalaman Organisasi"></textarea>
-            </div>
                 <h3 class="text-xs font-bold text-cyan-500 uppercase tracking-widest mb-3 border-b border-slate-700 pb-1">Tipografi & Tema</h3>
                 <div class="grid grid-cols-3 gap-2 mb-3">
                     <button id="btn-font-modern" class="bg-slate-800 text-white text-xs py-2 rounded border border-slate-600 font-sans">Modern</button>
@@ -104,7 +102,7 @@
             </div>
         </div>
         
-        <div class="p-4 border-t border-slate-800 bg-[#0f172a] fixed md:static bottom-0 left-0 w-full z-20">
+        <div class="p-4 border-t border-slate-800 bg-[#0f172a] fixed md:static bottom-0 left-0 w-full z-20 shrink-0">
             <button id="btn-export" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-black py-3 rounded-lg uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(34,211,238,0.4)]"><i class="fas fa-file-pdf mr-2"></i> Cetak PDF</button>
         </div>
     </div>
