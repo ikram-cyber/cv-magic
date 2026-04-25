@@ -28,7 +28,7 @@ export const Magic = {
     
     generateCoverLetter(data) {
         const dateStr = new Date().toLocaleDateString(data.lang === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        const city = (data.address || 'Kota').split(',')[0];
+        const addrParts = (data.address || 'Kota').split(','); const city = addrParts.length > 1 ? addrParts[addrParts.length - 1].trim() : addrParts[0].trim();
         const ttdHTML = data.signature ? `<img src="${data.signature}" class="h-20 mt-4 mb-2 object-contain mix-blend-multiply">` : `<br><br><br><br>`;
         const mainColor = data.color || '#0ea5e9';
         const roleHTML = data.role ? `<h2 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-5">${data.role}</h2>` : '<div class="mb-5"></div>';
