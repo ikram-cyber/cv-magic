@@ -158,3 +158,41 @@ if(btnPdf) {
         });
     });
 }
+
+// LOGIKA MEMORI ABADI (AUTO-SAVE)
+const saveToLocal = () => {
+    localStorage.setItem('cv_magic_data', JSON.stringify(State.data));
+};
+const loadFromLocal = () => {
+    const saved = localStorage.getItem('cv_magic_data');
+    if(saved) {
+        State.data = JSON.parse(saved);
+        // Refresh semua tampilan
+        Object.keys(State.data).forEach(key => {
+            const el = document.getElementById(`input-${key}`);
+            if(el) el.value = State.data[key];
+        });
+        State.render(); 
+    }
+};
+
+// Pasang sensor di setiap ketikan
+document.querySelectorAll('input, textarea, select').forEach(input => {
+    input.addEventListener('input', saveToLocal);
+});
+
+// Jalankan Load saat aplikasi dibuka
+window.addEventListener('load', loadFromLocal);
+
+// EFEK PARTIKEL TECH (MELONGO EFFECT)
+const bg = document.getElementById('bg-particles');
+if(bg) {
+    for(let i=0; i<30; i++) {
+        const p = document.createElement('div');
+        p.style.cssText = `position:absolute; width:2px; height:2px; background:#06b6d4; 
+        top:${Math.random()*100}%; left:${Math.random()*100}%; 
+        box-shadow:0 0 10px #06b6d4; border-radius:50%;
+        animation: float ${5+Math.random()*10}s infinite linear;`;
+        bg.appendChild(p);
+    }
+}
