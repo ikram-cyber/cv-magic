@@ -1,6 +1,6 @@
 export const Magic = {
     dict: {
-        id: { cv: "CURRICULUM VITAE", name: "Nama", dob: "Tempat, Tgl Larir", phone: "No. HP", address: "Alamat", profile: "PROFIL", exp: "PENGALAMAN KERJA", skills: "KEAHLIAN UTAMA", edu: "PENDIDIKAN" },
+        id: { cv: "CURRICULUM VITAE", name: "Nama", dob: "Tempat, Tgl Lahir", phone: "No. HP", address: "Alamat", profile: "PROFIL", exp: "PENGALAMAN KERJA", skills: "KEAHLIAN UTAMA", edu: "PENDIDIKAN" },
         en: { cv: "CURRICULUM VITAE", name: "Name", dob: "Date of Birth", phone: "Phone", address: "Address", profile: "PROFESSIONAL PROFILE", exp: "WORK EXPERIENCE", skills: "CORE COMPETENCIES", edu: "EDUCATION" }
     },
     
@@ -35,7 +35,6 @@ export const Magic = {
     },
     
     generateCoverLetter(data) {
-        // LOGIKA TANGGAL PINTAR
         const todayStr = new Date().toLocaleDateString(data.lang === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         const dateStr = (data['custom-date'] && data['custom-date'].trim() !== '') ? data['custom-date'] : todayStr;
         
@@ -51,6 +50,7 @@ export const Magic = {
         
         const hasExp = data.experiences && data.experiences.some(e => e.title || e.company);
         const status = data['career-status'] || (hasExp ? 'pro' : 'gap');
+        const hasAttach = data.attachments && data.attachments.trim() !== '';
 
         const defaultJob = data.lang === 'id' ? 'HRD Manager' : 'HR Manager';
         const selectedJob = data['recipient-title'] || defaultJob;
@@ -70,21 +70,33 @@ export const Magic = {
 
         let p2Id = ''; let p2En = '';
         if (status === 'fresh') {
-            p2Id = 'Meskipun saya baru lulus dan akan memulai perjalanan karier profesional, saya memiliki fondasi pendidikan yang kuat serta kemauan keras untuk belajar. Sebagai bahan pertimbangan Bapak/Ibu, telah saya lampirkan Curriculum Vitae (CV).';
-            p2En = 'Although I am a recent graduate at the beginning of my professional journey, I possess a solid educational foundation and a strong eagerness to learn. I have attached my Curriculum Vitae for your review.';
+            p2Id = 'Meskipun saya baru lulus dan akan memulai perjalanan karier profesional, saya memiliki fondasi pendidikan yang kuat serta kemauan keras untuk belajar.';
+            p2En = 'Although I am a recent graduate at the beginning of my professional journey, I possess a solid educational foundation and a strong eagerness to learn.';
+            if (!hasAttach) {
+                p2Id += ' Sebagai bahan pertimbangan Bapak/Ibu, telah saya lampirkan Curriculum Vitae (CV).';
+                p2En += ' I have attached my Curriculum Vitae for your review.';
+            }
         } else if (status === 'gap') {
-            p2Id = 'Meskipun saya belum memiliki rekam jejak formal di perusahaan, selama ini saya aktif mendedikasikan waktu untuk pengembangan diri, pembaruan keahlian teknis, dan pengerjaan proyek mandiri. Saya memiliki fondasi kompetensi yang solid serta kesiapan mental yang matang untuk beradaptasi di lingkungan kerja profesional. Sebagai bahan pertimbangan Bapak/Ibu, telah saya lampirkan Curriculum Vitae (CV).';
-            p2En = 'Although I may not have a formal corporate track record yet, I have actively dedicated my time to self-development, technical skill refinement, and independent projects. I possess a solid foundation of competencies and the mature readiness to adapt to a professional work environment. I have attached my Curriculum Vitae for your review.';
+            p2Id = 'Meskipun saya belum memiliki rekam jejak formal di perusahaan, selama ini saya aktif mendedikasikan waktu untuk pengembangan diri, pembaruan keahlian teknis, dan pengerjaan proyek mandiri. Saya memiliki fondasi kompetensi yang solid serta kesiapan mental yang matang untuk beradaptasi di lingkungan kerja profesional.';
+            p2En = 'Although I may not have a formal corporate track record yet, I have actively dedicated my time to self-development, technical skill refinement, and independent projects. I possess a solid foundation of competencies and the mature readiness to adapt to a professional work environment.';
+            if (!hasAttach) {
+                p2Id += ' Sebagai bahan pertimbangan Bapak/Ibu, telah saya lampirkan Curriculum Vitae (CV).';
+                p2En += ' I have attached my Curriculum Vitae for your review.';
+            }
         } else {
-            p2Id = 'Sebagai referensi lebih lanjut mengenai kualifikasi, rekam jejak, serta portofolio saya, bersama surat ini telah saya lampirkan Curriculum Vitae (CV) secara terpisah.';
-            p2En = 'For further reference regarding my qualifications, track record, and portfolio, I have attached my Curriculum Vitae alongside this letter.';
+            p2Id = 'Sebagai referensi lebih lanjut mengenai kualifikasi, rekam jejak, serta portofolio saya, bersama surat ini telah saya lampirkan Curriculum Vitae (CV)' + (hasAttach ? ' beserta kelengkapan dokumen lainnya.' : ' secara terpisah.');
+            p2En = 'For further reference regarding my qualifications, track record, and portfolio, I have attached my Curriculum Vitae' + (hasAttach ? ' along with other supporting documents.' : ' alongside this letter.');
         }
 
         let attachmentsHTML = '';
-        if (data.attachments && data.attachments.trim() !== '') {
+        if (hasAttach) {
             const list = data.attachments.split('\n').filter(item => item.trim() !== '');
+            const introId = status === 'pro' 
+                ? 'Adapun rincian dokumen lampiran adalah sebagai berikut:' 
+                : 'Sebagai bahan pertimbangan Bapak/Ibu, turut saya lampirkan kelengkapan dokumen sebagai berikut:';
+            
             attachmentsHTML = `
-                <p class="text-sm mb-2 font-bold">${data.lang === 'id' ? 'Sebagai bahan pertimbangan, turut saya lampirkan:' : 'For your consideration, I have attached:'}</p>
+                <p class="text-sm mb-2 font-bold">${data.lang === 'id' ? introId : 'For your consideration, I have attached the following documents:'}</p>
                 <ul class="text-sm mb-5 list-none pl-0">
                     ${list.map(item => `<li class="mb-1 italic text-slate-700">- ${item}</li>`).join('')}
                 </ul>
