@@ -8,8 +8,6 @@ export const Magic = {
         const r = (data.role || '').toLowerCase();
         const lang = data.lang || 'id';
         const hasExp = data.experiences && data.experiences.some(e => e.title || e.company);
-        
-        // Baca status dari dropdown, jika error fallback ke logika lama
         const status = data['career-status'] || (hasExp ? 'pro' : 'gap');
 
         if(lang === 'id') {
@@ -38,8 +36,21 @@ export const Magic = {
     
     generateCoverLetter(data) {
         const dateStr = new Date().toLocaleDateString(data.lang === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        const addrParts = (data.address || 'Kota').split(','); 
-        const city = addrParts.length > 1 ? addrParts[addrParts.length - 1].trim() : addrParts[0].trim();
+        
+        // LOGIKA PEMBERSIH KOTA OTOMATIS
+        let city = (data.address || 'Kota');
+        const addrParts = city.split(',');
+        if (addrParts.length > 1) {
+            city = addrParts[addrParts.length - 1].trim();
+        }
+        // Buang Kode Pos (5 digit angka)
+        city = city.replace(/\d{5}/g, '').trim();
+        // Buang Sebutan Formal DKI / Daerah Khusus Ibukota
+        city = city.replace(/Daerah Khusus Ibukota/gi, '').trim();
+        city = city.replace(/DKI/gi, '').trim();
+        // Pastikan huruf depan besar (Capitalize)
+        city = city.charAt(0).toUpperCase() + city.slice(1);
+
         const ttdHTML = data.signature ? `<img src="${data.signature}" class="h-20 mt-4 mb-2 object-contain mix-blend-multiply">` : `<br><br><br><br>`;
         const mainColor = data.color || '#0ea5e9';
         const roleHTML = data.role ? `<h2 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-5">${data.role}</h2>` : '<div class="mb-5"></div>';
@@ -85,7 +96,6 @@ export const Magic = {
                     <p class="text-right text-sm mb-12 font-semibold text-slate-500">${city}, ${dateStr}</p>
                     <p class="text-sm mb-8 font-bold leading-relaxed">${recipientHTML}</p>
                     <p class="text-sm mb-5">${data.lang === 'id' ? 'Dengan hormat,' : 'Dear Hiring Manager,'}</p>
-                    
                     <p class="text-sm mb-5 text-justify leading-relaxed">${data.lang === 'id' ? p1Id : p1En}</p>
                     
                     <div class="pl-4 border-l-4 py-1 mb-5" style="border-color: ${mainColor}; background: #f8fafc;">
