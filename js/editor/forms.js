@@ -6,7 +6,7 @@ export const FormEditor = {
         document.getElementById('input-photo')?.addEventListener('change', (e) => { if(e.target.files[0]) { const r = new FileReader(); r.onload = (ev) => State.update('photo', ev.target.result); r.readAsDataURL(e.target.files[0]); }});
         document.getElementById('input-signature')?.addEventListener('change', (e) => { if(e.target.files[0]) { const r = new FileReader(); r.onload = (ev) => State.update('signature', ev.target.result); r.readAsDataURL(e.target.files[0]); }});
 
-        ['name', 'dob', 'role', 'email', 'phone', 'address', 'link', 'summary', 'skills', 'education', 'certifications', 'projects', 'languages', 'organizations', 'readiness', 'recipient', 'career-status', 'recipient-title', 'attachments'].forEach(key => {
+        ['name', 'dob', 'role', 'email', 'phone', 'address', 'link', 'summary', 'skills', 'education', 'certifications', 'projects', 'languages', 'organizations', 'readiness', 'recipient', 'career-status', 'recipient-title', 'attachments', 'custom-date'].forEach(key => {
             document.getElementById(`input-${key}`)?.addEventListener('input', (e) => State.update(key, e.target.value));
         });
         document.getElementById('input-color')?.addEventListener('input', (e) => State.update('color', e.target.value));

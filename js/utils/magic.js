@@ -1,6 +1,6 @@
 export const Magic = {
     dict: {
-        id: { cv: "CURRICULUM VITAE", name: "Nama", dob: "Tempat, Tgl Lahir", phone: "No. HP", address: "Alamat", profile: "PROFIL", exp: "PENGALAMAN KERJA", skills: "KEAHLIAN UTAMA", edu: "PENDIDIKAN" },
+        id: { cv: "CURRICULUM VITAE", name: "Nama", dob: "Tempat, Tgl Larir", phone: "No. HP", address: "Alamat", profile: "PROFIL", exp: "PENGALAMAN KERJA", skills: "KEAHLIAN UTAMA", edu: "PENDIDIKAN" },
         en: { cv: "CURRICULUM VITAE", name: "Name", dob: "Date of Birth", phone: "Phone", address: "Address", profile: "PROFESSIONAL PROFILE", exp: "WORK EXPERIENCE", skills: "CORE COMPETENCIES", edu: "EDUCATION" }
     },
     
@@ -35,7 +35,9 @@ export const Magic = {
     },
     
     generateCoverLetter(data) {
-        const dateStr = new Date().toLocaleDateString(data.lang === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        // LOGIKA TANGGAL PINTAR
+        const todayStr = new Date().toLocaleDateString(data.lang === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const dateStr = (data['custom-date'] && data['custom-date'].trim() !== '') ? data['custom-date'] : todayStr;
         
         let city = (data.address || 'Kota');
         const addrParts = city.split(',');
@@ -78,7 +80,6 @@ export const Magic = {
             p2En = 'For further reference regarding my qualifications, track record, and portfolio, I have attached my Curriculum Vitae alongside this letter.';
         }
 
-        // LOGIKA LAMPIRAN DINAMIS
         let attachmentsHTML = '';
         if (data.attachments && data.attachments.trim() !== '') {
             const list = data.attachments.split('\n').filter(item => item.trim() !== '');
