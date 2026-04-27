@@ -1,0 +1,25 @@
+/* 1. SCROLLBAR SULTAN (Siluman & Elegan) */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.3); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(6, 182, 212, 1); }
+
+/* 2. EFEK MAGNETIK & NEON GLOW SAAT MENGETIK */
+.form-input { 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+.form-input:focus { 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 20px -4px rgba(6, 182, 212, 0.3); 
+    border-color: #06b6d4 !important; 
+    outline: none;
+}
+
+/* 3. TRANSISI SUTRA (Pindah Tab CV/Surat Lamaran) */
+@keyframes smoothSlide { 
+    0% { opacity: 0; transform: translateX(-15px); } 
+    100% { opacity: 1; transform: translateX(0); } 
+}
+#section-editor-cv:not(.hidden), #section-editor-cl:not(.hidden) { 
+    animation: smoothSlide 0.5s ease-out forwards; 
+}
