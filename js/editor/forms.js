@@ -196,3 +196,41 @@ if(bg) {
         bg.appendChild(p);
     }
 }
+
+// HOTFIX: LOGIKA TANDA TANGAN MIRING PRO & TOMBOL KONTROL
+const m = document.getElementById('sig-modal');
+const lC = document.getElementById('sig-canvas-landscape');
+const bU = document.getElementById('btn-sig-redo');
+const bH = document.getElementById('btn-sig-delete');
+
+if(lC && m && bU && bH) {
+    const cCtx = lC.getContext('2d');
+    
+    const updateSigUI = (hasSig) => {
+        if(hasSig) { bU.classList.remove('hidden'); bH.classList.remove('hidden'); }
+        else { bU.classList.add('hidden'); bH.classList.add('hidden'); }
+    };
+
+    document.getElementById('btn-draw-sig')?.addEventListener('click', () => {
+        m.style.display = 'flex';
+        lC.width = 1200; lC.height = 800; // Resolusi Tinggi
+        cCtx.clearRect(0,0,lC.width,lC.height);
+    });
+
+    document.getElementById('btn-sig-cancel').onclick = () => m.style.display = 'none';
+
+    // Mesin Simpan dengan Putaran Otomatis (Fix Vertikal)
+    document.getElementById('btn-sig-save').onclick = () => {
+        const tC = document.createElement('canvas'); tC.width = lC.height; tC.height = lC.width; const tCtx = tC.getContext('2d');
+        tCtx.translate(tC.width/2, tC.height/2); tCtx.rotate(-Math.PI/2); tCtx.drawImage(lC, -lC.width/2, -lC.height/2);
+        State.update('signature', tC.toDataURL());
+        m.style.display = 'none';
+        updateSigUI(true); // Munculkan tombol ulang/hapus
+    };
+
+    bU.onclick = () => document.getElementById('btn-draw-sig').click(); // Ulang = Buka Modal
+    bH.onclick = () => { State.update('signature', null); updateSigUI(false); }; // Hapus
+
+    // Load data lama dan perbarui UI tombol
+    window.addEventListener('load', () => loadFromLocal().then(() => updateSigUI(!!State.data.signature)));
+}
