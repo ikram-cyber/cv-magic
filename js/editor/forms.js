@@ -123,7 +123,7 @@ if(lCanvas && modal) {
 
     document.getElementById('btn-sig-cancel').onclick = () => modal.style.display = 'none';
     document.getElementById('btn-sig-save').onclick = () => {
-        State.update('signature', lCanvas.toDataURL());
+        const tC = document.createElement('canvas'); tC.width = lCanvas.height; tC.height = lCanvas.width; const tCtx = tC.getContext('2d'); tCtx.translate(tC.width/2, tC.height/2); tCtx.rotate(-Math.PI/2); tCtx.drawImage(lCanvas, -lCanvas.width/2, -lCanvas.height/2); State.update('signature', tC.toDataURL());
         modal.style.display = 'none';
     };
 
