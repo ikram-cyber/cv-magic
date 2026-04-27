@@ -37,18 +37,10 @@ export const Magic = {
     generateCoverLetter(data) {
         const dateStr = new Date().toLocaleDateString(data.lang === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         
-        // LOGIKA PEMBERSIH KOTA OTOMATIS
         let city = (data.address || 'Kota');
         const addrParts = city.split(',');
-        if (addrParts.length > 1) {
-            city = addrParts[addrParts.length - 1].trim();
-        }
-        // Buang Kode Pos (5 digit angka)
-        city = city.replace(/\d{5}/g, '').trim();
-        // Buang Sebutan Formal DKI / Daerah Khusus Ibukota
-        city = city.replace(/Daerah Khusus Ibukota/gi, '').trim();
-        city = city.replace(/DKI/gi, '').trim();
-        // Pastikan huruf depan besar (Capitalize)
+        if (addrParts.length > 1) { city = addrParts[addrParts.length - 1].trim(); }
+        city = city.replace(/\d{5}/g, '').replace(/Daerah Khusus Ibukota/gi, '').replace(/DKI/gi, '').trim();
         city = city.charAt(0).toUpperCase() + city.slice(1);
 
         const ttdHTML = data.signature ? `<img src="${data.signature}" class="h-20 mt-4 mb-2 object-contain mix-blend-multiply">` : `<br><br><br><br>`;
@@ -58,9 +50,19 @@ export const Magic = {
         const hasExp = data.experiences && data.experiences.some(e => e.title || e.company);
         const status = data['career-status'] || (hasExp ? 'pro' : 'gap');
 
-        let recipientHTML = data.lang === 'id' ? 'Yth. HRD Manager<br>Di Tempat' : 'To: HR Manager<br>Company';
+        // LOGIKA BARU: JABATAN DINAMIS
+        const defaultJob = data.lang === 'id' ? 'HRD Manager' : 'HR Manager';
+        const selectedJob = data['recipient-title'] || defaultJob;
+        
+        let recipientHTML = data.lang === 'id' ? `Yth. ${selectedJob}<br>Di Tempat` : `To: ${selectedJob}<br>Company`;
+        
         if (data.recipient && data.recipient.trim() !== '') {
-            recipientHTML = data.recipient.replace(/\n/g, '<br>');
+            let rawInput = data.recipient.trim();
+            if (!rawInput.toLowerCase().startsWith('yth')) {
+                recipientHTML = `Yth. ${selectedJob}<br>${rawInput.replace(/\n/g, '<br>')}`;
+            } else {
+                recipientHTML = rawInput.replace(/\n/g, '<br>');
+            }
         }
 
         const p1Id = status === 'pro' ? `Melalui surat ini, saya bermaksud menyampaikan ketertarikan saya untuk mengisi posisi <strong>${data.role || 'yang relevan'}</strong> di perusahaan yang Bapak/Ibu pimpin.` : `Melalui surat ini, saya bermaksud menyampaikan ketertarikan dan antusiasme saya untuk mengisi posisi <strong>${data.role || 'yang relevan'}</strong> di perusahaan yang Bapak/Ibu pimpin.`;
