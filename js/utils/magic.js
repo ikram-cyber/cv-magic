@@ -50,10 +50,8 @@ export const Magic = {
         const hasExp = data.experiences && data.experiences.some(e => e.title || e.company);
         const status = data['career-status'] || (hasExp ? 'pro' : 'gap');
 
-        // LOGIKA BARU: JABATAN DINAMIS
         const defaultJob = data.lang === 'id' ? 'HRD Manager' : 'HR Manager';
         const selectedJob = data['recipient-title'] || defaultJob;
-        
         let recipientHTML = data.lang === 'id' ? `Yth. ${selectedJob}<br>Di Tempat` : `To: ${selectedJob}<br>Company`;
         
         if (data.recipient && data.recipient.trim() !== '') {
@@ -68,9 +66,7 @@ export const Magic = {
         const p1Id = status === 'pro' ? `Melalui surat ini, saya bermaksud menyampaikan ketertarikan saya untuk mengisi posisi <strong>${data.role || 'yang relevan'}</strong> di perusahaan yang Bapak/Ibu pimpin.` : `Melalui surat ini, saya bermaksud menyampaikan ketertarikan dan antusiasme saya untuk mengisi posisi <strong>${data.role || 'yang relevan'}</strong> di perusahaan yang Bapak/Ibu pimpin.`;
         const p1En = status === 'pro' ? `I am writing to express my strong interest in the <strong>${data.role || 'open position'}</strong> at your esteemed company.` : `I am writing to express my enthusiasm to fill the <strong>${data.role || 'open position'}</strong> at your esteemed company.`;
 
-        let p2Id = '';
-        let p2En = '';
-
+        let p2Id = ''; let p2En = '';
         if (status === 'fresh') {
             p2Id = 'Meskipun saya baru lulus dan akan memulai perjalanan karier profesional, saya memiliki fondasi pendidikan yang kuat serta kemauan keras untuk belajar. Sebagai bahan pertimbangan Bapak/Ibu, telah saya lampirkan Curriculum Vitae (CV).';
             p2En = 'Although I am a recent graduate at the beginning of my professional journey, I possess a solid educational foundation and a strong eagerness to learn. I have attached my Curriculum Vitae for your review.';
@@ -80,6 +76,18 @@ export const Magic = {
         } else {
             p2Id = 'Sebagai referensi lebih lanjut mengenai kualifikasi, rekam jejak, serta portofolio saya, bersama surat ini telah saya lampirkan Curriculum Vitae (CV) secara terpisah.';
             p2En = 'For further reference regarding my qualifications, track record, and portfolio, I have attached my Curriculum Vitae alongside this letter.';
+        }
+
+        // LOGIKA LAMPIRAN DINAMIS
+        let attachmentsHTML = '';
+        if (data.attachments && data.attachments.trim() !== '') {
+            const list = data.attachments.split('\n').filter(item => item.trim() !== '');
+            attachmentsHTML = `
+                <p class="text-sm mb-2 font-bold">${data.lang === 'id' ? 'Sebagai bahan pertimbangan, turut saya lampirkan:' : 'For your consideration, I have attached:'}</p>
+                <ul class="text-sm mb-5 list-none pl-0">
+                    ${list.map(item => `<li class="mb-1 italic text-slate-700">- ${item}</li>`).join('')}
+                </ul>
+            `;
         }
 
         return `
@@ -105,6 +113,9 @@ export const Magic = {
                     </div>
 
                     <p class="text-sm mb-5 text-justify leading-relaxed">${data.lang === 'id' ? p2Id : p2En}</p>
+                    
+                    ${attachmentsHTML}
+
                     <p class="text-sm mb-12 text-justify leading-relaxed">${data.lang === 'id' ? 'Besar harapan saya untuk dapat mendiskusikan peluang ini lebih lanjut dalam sesi wawancara. Atas perhatian dan waktu yang diberikan, saya ucapkan terima kasih.' : 'I sincerely hope to discuss this opportunity further in an interview. Thank you for your time and consideration.'}</p>
                     
                     <p class="text-sm font-semibold">${data.lang === 'id' ? 'Hormat saya,' : 'Sincerely,'}</p>
