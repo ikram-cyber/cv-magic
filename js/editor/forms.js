@@ -131,3 +131,30 @@ if(lCanvas && modal) {
     lCanvas.addEventListener('touchmove', doDraw);
     window.addEventListener('touchend', () => drawing = false);
 }
+
+// MESIN CETAK PDF VIP (html2pdf)
+const btnPdf = document.getElementById('btn-export-pdf');
+if(btnPdf) {
+    btnPdf.addEventListener('click', () => {
+        // Ambil elemen kertas review
+        const element = document.getElementById('preview-container').firstElementChild;
+        
+        // Pengaturan PDF Kualitas Sultan (A4, Tanpa Margin, Resolusi 2x)
+        const opt = {
+            margin:       0,
+            filename:     'Dokumen_Lamaran_Ikram.pdf',
+            image:        { type: 'jpeg', quality: 1.0 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        // Ubah teks tombol jadi loading animasi
+        const originalText = btnPdf.innerHTML;
+        btnPdf.innerHTML = '<i class="fas fa-circle-notch fa-spin text-xl"></i> MEMPROSES...';
+        
+        // Eksekusi Download PDF
+        html2pdf().set(opt).from(element).save().then(() => {
+            btnPdf.innerHTML = originalText; // Kembalikan tombol setelah selesai
+        });
+    });
+}
