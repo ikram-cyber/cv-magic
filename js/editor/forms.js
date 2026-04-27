@@ -87,3 +87,47 @@ export const FormEditor = {
     }
 };
 document.getElementById('btn-add-exp')?.addEventListener('click', () => { const exps = [...State.data.experiences, { title: "", company: "", date: "" }]; State.update('experiences', exps); FormEditor.renderExp(); });
+
+// LOGIKA TANDA TANGAN MIRING PRO
+const modal = document.getElementById('sig-modal');
+const lCanvas = document.getElementById('sig-canvas-landscape');
+if(lCanvas && modal) {
+    const ctx = lCanvas.getContext('2d');
+    let drawing = false;
+    
+    const startDraw = (e) => {
+        drawing = true;
+        ctx.beginPath();
+        const rect = lCanvas.getBoundingClientRect();
+        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        // Penyesuaian koordinat karena rotasi CSS 90deg
+        ctx.moveTo(y * (lCanvas.width/rect.height), (rect.width - x) * (lCanvas.height/rect.width));
+    };
+
+    const doDraw = (e) => {
+        if(!drawing) return;
+        e.preventDefault();
+        const rect = lCanvas.getBoundingClientRect();
+        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        ctx.lineTo(y * (lCanvas.width/rect.height), (rect.width - x) * (lCanvas.height/rect.width));
+        ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.stroke();
+    };
+
+    document.getElementById('btn-draw-sig')?.addEventListener('click', () => {
+        modal.style.display = 'flex';
+        lCanvas.width = 1200; lCanvas.height = 800; // Resolusi Tinggi
+        ctx.clearRect(0,0,lCanvas.width,lCanvas.height);
+    });
+
+    document.getElementById('btn-sig-cancel').onclick = () => modal.style.display = 'none';
+    document.getElementById('btn-sig-save').onclick = () => {
+        State.update('signature', lCanvas.toDataURL());
+        modal.style.display = 'none';
+    };
+
+    lCanvas.addEventListener('touchstart', startDraw);
+    lCanvas.addEventListener('touchmove', doDraw);
+    window.addEventListener('touchend', () => drawing = false);
+}

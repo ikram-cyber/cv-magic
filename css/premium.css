@@ -77,3 +77,31 @@
     box-shadow: 0 5px 20px rgba(239, 68, 68, 0.5) !important;
     border: 2px solid white !important;
 }
+
+/* 4. LANDSCAPE SIGNATURE PAD (MODAL) */
+#sig-modal {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: white; z-index: 9999; display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+}
+#sig-canvas-landscape {
+    background: #f8fafc; border: 2px dashed #cbd5e1;
+    cursor: crosshair; touch-action: none;
+    width: 80vh; height: 70vw; transform: rotate(90deg); /* DIMIRINGKAN */
+}
+.sig-controls {
+    position: absolute; bottom: 20px; left: 0; width: 100%;
+    display: flex; justify-content: center; gap: 20px;
+    transform: rotate(0deg);
+}
+
+/* 5. REVIEW PRO LOOK (Agar Tidak Masa Kecil) */
+#preview-container {
+    perspective: 1000px; padding: 20px !important;
+}
+#preview-container > div {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(1.02); /* Membuat tampilan lebih besar & mantap */
+    transition: transform 0.3s ease;
+    border: 1px solid #e2e8f0;
+}
