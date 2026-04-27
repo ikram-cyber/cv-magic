@@ -43,6 +43,23 @@ export const FormEditor = {
         document.getElementById('btn-ai-writer')?.addEventListener('click', () => { const t = Magic.generateSummary(State.data); State.update('summary', t); document.getElementById('input-summary').value = t; });
         document.getElementById('btn-lang-toggle')?.addEventListener('click', () => State.update('lang', State.data.lang === 'id' ? 'en' : 'id'));
         
+        // TANDA TANGAN DIGITAL (CANVAS)
+        const c = document.getElementById("sig-canvas"); const bDraw = document.getElementById("btn-draw-sig"); const bClr = document.getElementById("btn-clear-sig"); const fInp = document.getElementById("input-signature");
+        if(c && bDraw) {
+            const ctx = c.getContext("2d"); let isD = false;
+            const setC = () => { c.width = c.offsetWidth * 2; c.height = c.offsetHeight * 2; ctx.scale(2, 2); ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 2.5; ctx.lineCap = "round"; ctx.lineJoin = "round"; };
+            bDraw.addEventListener("click", () => {
+                if(c.classList.contains("hidden")) { c.classList.remove("hidden"); bClr.classList.remove("hidden"); fInp.classList.add("hidden"); bDraw.innerHTML = "<i class=\"fas fa-upload mr-1\"></i>Upload Foto TTD"; setTimeout(setC, 50); }
+                else { c.classList.add("hidden"); bClr.classList.add("hidden"); fInp.classList.remove("hidden"); bDraw.innerHTML = "<i class=\"fas fa-pen-nib mr-1\"></i>Gambar TTD Langsung"; }
+            });
+            bClr.addEventListener("click", () => { ctx.clearRect(0,0,c.width,c.height); State.update("signature", null); });
+            const gP = (e) => { const r = c.getBoundingClientRect(); const x = e.touches ? e.touches[0].clientX : e.clientX; const y = e.touches ? e.touches[0].clientY : e.clientY; return { x: x - r.left, y: y - r.top }; };
+            const sD = (e) => { e.preventDefault(); isD = true; const p = gP(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
+            const dD = (e) => { if(!isD) return; e.preventDefault(); const p = gP(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+            const eD = () => { if(!isD) return; isD = false; State.update("signature", c.toDataURL("image/png")); };
+            c.addEventListener("mousedown", sD); c.addEventListener("mousemove", dD); window.addEventListener("mouseup", eD);
+            c.addEventListener("touchstart", sD, {passive: false}); c.addEventListener("touchmove", dD, {passive: false}); window.addEventListener("touchend", eD);
+        }
         this.renderExp();
     },
 
