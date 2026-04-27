@@ -104,3 +104,9 @@ body {
     body { background: white !important; }
     #preview-container > div { box-shadow: none !important; border: none !important; width: 100% !important; page-break-after: always; }
 }
+
+/* PENYUSUTAN HEADER UNTUK RUANG LAMPIRAN */
+#preview-container h1 { font-size: 20pt !important; margin-bottom: 0 !important; }
+#preview-container .tracking-widest { font-size: 9pt !important; margin-bottom: 4px !important; }
+#preview-container .flex.gap-4 { font-size: 8pt !important; margin-top: 2px !important; }
+#preview-container > div { padding-top: 10mm !important; }

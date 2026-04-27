@@ -58,3 +58,10 @@ if (document.readyState === 'loading') {
 } else {
     CVApp.init();
 }
+
+/* AKTIVASI TOMBOL CETAK */
+document.addEventListener('click', function(e) {
+    if(e.target.closest('button') && e.target.closest('button').innerText.toLowerCase().includes('cetak')) {
+        window.print();
+    }
+});
