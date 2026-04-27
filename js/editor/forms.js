@@ -1,53 +1,60 @@
 /**
- * CV-MAGIC MASTER JS v2.1
- * Logic: Single-Instance Download Engine
+ * CV-MAGIC CORE ENGINE v2.0 
+ * Zero Conflict - High Performance
  */
 
-const AppCore = {
+const CVApp = {
     init() {
-        this.setupDownload();
-        console.log("System Ready & Stable.");
+        console.log("System 100% Online.");
+        this.bindEvents();
     },
 
-    setupDownload() {
+    bindEvents() {
         document.addEventListener('click', (e) => {
             const btn = e.target.closest('button');
             if (!btn) return;
 
             const text = btn.innerText.toLowerCase();
+            
+            // Logika Tunggal Cetak/Download
             if (text.includes('cetak') || text.includes('download')) {
-                this.executePDF(btn);
+                this.handleDownload(btn);
             }
         });
     },
 
-    executePDF(btn) {
-        const target = document.getElementById('preview-container');
-        const originalText = btn.innerHTML;
-        
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROSES...';
+    handleDownload(btn) {
+        const element = document.getElementById('preview-container');
+        if (!element) return;
+
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> GENERATING PDF...';
         btn.disabled = true;
 
-        const config = {
+        const opt = {
             margin: 0,
-            filename: 'CV_Ikram_Final.pdf',
+            filename: 'CV_Professional_Ikram.pdf',
             image: { type: 'jpeg', quality: 1.0 },
-            html2canvas: { scale: 2, useCORS: true },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         };
 
-        html2pdf().set(config).from(target).save().then(() => {
-            btn.innerHTML = originalText;
+        html2pdf().set(opt).from(element).save().then(() => {
+            btn.innerHTML = originalHTML;
             btn.disabled = false;
         }).catch(err => {
-            console.error(err);
-            btn.innerHTML = originalText;
+            console.error("PDF Engine Error:", err);
+            btn.innerHTML = originalHTML;
             btn.disabled = false;
-            window.print();
+            window.print(); // Native Fallback
         });
     }
 };
 
-// Start dengan aman
-window.onload = () => AppCore.init();
+// Start Engine
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => CVApp.init());
+} else {
+    CVApp.init();
+}

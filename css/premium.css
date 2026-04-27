@@ -1,89 +1,106 @@
-/* CV-MAGIC ARCHITECTURE v2.1 (FINAL EDITION)
-   Focus: Stability, Header Compression, Mobile Precision
+/* CV-MAGIC MASTER UI v2.0 
+   Architecture: Clean, Professional, High-Density
 */
 
 :root {
     --primary: #0ea5e9;
     --bg-dark: #0f172a;
-    --panel: #1e293b;
+    --panel-dark: #1e293b;
+    --text-slate: #94a3b8;
 }
 
 body {
     background-color: var(--bg-dark);
     color: #f8fafc;
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, sans-serif;
     overflow: hidden;
 }
 
-/* LAYOUT: GRID SISTEM (BIAR GAK ACAK-ACAKAN) */
+/* LAYOUT: SPLIT SCREEN ENGINE */
 .flex.flex-col.md\:flex-row {
     display: grid !important;
-    grid-template-columns: 420px 1fr !important; /* Kunci ukuran sidebar */
+    grid-template-columns: 420px 1fr !important;
     height: 100vh !important;
     width: 100vw !important;
     overflow: hidden !important;
 }
 
-/* PANEL EDITOR (KIRI) */
+/* SIDEBAR EDITOR (KIRI) */
 .md\:w-1\/3, .glass-panel {
     width: 100% !important;
     height: 100vh !important;
-    background: var(--panel) !important;
+    background: var(--panel-dark) !important;
     border-right: 1px solid rgba(255,255,255,0.1) !important;
-    padding: 1.5rem !important;
+    padding: 2rem !important;
     overflow-y: auto !important;
+    box-shadow: none !important;
     border-radius: 0 !important;
 }
 
-/* KANVAS PREVIEW (KANAN) */
+/* MAIN CANVAS (KANAN) */
 .md\:w-2\/3 {
     height: 100vh !important;
     overflow-y: auto !important;
-    padding: 40px !important;
+    background: var(--bg-dark) !important;
+    padding: 50px !important;
     display: flex !important;
     justify-content: center !important;
 }
 
-/* KERTAS A4: HEADER RAMPING (DIPERKECIL) */
+/* KERTAS A4: DESIGN SULTAN & COMPACT */
 #preview-container > div {
     background: white !important;
     color: #1e293b !important;
     width: 210mm !important;
     min-height: 297mm !important;
-    padding: 10mm 15mm !important; /* Padding rapat biar luas */
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4) !important;
+    padding: 12mm 18mm !important; /* Padding rapat agar muat banyak */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+    border-radius: 2px !important;
 }
 
-/* Kompres Nama & Profil */
+/* HEADER COMPACT (Melongo Factor) */
 #preview-container h1 { 
-    font-size: 22pt !important; 
-    font-weight: 900 !important;
+    font-size: 26pt !important; 
+    font-weight: 800 !important;
+    letter-spacing: -1px;
     margin: 0 !important;
+    color: #0f172a !important;
 }
 #preview-container .tracking-widest { 
-    font-size: 9pt !important; 
+    font-size: 10pt !important; 
     color: var(--primary) !important;
-    margin-bottom: 5px !important;
+    font-weight: 700 !important;
+    margin-bottom: 10px !important;
+    text-transform: uppercase;
+}
+.contact-info-row {
+    display: flex;
+    gap: 15px;
+    font-size: 8.5pt !important;
+    border-top: 1.5px solid #e2e8f0;
+    padding-top: 8px;
+    margin-top: 5px;
 }
 
-/* Jarak Lampiran Luas */
-.content-area {
-    margin-top: 15px;
-    font-size: 10pt !important;
-    line-height: 1.5;
-}
-
-/* RESPONSIVE HP (MODE PELAN-PELAN) */
+/* MOBILE RESPONSIVE (Penyelamat HP) */
 @media (max-width: 1024px) {
     .flex.flex-col.md\:flex-row {
         grid-template-columns: 1fr !important;
         overflow-y: auto !important;
     }
-    .md\:w-1\/3, .md\:w-2\/3 { height: auto !important; padding: 10px !important; }
+    .md\:w-1\/3, .md\:w-2\/3 { height: auto !important; padding: 15px !important; }
     #preview-container > div {
         transform: scale(0.48) !important;
         transform-origin: top center !important;
-        margin-bottom: -60% !important;
+        margin-bottom: -55% !important;
     }
+}
+
+/* PRINT ENGINE (Native & High Res) */
+@media print {
+    .md\:w-1\/3, nav, button, aside, .fixed { display: none !important; }
+    .md\:w-2\/3 { padding: 0 !important; margin: 0 !important; overflow: visible !important; width: 100% !important;}
+    body { background: white !important; }
+    #preview-container > div { box-shadow: none !important; border: none !important; width: 100% !important; page-break-after: always; }
 }
