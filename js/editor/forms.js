@@ -37,8 +37,8 @@ export const FormEditor = {
         const modClsA = "bg-cyan-500 text-slate-900 text-[11px] font-black px-5 py-2 rounded-full shadow-lg transition-all tracking-widest";
         const modClsI = "text-slate-400 hover:text-white text-[11px] font-bold px-5 py-2 rounded-full transition-all tracking-widest";
 
-        document.getElementById('btn-mode-cv')?.addEventListener('click', () => { State.update('mode', 'cv'); updateUI('btn-mode-cv', modes, modClsA, modClsI); });
-        document.getElementById('btn-mode-cl')?.addEventListener('click', () => { State.update('mode', 'cover-letter'); updateUI('btn-mode-cl', modes, modClsA, modClsI); });
+        document.getElementById('btn-mode-cv')?.addEventListener('click', () => { document.getElementById('section-editor-cv').classList.remove('hidden'); document.getElementById('section-editor-cl').classList.add('hidden');  State.update('mode', 'cv'); updateUI('btn-mode-cv', modes, modClsA, modClsI); });
+        document.getElementById('btn-mode-cl')?.addEventListener('click', () => { document.getElementById('section-editor-cv').classList.add('hidden'); document.getElementById('section-editor-cl').classList.remove('hidden');  State.update('mode', 'cover-letter'); updateUI('btn-mode-cl', modes, modClsA, modClsI); });
 
         document.getElementById('btn-ai-writer')?.addEventListener('click', () => { const t = Magic.generateSummary(State.data); State.update('summary', t); document.getElementById('input-summary').value = t; });
         document.getElementById('btn-lang-toggle')?.addEventListener('click', () => State.update('lang', State.data.lang === 'id' ? 'en' : 'id'));
