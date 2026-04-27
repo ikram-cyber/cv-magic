@@ -1,52 +1,53 @@
 /**
- * MASTER CORE LOGIC v2.0
- * Pure Functionality - Zero Conflict
+ * CV-MAGIC MASTER JS v2.1
+ * Logic: Single-Instance Download Engine
  */
 
-const initCore = () => {
-    console.log("Core System Active.");
+const AppCore = {
+    init() {
+        this.setupDownload();
+        console.log("System Ready & Stable.");
+    },
 
-    // 1. PDF GENERATOR ENGINE (STABLE)
-    const setupDownloader = () => {
+    setupDownload() {
         document.addEventListener('click', (e) => {
             const btn = e.target.closest('button');
             if (!btn) return;
-            
-            const label = btn.innerText.toLowerCase();
-            if (label.includes('cetak') || label.includes('download')) {
-                e.preventDefault();
-                const element = document.getElementById('preview-container');
-                
-                const originalContent = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> GENERATING...';
-                
-                const opt = {
-                    margin: 0,
-                    filename: `CV_Ikram_Professional.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-                };
 
-                html2pdf().set(opt).from(element).save().then(() => {
-                    btn.innerHTML = originalContent;
-                }).catch(err => {
-                    console.error("PDF Fail:", err);
-                    btn.innerHTML = originalContent;
-                    window.print(); // Native fallback
-                });
+            const text = btn.innerText.toLowerCase();
+            if (text.includes('cetak') || text.includes('download')) {
+                this.executePDF(btn);
             }
         });
-    };
+    },
 
-    // 2. INITIALIZE
-    setupDownloader();
+    executePDF(btn) {
+        const target = document.getElementById('preview-container');
+        const originalText = btn.innerHTML;
+        
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROSES...';
+        btn.disabled = true;
+
+        const config = {
+            margin: 0,
+            filename: 'CV_Ikram_Final.pdf',
+            image: { type: 'jpeg', quality: 1.0 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+
+        html2pdf().set(config).from(target).save().then(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }).catch(err => {
+            console.error(err);
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            window.print();
+        });
+    }
 };
 
-// Run when DOM Ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCore);
-} else {
-    initCore();
-}
+// Start dengan aman
+window.onload = () => AppCore.init();
