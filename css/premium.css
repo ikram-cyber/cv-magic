@@ -105,3 +105,12 @@
     transition: transform 0.3s ease;
     border: 1px solid #e2e8f0;
 }
+
+/* 6. SIGNATURE AUTO-ZOOM (Pembesar Otomatis) */
+img.mix-blend-multiply {
+    height: 120px !important; /* Tinggikan aslinya */
+    transform: scale(1.6); /* Zoom layarnya 1.6x lipat */
+    transform-origin: left center; /* Kunci titik perbesaran di kiri */
+    margin-top: 20px !important;
+    margin-bottom: 30px !important;
+}
