@@ -49,8 +49,8 @@ export const FormEditor = {
             const ctx = c.getContext("2d"); let isD = false;
             const setC = () => { c.width = c.offsetWidth * 2; c.height = c.offsetHeight * 2; ctx.scale(2, 2); ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 2.5; ctx.lineCap = "round"; ctx.lineJoin = "round"; };
             bDraw.addEventListener("click", () => {
-                if(c.classList.contains("hidden")) { c.classList.remove("hidden"); bClr.classList.remove("hidden"); fInp.classList.add("hidden"); bDraw.innerHTML = "<i class=\"fas fa-upload mr-1\"></i>Upload Foto TTD"; setTimeout(setC, 50); }
-                else { c.classList.add("hidden"); bClr.classList.add("hidden"); fInp.classList.remove("hidden"); bDraw.innerHTML = "<i class=\"fas fa-pen-nib mr-1\"></i>Gambar TTD Langsung"; }
+                if(c.classList.contains("hidden")) { c.classList.remove("hidden"); bDraw.classList.add("fixed-mode"); bClr.classList.remove("hidden"); fInp.classList.add("hidden"); bDraw.innerHTML = "<i class=\"fas fa-upload mr-1\"></i>Simpan & Tutup"; setTimeout(setC, 50); }
+                else { c.classList.add("hidden"); bDraw.classList.remove("fixed-mode"); bClr.classList.add("hidden"); fInp.classList.remove("hidden"); bDraw.innerHTML = "<i class=\"fas fa-pen-nib mr-1\"></i>Gambar TTD Langsung"; }
             });
             bClr.addEventListener("click", () => { ctx.clearRect(0,0,c.width,c.height); State.update("signature", null); });
             const gP = (e) => { const r = c.getBoundingClientRect(); const x = e.touches ? e.touches[0].clientX : e.clientX; const y = e.touches ? e.touches[0].clientY : e.clientY; return { x: x - r.left, y: y - r.top }; };
