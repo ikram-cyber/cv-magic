@@ -1,59 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
-
-/* FONTS */
-.font-modern { font-family: 'Inter', sans-serif; }
-.font-classic { font-family: 'Merriweather', serif; }
-.font-mono { font-family: 'Space Mono', monospace; }
-
-/* THEMES */
-.theme-sky { --accent: #0284c7; --accent-light: #38bdf8; }
-.theme-emerald { --accent: #059669; --accent-light: #34d399; }
-.theme-crimson { --accent: #dc2626; --accent-light: #f87171; }
-.theme-royal { --accent: #6d28d9; --accent-light: #a78bfa; }
-
-/* APPLY THEMES */
-.cv-header { border-color: var(--accent) !important; }
-.cv-text-accent { color: var(--accent) !important; }
-.cv-border-accent { border-color: var(--accent) !important; }
-
-/* PAPER & SYSTEM */
-body { font-family: 'Inter', sans-serif; background: #0f172a; }
+body { font-family: sans-serif; }
 .a4-sheet {
     background: white; width: 210mm; min-height: 297mm;
     padding: 12mm 15mm; margin: 0 auto; color: #1e293b;
-    box-shadow: 0 40px 100px -20px rgba(0,0,0,0.8);
 }
-.bg-grid-pattern {
-    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
-}
-
-/* PAGE BREAK (Garis Gunting) */
-.page-divider { border-top: 2px dashed #94a3b8; margin: 20px 0; position: relative; text-align: center; }
-.page-divider::after {
-    content: "✂️ HALAMAN BARU DI SINI ✂️"; background: white; padding: 0 10px;
-    color: #94a3b8; font-size: 8pt; font-weight: bold; position: relative; top: -8px;
-}
-.html2pdf__page-break { height: 0 !important; border: none !important; margin: 0 !important; }
-
-/* CANVAS TTD */
-#sig-canvas { touch-action: none; }
-.rotate-90 { transform: rotate(-90deg) scale(1.5); }
-
-/* MOBILE RESPONSIVE */
+#sig-canvas { touch-action: none; border: 1px solid #334155; }
 @media (max-width: 1024px) {
-    #cv-preview { transform: scale(0.46); transform-origin: top center; margin-bottom: -50%; }
+    #cv-preview { transform: scale(0.45); transform-origin: top center; margin-bottom: -50%; }
 }
-
-/* SCROLLBAR */
-.custom-scroll::-webkit-scrollbar { width: 5px; }
-.custom-scroll::-webkit-scrollbar-thumb { background: var(--accent-light, #0ea5e9); border-radius: 10px; }
-
-/* PRINT RULES */
 @media print {
     aside { display: none !important; }
     main { padding: 0 !important; background: none !important; }
     .a4-sheet { box-shadow: none !important; width: 100%; min-height: auto; }
-    .page-divider { border: none; }
-    .page-divider::after { display: none; }
 }
