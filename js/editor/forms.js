@@ -1,34 +1,23 @@
-/**
- * GOD MODE CV MAGIC - ULTIMATE 100% SCRIPT
- * Dilengkapi: Gemini 1.5 Flash AI, Auto-Save (LocalStorage), Error Handler.
- */
-
 class GodModeCVMagic {
     constructor() {
         this.preview = document.getElementById('cv-preview');
-        this.fields = ['in-name', 'in-title', 'in-email', 'in-phone', 'in-github', 'in-location', 'in-content', 'ai-api-key', 'sel-theme', 'sel-font'];
+        this.fields = ['in-name', 'in-title', 'in-email', 'in-phone', 'in-github', 'in-location', 'in-content', 'sel-theme', 'sel-font'];
         
-        this.loadData(); // Load data lama kalau HP sempet mati
+        this.loadData();
         this.initSync();
         this.initDesign();
         this.initParser();
         this.initMedia();
-        this.initAI();
+        this.initTemplateOffline(); // Pengganti AI
         this.initAutoSave();
         
         document.getElementById('btn-pdf')?.addEventListener('click', () => this.generatePDF());
-        console.log("GOD MODE ENGINE: AKTIF. AI FIXED. AUTO-SAVE ON.");
     }
 
-    // --- AUTO SAVE SYSTEM (Biar Gak Capek Ngetik Ulang) ---
     initAutoSave() {
         this.fields.forEach(id => {
             const el = document.getElementById(id);
-            if(el) {
-                el.addEventListener('input', () => {
-                    localStorage.setItem(`cv_magic_${id}`, el.value);
-                });
-            }
+            if(el) el.addEventListener('input', () => localStorage.setItem(`cv_magic_${id}`, el.value));
         });
     }
 
@@ -38,19 +27,16 @@ class GodModeCVMagic {
             const saved = localStorage.getItem(`cv_magic_${id}`);
             if(el && saved) {
                 el.value = saved;
-                // Pancing event input biar layar kanan ikut update saat web baru dibuka
                 setTimeout(() => el.dispatchEvent(new Event('input')), 50);
             }
         });
     }
 
-    // --- SINKRONISASI TEKS ---
     initSync() {
         const map = {
-            'in-name': ['out-name', 'out-name-sig'],
-            'in-title': ['out-title'], 'in-email': ['out-email'],
-            'in-phone': ['out-phone'], 'in-github': ['out-github'],
-            'in-location': ['out-location']
+            'in-name': ['out-name', 'out-name-sig'], 'in-title': ['out-title'], 
+            'in-email': ['out-email'], 'in-phone': ['out-phone'], 
+            'in-github': ['out-github'], 'in-location': ['out-location']
         };
         for (const [inId, outIds] of Object.entries(map)) {
             const input = document.getElementById(inId);
@@ -63,29 +49,18 @@ class GodModeCVMagic {
         }
     }
 
-    // --- DESAIN & TEMA ---
     initDesign() {
         const selTheme = document.getElementById('sel-theme');
         const selFont = document.getElementById('sel-font');
-        
-        selTheme?.addEventListener('change', (e) => {
-            this.preview.className = `origin-top transition-transform duration-300 ${selFont.value} ${e.target.value}`;
-        });
-        
-        selFont?.addEventListener('change', (e) => {
-            this.preview.className = `origin-top transition-transform duration-300 ${e.target.value} ${selTheme.value}`;
-        });
+        selTheme?.addEventListener('change', (e) => this.preview.className = `origin-top transition-transform duration-300 ${selFont.value} ${e.target.value}`);
+        selFont?.addEventListener('change', (e) => this.preview.className = `origin-top transition-transform duration-300 ${e.target.value} ${selTheme.value}`);
     }
 
-    // --- PARSER (PAGE BREAK) ---
     initParser() {
         const tArea = document.getElementById('in-content');
         const out = document.getElementById('out-content');
-        
         tArea?.addEventListener('input', () => {
-            let txt = tArea.value;
-            txt = txt.replace(/---PAGE_BREAK---/g, '<div class="html2pdf__page-break page-divider"></div>');
-            // Konversi enter ke <br> biar HTML bisa baca
+            let txt = tArea.value.replace(/---PAGE_BREAK---/g, '<div class="html2pdf__page-break page-divider"></div>');
             txt = txt.replace(/\n/g, '<br>');
             out.innerHTML = txt || 'Dokumen kosong...';
         });
@@ -99,7 +74,6 @@ class GodModeCVMagic {
         });
     }
 
-    // --- MEDIA (FOTO & TTD) ---
     initMedia() {
         document.getElementById('in-photo')?.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -107,42 +81,33 @@ class GodModeCVMagic {
                 const reader = new FileReader();
                 reader.onload = (ev) => {
                     const img = document.getElementById('out-photo');
-                    img.src = ev.target.result;
-                    img.classList.remove('hidden');
+                    img.src = ev.target.result; img.classList.remove('hidden');
                     document.getElementById('photo-placeholder')?.classList.add('hidden');
-                    localStorage.setItem('cv_magic_photo', ev.target.result); // Save foto
+                    localStorage.setItem('cv_magic_photo', ev.target.result);
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // Load foto tersimpan
         const savedPhoto = localStorage.getItem('cv_magic_photo');
         if(savedPhoto) {
             const img = document.getElementById('out-photo');
-            if(img) {
-                img.src = savedPhoto;
-                img.classList.remove('hidden');
-                document.getElementById('photo-placeholder')?.classList.add('hidden');
-            }
+            if(img) { img.src = savedPhoto; img.classList.remove('hidden'); document.getElementById('photo-placeholder')?.classList.add('hidden'); }
         }
 
         const canvas = document.getElementById('sig-canvas');
         if(!canvas) return;
         const ctx = canvas.getContext('2d');
         const outSig = document.getElementById('out-sig');
-        let isDrawing = false;
-        let isRotated = false;
+        let isDrawing = false, isRotated = false;
 
         const start = (e) => { isDrawing = true; draw(e); };
         const stop = () => { 
-            isDrawing = false; 
-            ctx.beginPath(); 
+            isDrawing = false; ctx.beginPath(); 
             if(outSig) { 
                 const dataUrl = canvas.toDataURL();
-                outSig.src = dataUrl; 
-                outSig.classList.remove('hidden'); 
-                localStorage.setItem('cv_magic_sig', dataUrl); // Save TTD
+                outSig.src = dataUrl; outSig.classList.remove('hidden'); 
+                localStorage.setItem('cv_magic_sig', dataUrl); 
             }
         };
         const draw = (e) => {
@@ -161,12 +126,8 @@ class GodModeCVMagic {
         canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', draw, {passive:false});
         canvas.addEventListener('touchend', stop);
 
-        // Load TTD tersimpan
         const savedSig = localStorage.getItem('cv_magic_sig');
-        if(savedSig && outSig) {
-            outSig.src = savedSig;
-            outSig.classList.remove('hidden');
-        }
+        if(savedSig && outSig) { outSig.src = savedSig; outSig.classList.remove('hidden'); }
 
         document.getElementById('btn-clear-sig')?.addEventListener('click', () => {
             ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -179,72 +140,34 @@ class GodModeCVMagic {
         });
     }
 
-    // --- AI ENGINE (UPGRADE KE GEMINI 1.5 FLASH) ---
-    initAI() {
-        const btnAI = document.getElementById('btn-ai-generate');
-        const inKey = document.getElementById('ai-api-key');
+    // --- FITUR BARU: TEMPLATE SULTAN OFFLINE (GAK PAKE GOOGLE AI) ---
+    initTemplateOffline() {
+        const btnTemplate = document.getElementById('btn-ai-generate');
         const inPrompt = document.getElementById('ai-prompt');
         const inContent = document.getElementById('in-content');
 
-        btnAI?.addEventListener('click', async () => {
-            const key = inKey.value.trim();
-            const job = inPrompt.value.trim() || "Pekerjaan Umum";
-            const name = document.getElementById('in-name').value || "Pelamar";
+        btnTemplate?.addEventListener('click', () => {
+            const job = inPrompt.value.trim() || "Posisi yang Tersedia";
+            const name = document.getElementById('in-name').value || "[Nama Anda]";
+            const phone = document.getElementById('in-phone').value || "[No HP]";
+            const email = document.getElementById('in-email').value || "[Email]";
+
+            // Template langsung ditanam di sini, 0% gagal.
+            const template = `Hal: Lamaran Pekerjaan - ${job}\n\nYth. HRD Manager / Pimpinan Perusahaan\nDi Tempat\n\nDengan hormat,\n\nBerdasarkan informasi lowongan pekerjaan yang tersedia, saya yang bertanda tangan di bawah ini:\n\nNama: ${name}\nNomor HP: ${phone}\nEmail: ${email}\n\nBermaksud mengajukan diri untuk mengisi posisi sebagai **${job}** di instansi/perusahaan yang Bapak/Ibu pimpin. Saya memiliki latar belakang pendidikan yang relevan, dedikasi tinggi, siap bekerja keras, serta mampu bekerja sama dalam tim maupun individu.\n\nSebagai bahan pertimbangan, bersama surat ini turut saya lampirkan Curriculum Vitae (CV) pada halaman berikutnya.\n\nBesar harapan saya untuk dapat diberikan kesempatan wawancara agar dapat menjelaskan lebih detail mengenai kualifikasi dan potensi yang saya miliki.\n\nAtas perhatian dan waktu yang Bapak/Ibu berikan, saya ucapkan terima kasih.\n\n---PAGE_BREAK---\n\n**CURRICULUM VITAE (CV)**\n\n*Silakan hapus teks ini dan isi detail riwayat pendidikan serta pengalaman kerja Anda di sini...*`;
+
+            const oriBtn = btnTemplate.innerHTML;
+            btnTemplate.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMUAT TEMPLATE...';
             
-            if(!key) {
-                alert("Bos, masukkan API Key Gemini di kotak atas dulu!");
-                return;
-            }
-
-            const oriText = btnAI.innerHTML;
-            btnAI.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MESIN AI BEKERJA...';
-            btnAI.disabled = true;
-
-            // Prompt dipertajam biar hasilnya rapi dan murni teks (tanpa markdown HTML)
-            const prompt = `Tuliskan surat lamaran kerja profesional untuk posisi ${job}. Nama pelamar adalah ${name}. Tulis HANYA isi suratnya saja tanpa ada embel-embel markdown, tanpa tag HTML, gunakan format teks biasa dengan paragraf (enter) yang jelas.`;
-
-            try {
-                // MENGGUNAKAN GEMINI 1.5 FLASH LATEST (DIJAMIN NEMBUS)
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${key}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
+            setTimeout(() => {
+                inContent.value = template;
+                inContent.dispatchEvent(new Event('input')); // Tembak langsung ke kertas
                 
-                const data = await res.json();
-                
-                // Cek jika API error dari Google
-                if(data.error) {
-                    throw new Error(data.error.message);
-                }
-                
-                if(!data.candidates || data.candidates.length === 0) {
-                    throw new Error("AI tidak mengembalikan teks apa pun. Coba lagi.");
-                }
-
-                let result = data.candidates[0].content.parts[0].text;
-                
-                // Bersihkan sampah markdown yang kadang masih diselipin AI
-                result = result.replace(/```html/g, '').replace(/```/g, '').trim();
-                
-                // Taruh di textarea
-                inContent.value = result;
-                
-                // Paksa layar kanan dan localStorage update
-                inContent.dispatchEvent(new Event('input')); 
-                
-                btnAI.innerHTML = '<i class="fas fa-check"></i> SUKSES, BOS!';
-            } catch (err) {
-                console.error("AI Error Response:", err);
-                alert("GAGAL MENGHUBUNGI AI:\n" + err.message + "\n\nCek koneksi atau pastikan API Key benar.");
-                btnAI.innerHTML = '<i class="fas fa-exclamation-triangle"></i> COBA LAGI';
-            } finally {
-                setTimeout(() => { btnAI.innerHTML = oriText; btnAI.disabled = false; }, 3000);
-            }
+                btnTemplate.innerHTML = '<i class="fas fa-check"></i> TEMPLATE BERHASIL DIMUAT!';
+                setTimeout(() => btnTemplate.innerHTML = oriBtn, 2000);
+            }, 500); // Simulasi loading 0.5 detik biar kerasa smooth
         });
     }
 
-    // --- PDF EXPORT ---
     async generatePDF() {
         const btn = document.getElementById('btn-pdf');
         const oriBtn = btn.innerHTML;
@@ -258,7 +181,6 @@ class GodModeCVMagic {
             }).from(this.preview).save();
             btn.innerHTML = '<i class="fas fa-check"></i> PDF SIAP, BOS!';
         } catch (err) {
-            console.error("PDF Error:", err);
             window.print();
         } finally {
             setTimeout(() => { btn.innerHTML = oriBtn; btn.disabled = false; }, 2000);
