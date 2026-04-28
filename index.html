@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV MAGIC PRO - Ultimate Melongo</title>
+    <title>CV MAGIC PRO - Ultimate Final</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -12,89 +12,97 @@
 <body class="bg-[#0f172a] text-white overflow-hidden h-screen w-screen font-sans">
 
     <div class="flex flex-col md:flex-row h-full w-full">
-        <aside class="w-full md:w-[440px] bg-[#1e293b] border-r border-sky-500/30 p-6 flex flex-col h-full z-20 neon-sidebar">
-            <div class="mb-5">
+        <aside class="w-full md:w-[460px] bg-[#1e293b] border-r border-sky-500/30 p-6 flex flex-col h-full z-20 neon-sidebar">
+            <div class="mb-5 border-b border-white/10 pb-4">
                 <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-600 flex items-center gap-2 drop-shadow-[0_0_10px_rgba(14,165,233,0.8)]">
                     <i class="fas fa-bolt text-sky-400"></i> CV MAGIC
                 </h2>
-                <p class="text-[10px] text-sky-200 uppercase tracking-[0.3em] font-bold mt-1">Isi Data dengan Lengkap</p>
+                <p class="text-xs text-sky-200 font-bold mt-2">Sistem Pembuat CV & Surat Lamaran Otomatis</p>
+                <p class="text-[10px] text-slate-400 mt-1">Lengkapi semua form di bawah ini. Tampilan di sebelah kanan akan terupdate secara real-time.</p>
             </div>
 
-            <div class="flex-1 overflow-y-auto space-y-6 pr-2 custom-scroll pb-20">
+            <div class="flex-1 overflow-y-auto space-y-7 pr-2 custom-scroll pb-20">
                 
-                <div class="space-y-3 bg-[#0f172a]/80 p-4 rounded-xl border border-sky-500/20 shadow-[0_0_15px_rgba(0,0,0,0.5)] relative">
-                    <span class="absolute -top-2 left-3 bg-[#1e293b] px-2 text-[9px] font-black text-sky-400 tracking-widest border border-sky-500/20 rounded">1. IDENTITAS DIRI</span>
+                <div class="space-y-3 bg-[#0f172a]/80 p-5 rounded-xl border border-sky-500/20 shadow-[0_0_15px_rgba(0,0,0,0.5)] relative mt-2">
+                    <span class="absolute -top-3 left-4 bg-[#1e293b] px-3 py-1 text-[10px] font-black text-sky-400 tracking-widest border border-sky-500/20 rounded-md">1. IDENTITAS UTAMA</span>
                     
                     <div>
-                        <label class="text-[10px] text-slate-400 font-bold mb-1 block"><i class="fas fa-user mr-1"></i> Nama Lengkap (Sesuai Ijazah)</label>
-                        <input type="text" id="in-name" placeholder="Contoh: Ikram, A.Md.Farm" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm focus:border-sky-500 outline-none transition">
+                        <label class="text-[11px] text-slate-300 font-bold mb-1.5 block"><i class="fas fa-id-card mr-1"></i> Nama Lengkap Sesuai Dokumen Resmi</label>
+                        <input type="text" id="in-name" placeholder="Contoh: Ikram, A.Md.Farm" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2.5 text-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition text-white">
+                        <p class="text-[9px] text-slate-500 mt-1">*Akan dicetak tebal (Bold) dengan ukuran besar di bagian paling atas.</p>
                     </div>
                     <div>
-                        <label class="text-[10px] text-slate-400 font-bold mb-1 block"><i class="fas fa-briefcase mr-1"></i> Profesi / Gelar</label>
-                        <input type="text" id="in-title" placeholder="Contoh: Tenaga Teknis Kefarmasian & Developer" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm focus:border-sky-500 outline-none transition">
+                        <label class="text-[11px] text-slate-300 font-bold mb-1.5 block"><i class="fas fa-user-graduate mr-1"></i> Posisi yang Dilamar / Profesi / Gelar</label>
+                        <input type="text" id="in-title" placeholder="Contoh: Tenaga Teknis Kefarmasian & Developer" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2.5 text-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition text-white">
+                        <p class="text-[9px] text-slate-500 mt-1">*Ditulis tepat di bawah nama Anda sebagai pengenal profesional.</p>
                     </div>
                 </div>
 
-                <div class="bg-[#0f172a]/80 p-4 rounded-xl border border-sky-500/20 relative mt-4">
-                    <span class="absolute -top-2 left-3 bg-[#1e293b] px-2 text-[9px] font-black text-sky-400 tracking-widest border border-sky-500/20 rounded">2. INFO KONTAK</span>
-                    <p class="text-[9px] text-slate-500 mb-2 italic">Pastikan email dan nomor HP aktif untuk dihubungi HRD.</p>
+                <div class="bg-[#0f172a]/80 p-5 rounded-xl border border-sky-500/20 relative mt-4">
+                    <span class="absolute -top-3 left-4 bg-[#1e293b] px-3 py-1 text-[10px] font-black text-sky-400 tracking-widest border border-sky-500/20 rounded-md">2. INFORMASI KONTAK</span>
+                    <p class="text-[10px] text-slate-400 mb-3 border-b border-white/5 pb-2">Pastikan data ini valid karena HRD akan menghubungi Anda melalui kontak di bawah ini.</p>
                     
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="text-[9px] text-slate-400 font-bold mb-1 block">Email Aktif</label>
-                            <input type="text" id="in-email" placeholder="ikram@email.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs outline-none focus:border-sky-500 transition">
+                            <label class="text-[10px] text-slate-300 font-bold mb-1 block">Email Aktif</label>
+                            <input type="text" id="in-email" placeholder="contoh@email.com" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-xs outline-none focus:border-sky-500 transition text-white">
                         </div>
                         <div>
-                            <label class="text-[9px] text-slate-400 font-bold mb-1 block">WhatsApp</label>
-                            <input type="text" id="in-phone" placeholder="+62 812 XXXX" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs outline-none focus:border-sky-500 transition">
+                            <label class="text-[10px] text-slate-300 font-bold mb-1 block">No. WhatsApp</label>
+                            <input type="text" id="in-phone" placeholder="+62 812 XXXX XXXX" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-xs outline-none focus:border-sky-500 transition text-white">
                         </div>
                         <div>
-                            <label class="text-[9px] text-slate-400 font-bold mb-1 block">Link Portofolio/Github</label>
-                            <input type="text" id="in-github" placeholder="github.com/ikram" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs outline-none focus:border-sky-500 transition">
+                            <label class="text-[10px] text-slate-300 font-bold mb-1 block">Portofolio / LinkedIn</label>
+                            <input type="text" id="in-github" placeholder="github.com/ikram-cyber" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-xs outline-none focus:border-sky-500 transition text-white">
                         </div>
                         <div>
-                            <label class="text-[9px] text-slate-400 font-bold mb-1 block">Domisili/Lokasi</label>
-                            <input type="text" id="in-location" placeholder="Bekasi, Indonesia" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs outline-none focus:border-sky-500 transition">
+                            <label class="text-[10px] text-slate-300 font-bold mb-1 block">Domisili / Kota</label>
+                            <input type="text" id="in-location" placeholder="Bekasi, Indonesia" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-xs outline-none focus:border-sky-500 transition text-white">
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-[#0f172a]/80 p-4 rounded-xl border border-sky-500/20 relative mt-4">
-                    <span class="absolute -top-2 left-3 bg-[#1e293b] px-2 text-[9px] font-black text-sky-400 tracking-widest border border-sky-500/20 rounded">3. PAS FOTO RESMI</span>
-                    <p class="text-[9px] text-slate-500 mb-2 italic">Gunakan foto formal rasio 3x4. Latar belakang disarankan biru/merah.</p>
+                <div class="bg-[#0f172a]/80 p-5 rounded-xl border border-sky-500/20 relative mt-4">
+                    <span class="absolute -top-3 left-4 bg-[#1e293b] px-3 py-1 text-[10px] font-black text-sky-400 tracking-widest border border-sky-500/20 rounded-md">3. PAS FOTO RESMI (3x4)</span>
+                    <p class="text-[10px] text-slate-400 mb-3 border-b border-white/5 pb-2">Klik tombol di bawah untuk mengunggah pas foto formal. Disarankan menggunakan latar belakang polos (Merah/Biru).</p>
                     
-                    <input type="file" id="in-photo" accept="image/*" class="w-full text-xs text-slate-400 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-sky-500 file:text-white hover:file:bg-sky-600 cursor-pointer transition">
+                    <input type="file" id="in-photo" accept="image/*" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-[11px] file:font-bold file:bg-sky-500 file:text-white hover:file:bg-sky-600 cursor-pointer transition">
                 </div>
 
-                <div class="bg-[#0f172a]/80 p-4 rounded-xl border border-sky-500/20 relative mt-4">
-                    <span class="absolute -top-2 left-3 bg-[#1e293b] px-2 text-[9px] font-black text-sky-400 tracking-widest border border-sky-500/20 rounded">4. TANDA TANGAN DIGITAL</span>
+                <div class="bg-[#0f172a]/80 p-5 rounded-xl border border-sky-500/20 relative mt-4">
+                    <span class="absolute -top-3 left-4 bg-[#1e293b] px-3 py-1 text-[10px] font-black text-sky-400 tracking-widest border border-sky-500/20 rounded-md">4. TANDA TANGAN DIGITAL</span>
                     
-                    <div class="flex justify-between items-end mb-2 mt-1">
-                        <p class="text-[9px] text-slate-500 italic max-w-[150px]">Goreskan di dalam kotak. Jika miring, klik Putar.</p>
-                        <div class="space-x-1 shrink-0">
-                            <button id="btn-rotate-sig" class="text-[9px] bg-slate-700 text-white px-2 py-1 rounded hover:bg-slate-600 transition" title="Putar 90 derajat jika Anda ttd landscape di HP"><i class="fas fa-sync-alt"></i> Putar</button>
-                            <button id="btn-clear-sig" class="text-[9px] bg-red-500/20 text-red-400 px-2 py-1 rounded hover:bg-red-500 hover:text-white transition" title="Hapus dan ulangi"><i class="fas fa-trash"></i> Ulangi</button>
+                    <div class="flex flex-col gap-2 mb-3 border-b border-white/5 pb-2">
+                        <p class="text-[10px] text-slate-400 leading-relaxed">Goreskan jari atau mouse Anda di atas kanvas putih di bawah ini. Tanda tangan akan otomatis muncul di bagian akhir dokumen.</p>
+                        <div class="flex gap-2">
+                            <button id="btn-rotate-sig" class="flex-1 text-[10px] bg-slate-700 text-white px-3 py-1.5 rounded hover:bg-slate-600 transition font-bold"><i class="fas fa-sync-alt mr-1"></i> Putar (Jika Miring)</button>
+                            <button id="btn-clear-sig" class="flex-1 text-[10px] bg-red-500/20 text-red-400 px-3 py-1.5 rounded hover:bg-red-500 hover:text-white transition font-bold"><i class="fas fa-trash mr-1"></i> Hapus & Ulangi</button>
                         </div>
                     </div>
-                    <canvas id="sig-canvas" width="300" height="120" class="w-full bg-white rounded cursor-crosshair touch-none shadow-inner border border-slate-400"></canvas>
+                    <canvas id="sig-canvas" width="300" height="120" class="w-full bg-white rounded-lg cursor-crosshair touch-none shadow-inner border-2 border-slate-400"></canvas>
                 </div>
 
-                <div class="bg-[#0f172a]/80 p-4 rounded-xl border border-sky-500/20 relative mt-4">
-                    <span class="absolute -top-2 left-3 bg-[#1e293b] px-2 text-[9px] font-black text-sky-400 tracking-widest border border-sky-500/20 rounded">5. ISI DOKUMEN / SURAT</span>
+                <div class="bg-[#0f172a]/80 p-5 rounded-xl border border-sky-500/20 relative mt-4">
+                    <span class="absolute -top-3 left-4 bg-[#1e293b] px-3 py-1 text-[10px] font-black text-sky-400 tracking-widest border border-sky-500/20 rounded-md">5. EDITOR KONTEN (SURAT & CV)</span>
                     
-                    <div class="flex justify-between items-center mb-2 mt-1">
-                        <p class="text-[9px] text-slate-500 italic">Ketik isi surat lamaran atau CV Anda di sini.</p>
-                        <button id="btn-pagebreak" class="text-[9px] bg-sky-500 text-white px-2 py-1.5 rounded hover:bg-sky-600 transition flex items-center gap-1 shadow-md shadow-sky-500/30" title="Klik ini untuk memaksa ganti halaman di titik kursor Anda">
-                            <i class="fas fa-cut"></i> Pisah Halaman
+                    <div class="mb-3 border-b border-white/5 pb-3">
+                        <p class="text-[10px] text-slate-400 mb-2 leading-relaxed">Ketik Surat Lamaran atau Detail CV Anda di kotak teks ini. Jika teks sudah terlalu panjang atau Anda ingin membuat halaman baru khusus untuk CV, gunakan tombol <strong>Pisah Halaman</strong>.</p>
+                        <button id="btn-pagebreak" class="w-full text-xs font-bold bg-sky-500 text-white px-4 py-2.5 rounded hover:bg-sky-600 transition flex items-center justify-center gap-2 shadow-md shadow-sky-500/30">
+                            <i class="fas fa-cut"></i> SUNTIK KODE PISAH HALAMAN
                         </button>
                     </div>
-                    <textarea id="in-content" class="w-full h-56 bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm focus:border-sky-500 outline-none resize-none transition" placeholder="Yang bertanda tangan di bawah ini...&#10;&#10;(Tips: Jika Anda ingin menggabungkan Surat Lamaran dan CV dalam satu file PDF, tulis Surat Lamaran terlebih dahulu, lalu klik tombol 'Pisah Halaman' di atas, baru lanjutkan menulis CV Anda.)"></textarea>
+                    <textarea id="in-content" class="w-full h-72 bg-slate-900 border border-slate-600 rounded-lg p-4 text-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none resize-y transition text-slate-200 leading-relaxed" placeholder="Yth. HRD Manager&#10;Di Tempat&#10;&#10;Dengan hormat,&#10;Melalui surat ini saya bermaksud melamar pekerjaan di perusahaan yang Bapak/Ibu pimpin...&#10;&#10;[Ketik Surat Lamaran Anda di Sini]&#10;&#10;(Klik tombol PISAH HALAMAN di atas jika Anda ingin memisahkan CV di halaman ke-2)&#10;&#10;---PAGE_BREAK---&#10;&#10;CURRICULUM VITAE&#10;Pendidikan Terakhir: ...&#10;Pengalaman Kerja: ..."></textarea>
                 </div>
             </div>
 
-            <div class="mt-4 pt-4 border-t border-sky-500/30 shrink-0">
-                <p class="text-[9px] text-center text-slate-400 mb-2"><i class="fas fa-info-circle"></i> Pastikan preview di kanan sudah rapi sebelum diunduh.</p>
-                <button id="btn-pdf" class="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 py-4 rounded-xl font-black text-white flex justify-center items-center gap-3 transition-all active:scale-95 shadow-[0_0_20px_rgba(14,165,233,0.6)]">
+            <div class="mt-4 pt-5 border-t border-sky-500/30 shrink-0 bg-[#1e293b]">
+                <div class="bg-sky-900/30 p-3 rounded-lg mb-3 border border-sky-500/20">
+                    <p class="text-[10px] text-sky-300 font-bold flex items-start gap-2">
+                        <i class="fas fa-info-circle mt-0.5"></i> 
+                        <span>Cek kembali preview di sebelah kanan. Jika semua data, foto, dan tanda tangan sudah pas, klik tombol cetak di bawah.</span>
+                    </p>
+                </div>
+                <button id="btn-pdf" class="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 py-4 rounded-xl font-black text-white flex justify-center items-center gap-3 transition-all active:scale-95 shadow-[0_0_20px_rgba(14,165,233,0.6)] text-sm tracking-wide">
                     <i class="fas fa-rocket text-xl"></i> CETAK PDF SEKARANG
                 </button>
             </div>
