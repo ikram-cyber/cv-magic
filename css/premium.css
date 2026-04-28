@@ -10,6 +10,11 @@
     position: relative;
 }
 
+/* --- KANVAS TTD --- */
+#sig-canvas {
+    touch-action: none; /* Mencegah layar scroll saat ttd di HP */
+}
+
 /* --- SCALING FOR MOBILE VIEW --- */
 @media (max-width: 1024px) {
     #cv-preview {
@@ -33,5 +38,5 @@
 @media print {
     aside { display: none !important; }
     main { padding: 0 !important; }
-    .a4-sheet { box-shadow: none !important; width: 100%; }
+    .a4-sheet { box-shadow: none !important; width: 100%; min-height: auto; page-break-after: auto; }
 }
