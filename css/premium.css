@@ -1,12 +1,38 @@
-body { font-family: sans-serif; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+
+.font-modern { font-family: 'Inter', sans-serif; }
+.font-classic { font-family: 'Merriweather', serif; }
+.font-mono { font-family: 'Space Mono', monospace; }
+
+.theme-sky { --accent: #0284c7; }
+.theme-emerald { --accent: #059669; }
+.theme-crimson { --accent: #dc2626; }
+.theme-royal { --accent: #6d28d9; }
+
+.cv-header { border-color: var(--accent) !important; }
+.cv-text-accent { color: var(--accent) !important; }
+.cv-border-accent { border-color: var(--accent) !important; }
+
 .a4-sheet {
     background: white; width: 210mm; min-height: 297mm;
     padding: 12mm 15mm; margin: 0 auto; color: #1e293b;
 }
-#sig-canvas { touch-action: none; border: 1px solid #334155; }
-@media (max-width: 1024px) {
-    #cv-preview { transform: scale(0.45); transform-origin: top center; margin-bottom: -50%; }
+
+.bg-grid-pattern {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
 }
+
+.page-divider { border-top: 2px dashed #94a3b8; margin: 20px 0; text-align: center; position: relative; }
+.page-divider::after { content: "POTONG HALAMAN"; background: white; padding: 0 10px; color: #94a3b8; font-size: 8pt; position: relative; top: -8px; }
+
+#sig-canvas { touch-action: none; }
+.rotate-90 { transform: rotate(-90deg) scale(1.5); }
+
+@media (max-width: 1024px) {
+    #cv-preview { transform: scale(0.46); transform-origin: top center; margin-bottom: -50%; }
+}
+
 @media print {
     aside { display: none !important; }
     main { padding: 0 !important; background: none !important; }
