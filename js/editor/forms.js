@@ -1,65 +1,75 @@
 /**
- * CV MAGIC CORE ENGINE v3.0
- * Pure JS - Isolated Logic
+ * CV MAGIC - MODULAR CONTROLLER 100%
+ * No Conflicts - Pure Sync Logic
  */
 
-class CVMagic {
+class CVMaster {
     constructor() {
-        this.input = document.getElementById('main-input');
-        this.output = document.getElementById('output-content');
-        this.btnDownload = document.getElementById('btn-download');
-        this.preview = document.getElementById('capture-area');
-
+        this.fields = {
+            'in-name': 'out-name',
+            'in-title': 'out-title',
+            'in-email': 'out-email',
+            'in-phone': 'out-phone',
+            'in-github': 'out-github',
+            'in-location': 'out-location',
+            'in-content': 'out-content'
+        };
+        
+        this.btn = document.getElementById('btn-pdf');
+        this.preview = document.getElementById('cv-preview');
+        
         this.init();
     }
 
     init() {
-        // Live Sync
-        if (this.input && this.output) {
-            this.input.addEventListener('input', (e) => {
-                this.output.textContent = e.target.value;
-            });
+        // Bind Sinkronisasi Otomatis
+        Object.keys(this.fields).forEach(id => {
+            const input = document.getElementById(id);
+            const output = document.getElementById(this.fields[id]);
+            
+            if (input && output) {
+                input.addEventListener('input', () => {
+                    output.textContent = input.value || output.getAttribute('data-placeholder');
+                });
+            }
+        });
+
+        // Bind Tombol PDF
+        if (this.btn) {
+            this.btn.addEventListener('click', () => this.downloadPDF());
         }
 
-        // PDF Trigger
-        if (this.btnDownload) {
-            this.btnDownload.addEventListener('click', () => this.generatePDF());
-        }
-
-        console.log("System Initialized: 100%");
+        console.log("CV Magic Final Ready.");
     }
 
-    async generatePDF() {
-        const originalText = this.btnDownload.innerHTML;
-        
-        // Status Loading
-        this.btnDownload.disabled = true;
-        this.btnDownload.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> MEMPROSES PDF...';
+    async downloadPDF() {
+        const originalText = this.btn.innerHTML;
+        this.btn.disabled = true;
+        this.btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> GENERATING...';
 
         const opt = {
             margin: 0,
-            filename: 'Dokumen_Ikram_Final.pdf',
+            filename: 'CV_Ikram_Professional.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+            html2canvas: { scale: 2, useCORS: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         };
 
         try {
             await html2pdf().set(opt).from(this.preview).save();
-            this.btnDownload.innerHTML = '<i class="fas fa-check"></i> BERHASIL DIUNDUH';
+            this.btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL!';
         } catch (err) {
             console.error(err);
-            alert("Terjadi kesalahan. Mengalihkan ke mode cetak sistem.");
-            window.print();
+            window.print(); // Fallback
         } finally {
             setTimeout(() => {
-                this.btnDownload.disabled = false;
-                this.btnDownload.innerHTML = originalText;
+                this.btn.disabled = false;
+                this.btn.innerHTML = originalText;
             }, 3000);
         }
     }
 }
 
-// Start Engine
-document.addEventListener('DOMContentLoaded', () => new CVMagic());
+// Jalankan
+document.addEventListener('DOMContentLoaded', () => new CVMaster());

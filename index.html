@@ -3,59 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV Magic - Professional Build</title>
+    <title>CV MAGIC PRO - Studio Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/premium.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="css/premium.css">
 </head>
-<body class="bg-slate-900 text-slate-100 overflow-hidden h-screen w-screen">
-    
+<body class="bg-[#0f172a] text-white overflow-hidden h-screen w-screen font-sans">
+
     <div class="flex flex-col md:flex-row h-full w-full">
-        <aside class="w-full md:w-[420px] bg-slate-800 border-r border-slate-700 p-6 flex flex-col h-full shadow-2xl z-10">
-            <div class="mb-8">
-                <div class="flex items-center gap-3">
-                    <div class="bg-sky-500 p-2 rounded-lg"><i class="fas fa-magic text-white"></i></div>
-                    <h2 class="text-2xl font-black text-white tracking-tight">CV MAGIC</h2>
-                </div>
-                <p class="text-[10px] text-slate-400 mt-2 uppercase tracking-widest font-bold">Studio Desain v2.0</p>
+        <aside class="w-full md:w-[420px] bg-[#1e293b] border-r border-white/10 p-6 flex flex-col h-full shadow-2xl z-20">
+            <div class="mb-6">
+                <h2 class="text-2xl font-black text-sky-400 flex items-center gap-2">
+                    <i class="fas fa-magic"></i> CV MAGIC STUDIO
+                </h2>
+                <p class="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold">Arsitektur Final 100%</p>
             </div>
 
-            <div class="flex-1 space-y-6 overflow-y-auto pr-2 custom-scroll">
+            <div class="flex-1 overflow-y-auto space-y-5 pr-2 custom-scroll">
+                <div class="space-y-3 bg-[#0f172a]/50 p-4 rounded-xl border border-white/5">
+                    <h3 class="text-xs font-bold text-sky-500 uppercase">Informasi Utama</h3>
+                    <input type="text" id="in-name" placeholder="Nama Lengkap" class="w-full bg-[#0f172a] border border-slate-700 rounded-lg p-2 text-sm focus:ring-1 focus:ring-sky-500 outline-none">
+                    <input type="text" id="in-title" placeholder="Profesi (TTK / Developer)" class="w-full bg-[#0f172a] border border-slate-700 rounded-lg p-2 text-sm focus:ring-1 focus:ring-sky-500 outline-none">
+                </div>
+
+                <div class="space-y-3 bg-[#0f172a]/50 p-4 rounded-xl border border-white/5">
+                    <h3 class="text-xs font-bold text-sky-500 uppercase">Kontak & Sosial</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="in-email" placeholder="Email" class="bg-[#0f172a] border border-slate-700 rounded-lg p-2 text-[11px] outline-none">
+                        <input type="text" id="in-phone" placeholder="WhatsApp" class="bg-[#0f172a] border border-slate-700 rounded-lg p-2 text-[11px] outline-none">
+                        <input type="text" id="in-github" placeholder="Github" class="bg-[#0f172a] border border-slate-700 rounded-lg p-2 text-[11px] outline-none">
+                        <input type="text" id="in-location" placeholder="Lokasi" class="bg-[#0f172a] border border-slate-700 rounded-lg p-2 text-[11px] outline-none">
+                    </div>
+                </div>
+
                 <div class="space-y-2">
-                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Isi Dokumen / Lampiran</label>
-                    <textarea id="main-input" class="w-full h-64 bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none transition-all" placeholder="Ketik isi surat atau lampiran di sini..."></textarea>
+                    <h3 class="text-xs font-bold text-sky-500 uppercase">Isi Lampiran / Pengalaman</h3>
+                    <textarea id="in-content" class="w-full h-64 bg-[#0f172a] border border-slate-700 rounded-xl p-4 text-sm focus:ring-1 focus:ring-sky-500 outline-none resize-none" placeholder="Tulis rincian surat atau pengalaman di sini..."></textarea>
                 </div>
             </div>
 
-            <div class="mt-6 pt-6 border-t border-slate-700 space-y-3">
-                <button id="btn-download" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all flex justify-center items-center gap-3 group">
-                    <i class="fas fa-file-pdf group-hover:scale-125 transition-transform"></i>
-                    <span>DOWNLOAD DOKUMEN</span>
+            <div class="mt-6 pt-4 border-t border-white/10">
+                <button id="btn-pdf" class="w-full bg-sky-500 hover:bg-sky-600 py-4 rounded-xl font-black flex justify-center items-center gap-3 transition-all active:scale-95 shadow-lg shadow-sky-500/20">
+                    <i class="fas fa-file-pdf text-xl"></i> DOWNLOAD PDF MASTER
                 </button>
-                <p class="text-[9px] text-center text-slate-500 italic">Otomatis memisahkan halaman jika konten terlalu panjang</p>
             </div>
         </aside>
 
-        <main class="flex-1 bg-slate-950 p-4 md:p-12 flex justify-center overflow-y-auto scroll-smooth">
-            <div id="capture-area" class="origin-top transition-transform">
-                <div class="a4-paper">
-                    <header class="header-minimal">
-                        <div class="flex justify-between items-start">
+        <main class="flex-1 bg-[#0f172a] overflow-y-auto p-4 md:p-12 flex justify-center scroll-smooth">
+            <div id="cv-preview" class="origin-top">
+                <div class="a4-sheet">
+                    <header class="border-b-2 border-slate-900 pb-2 mb-4">
+                        <div class="flex justify-between items-end">
                             <div>
-                                <h1 class="text-4xl font-black tracking-tighter text-slate-900 leading-none">IKRAM</h1>
-                                <p class="text-sky-600 font-extrabold text-xs tracking-[0.3em] mt-2 uppercase">Tenaga Teknis Kefarmasian & Developer</p>
+                                <h1 id="out-name" class="text-4xl font-black text-slate-900 leading-none">IKRAM</h1>
+                                <p id="out-title" class="text-sky-600 font-bold text-xs tracking-[0.3em] uppercase mt-1">Tenaga Teknis Kefarmasian & Developer</p>
                             </div>
-                            <div class="text-right text-[9px] text-slate-500 font-bold space-y-0.5">
-                                <p><i class="fas fa-envelope text-sky-500 mr-1"></i> GITHUB.COM/IKRAM-CYBER</p>
-                                <p><i class="fas fa-map-marker-alt text-sky-500 mr-1"></i> BEKASI, INDONESIA</p>
+                            <div class="text-[9px] text-right text-slate-500 font-bold leading-tight">
+                                <p id="out-email">EMAIL@EXAMPLE.COM</p>
+                                <p id="out-phone">+62 812 XXXX</p>
+                                <p id="out-github">GITHUB.COM/USER</p>
+                                <p id="out-location">BEKASI, INDONESIA</p>
                             </div>
                         </div>
-                        <div class="h-1 bg-slate-900 mt-4"></div>
                     </header>
-                    
-                    <div id="output-content" class="content-style">
-                        Isi surat lamaran atau dokumen lampiran Anda akan muncul di sini secara otomatis...
+
+                    <div id="out-content" class="text-[10.5pt] leading-relaxed text-slate-800 whitespace-pre-wrap">
+                        Isi surat atau lampiran Anda akan terupdate secara real-time di sini...
                     </div>
                 </div>
             </div>
