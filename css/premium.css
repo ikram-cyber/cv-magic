@@ -6,37 +6,62 @@
     padding: 12mm 15mm;
     margin: 0 auto;
     color: #1e293b;
-    box-shadow: 0 40px 100px -20px rgba(0,0,0,0.7);
+    box-shadow: 0 40px 100px -20px rgba(0,0,0,0.8);
+}
+
+/* --- MELONGO EFFECTS --- */
+.neon-sidebar {
+    box-shadow: 5px 0 30px rgba(14, 165, 233, 0.1);
+}
+.bg-grid-pattern {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+/* --- PAGE BREAK ENGINE (Kunci Pemisah CV & Lamaran) --- */
+.page-divider {
+    border-top: 2px dashed #cbd5e1;
+    margin: 20px 0;
     position: relative;
+    text-align: center;
+}
+.page-divider::after {
+    content: "✂️ POTONG HALAMAN DI SINI ✂️";
+    background: white;
+    padding: 0 10px;
+    color: #94a3b8;
+    font-size: 8pt;
+    position: relative;
+    top: -8px;
+}
+/* Saat di-PDF, garis potong hilang dan berubah jadi halaman baru */
+.html2pdf__page-break {
+    height: 0 !important;
+    border: none !important;
 }
 
-/* --- KANVAS TTD --- */
-#sig-canvas {
-    touch-action: none; /* Mencegah layar scroll saat ttd di HP */
-}
+/* --- TTD KANVAS --- */
+#sig-canvas { touch-action: none; }
+.rotate-90 { transform: rotate(-90deg) scale(1.5); }
 
-/* --- SCALING FOR MOBILE VIEW --- */
+/* --- MOBILE RESPONSIVE --- */
 @media (max-width: 1024px) {
     #cv-preview {
         transform: scale(0.46);
         transform-origin: top center;
-        margin-bottom: -60%;
+        margin-bottom: -50%;
     }
-}
-
-/* --- TEXT AREA STYLING --- */
-#out-content {
-    word-wrap: break-word;
-    font-family: 'Inter', sans-serif;
 }
 
 /* --- CUSTOM SCROLLBAR --- */
 .custom-scroll::-webkit-scrollbar { width: 4px; }
-.custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 10px; }
 
 /* --- NATIVE PRINT RULES --- */
 @media print {
     aside { display: none !important; }
-    main { padding: 0 !important; }
-    .a4-sheet { box-shadow: none !important; width: 100%; min-height: auto; page-break-after: auto; }
+    main { padding: 0 !important; background: none !important; }
+    .a4-sheet { box-shadow: none !important; width: 100%; min-height: auto; }
+    .page-divider { border: none; }
+    .page-divider::after { display: none; }
 }
