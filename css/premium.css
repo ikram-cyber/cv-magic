@@ -1,4 +1,8 @@
-/* --- A4 PRINT PRECISION --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+body { font-family: 'Inter', sans-serif; }
+
+/* KERTAS A4 SULTAN */
 .a4-sheet {
     background: white;
     width: 210mm;
@@ -9,16 +13,14 @@
     box-shadow: 0 40px 100px -20px rgba(0,0,0,0.8);
 }
 
-/* --- MELONGO EFFECTS --- */
-.neon-sidebar {
-    box-shadow: 5px 0 30px rgba(14, 165, 233, 0.1);
-}
+/* EFEK MELONGO (NEON & GRID) */
+.neon-sidebar { box-shadow: 5px 0 30px rgba(14, 165, 233, 0.1); }
 .bg-grid-pattern {
-    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
     background-size: 20px 20px;
 }
 
-/* --- PAGE BREAK ENGINE (Kunci Pemisah CV & Lamaran) --- */
+/* LOGIKA PEMISAH HALAMAN (PAGE BREAK) */
 .page-divider {
     border-top: 2px dashed #cbd5e1;
     margin: 20px 0;
@@ -31,20 +33,18 @@
     padding: 0 10px;
     color: #94a3b8;
     font-size: 8pt;
+    font-weight: bold;
     position: relative;
     top: -8px;
 }
-/* Saat di-PDF, garis potong hilang dan berubah jadi halaman baru */
-.html2pdf__page-break {
-    height: 0 !important;
-    border: none !important;
-}
+/* Saat di-PDF, garis putus-putus hilang dan langsung memotong kertas */
+.html2pdf__page-break { height: 0 !important; border: none !important; margin: 0 !important; }
 
-/* --- TTD KANVAS --- */
-#sig-canvas { touch-action: none; }
+/* KANVAS TANDA TANGAN */
+#sig-canvas { touch-action: none; /* Cegah layar narik pas nulis di HP */ }
 .rotate-90 { transform: rotate(-90deg) scale(1.5); }
 
-/* --- MOBILE RESPONSIVE --- */
+/* SKALA HP (Biar Muat di Layar) */
 @media (max-width: 1024px) {
     #cv-preview {
         transform: scale(0.46);
@@ -53,11 +53,12 @@
     }
 }
 
-/* --- CUSTOM SCROLLBAR --- */
-.custom-scroll::-webkit-scrollbar { width: 4px; }
+/* SCROLLBAR PREMIUM */
+.custom-scroll::-webkit-scrollbar { width: 5px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
 .custom-scroll::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 10px; }
 
-/* --- NATIVE PRINT RULES --- */
+/* LOGIKA CETAK ASLI (NATIVE) */
 @media print {
     aside { display: none !important; }
     main { padding: 0 !important; background: none !important; }

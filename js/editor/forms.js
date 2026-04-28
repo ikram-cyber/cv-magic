@@ -1,24 +1,27 @@
 /**
- * CV MAGIC - ULTIMATE MASTER CLASS v5.0
- * Zero Conflict - Full Features Included
+ * CV MAGIC PRO - ULTIMATE LOGIC
+ * Semua fitur aktif, zero conflict.
  */
 
-class CVMaster {
+class CVMagicPro {
     constructor() {
-        this.btn = document.getElementById('btn-pdf');
+        this.btnPdf = document.getElementById('btn-pdf');
         this.preview = document.getElementById('cv-preview');
         
-        this.initSync();
-        this.initPhoto();
-        this.initSignature();
-        this.initToolbar();
+        this.initTextSync();
+        this.initContentParser();
+        this.initPhotoUpload();
+        this.initSignaturePad();
         
-        if(this.btn) this.btn.addEventListener('click', () => this.downloadPDF());
-        console.log("Ultimate Engine Online.");
+        if (this.btnPdf) {
+            this.btnPdf.addEventListener('click', () => this.generatePDF());
+        }
+        
+        console.log("CV Magic Pro: Semua Fitur Siap Tempur!");
     }
 
-    // 1. SINKRONISASI TEKS (Dengan Smart Parser)
-    initSync() {
+    // 1. SINKRONISASI TEKS SINGKAT (Identitas & Kontak)
+    initTextSync() {
         const fields = {
             'in-name': ['out-name', 'out-name-sig'],
             'in-title': ['out-title'],
@@ -28,75 +31,66 @@ class CVMaster {
             'in-location': ['out-location']
         };
 
-        // Sync Data Singkat
         Object.keys(fields).forEach(id => {
             const input = document.getElementById(id);
-            if (input) {
-                input.addEventListener('input', () => {
-                    fields[id].forEach(outId => {
-                        const output = document.getElementById(outId);
-                        if(output) output.textContent = input.value;
-                    });
+            if (!input) return;
+
+            input.addEventListener('input', () => {
+                fields[id].forEach(outId => {
+                    const output = document.getElementById(outId);
+                    if (output) output.textContent = input.value;
                 });
-            }
+            });
         });
-
-        // Sync Area Teks Besar (Parsing Enter & Page Break)
-        const inContent = document.getElementById('in-content');
-        const outContent = document.getElementById('out-content');
-        if (inContent && outContent) {
-            inContent.addEventListener('input', () => {
-                let text = inContent.value;
-                
-                // Ubah tanda unik menjadi elemen pemisah halaman
-                text = text.replace(/---PAGE_BREAK---/g, '<div class="html2pdf__page-break page-divider"></div>');
-                
-                // Ubah enter menjadi br (karena kita pakai innerHTML sekarang)
-                text = text.replace(/\n/g, '<br>');
-                
-                outContent.innerHTML = text || 'Isi dokumen Anda akan muncul di sini...';
-            });
-        }
     }
 
-    // 2. TOOLBAR EDITOR (Pemisah Halaman)
-    initToolbar() {
+    // 2. PARSER KONTEN (Teks Panjang + Page Break)
+    initContentParser() {
+        const inputContent = document.getElementById('in-content');
+        const outputContent = document.getElementById('out-content');
         const btnBreak = document.getElementById('btn-pagebreak');
-        const inContent = document.getElementById('in-content');
 
-        if (btnBreak && inContent) {
+        if (inputContent && outputContent) {
+            // Live update text
+            inputContent.addEventListener('input', () => {
+                let text = inputContent.value;
+                // Ubah tanda unik jadi elemen potong kertas
+                text = text.replace(/---PAGE_BREAK---/g, '<div class="html2pdf__page-break page-divider"></div>');
+                // Ubah enter jadi baris baru di HTML
+                text = text.replace(/\n/g, '<br>');
+                outputContent.innerHTML = text || 'Isi dokumen Anda akan muncul di sini...';
+            });
+        }
+
+        // Tombol Suntik Kode Page Break
+        if (btnBreak && inputContent) {
             btnBreak.addEventListener('click', () => {
-                // Suntikkan kode pemisah di posisi kursor
-                const start = inContent.selectionStart;
-                const end = inContent.selectionEnd;
-                const text = inContent.value;
-                const before = text.substring(0, start);
-                const after  = text.substring(end, text.length);
-                
-                inContent.value = before + "\n---PAGE_BREAK---\n" + after;
-                
-                // Trigger event input agar layar kanan update
-                inContent.dispatchEvent(new Event('input'));
-                inContent.focus();
+                const start = inputContent.selectionStart;
+                const text = inputContent.value;
+                // Selipkan kode di tempat kursor berada
+                inputContent.value = text.substring(0, start) + "\n\n---PAGE_BREAK---\n\n" + text.substring(start);
+                // Paksa trigger update ke layar kanan
+                inputContent.dispatchEvent(new Event('input'));
+                inputContent.focus();
             });
         }
     }
 
-    // 3. LOGIKA FOTO
-    initPhoto() {
+    // 3. UPLOAD FOTO PROFIL
+    initPhotoUpload() {
         const inputPhoto = document.getElementById('in-photo');
         const outPhoto = document.getElementById('out-photo');
         const placeholder = document.getElementById('photo-placeholder');
 
-        if(inputPhoto && outPhoto) {
+        if (inputPhoto && outPhoto) {
             inputPhoto.addEventListener('change', (e) => {
                 const file = e.target.files[0];
-                if(file) {
+                if (file) {
                     const reader = new FileReader();
-                    reader.onload = (e) => {
-                        outPhoto.src = e.target.result;
+                    reader.onload = (event) => {
+                        outPhoto.src = event.target.result;
                         outPhoto.classList.remove('hidden');
-                        placeholder.classList.add('hidden');
+                        if (placeholder) placeholder.classList.add('hidden');
                     };
                     reader.readAsDataURL(file);
                 }
@@ -104,20 +98,31 @@ class CVMaster {
         }
     }
 
-    // 4. LOGIKA TTD (Draw, Hapus, Putar)
-    initSignature() {
+    // 4. KANVAS TANDA TANGAN (Touch, Mouse, Putar, Hapus)
+    initSignaturePad() {
         const canvas = document.getElementById('sig-canvas');
-        const ctx = canvas ? canvas.getContext('2d') : null;
-        const outSig = document.getElementById('out-sig');
+        if (!canvas) return;
         
-        if(!canvas || !ctx) return;
-
+        const ctx = canvas.getContext('2d');
+        const outSig = document.getElementById('out-sig');
         let isDrawing = false;
         let isRotated = false;
 
+        const startDraw = (e) => { isDrawing = true; draw(e); };
+        const stopDraw = () => { 
+            isDrawing = false; 
+            ctx.beginPath(); 
+            // Langsung lempar ke kertas A4 tiap beres gores
+            if (outSig) {
+                outSig.src = canvas.toDataURL();
+                outSig.classList.remove('hidden');
+            }
+        };
+
         const draw = (e) => {
             if (!isDrawing) return;
-            e.preventDefault();
+            e.preventDefault(); // Biar layar HP gak kegeser
+
             const rect = canvas.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -127,66 +132,80 @@ class CVMaster {
 
             ctx.lineWidth = 3;
             ctx.lineCap = 'round';
-            ctx.strokeStyle = '#0f172a';
+            ctx.strokeStyle = '#0f172a'; // Warna tinta gelap
             ctx.lineTo(x, y);
             ctx.stroke();
             ctx.beginPath();
             ctx.moveTo(x, y);
         };
 
-        canvas.addEventListener('mousedown', (e) => { isDrawing = true; draw(e); });
+        // Event Mouse
+        canvas.addEventListener('mousedown', startDraw);
         canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', () => { isDrawing = false; ctx.beginPath(); outSig.src = canvas.toDataURL(); outSig.classList.remove('hidden'); });
-        
-        canvas.addEventListener('touchstart', (e) => { isDrawing = true; draw(e); }, {passive: false});
-        canvas.addEventListener('touchmove', draw, {passive: false});
-        canvas.addEventListener('touchend', () => { isDrawing = false; ctx.beginPath(); outSig.src = canvas.toDataURL(); outSig.classList.remove('hidden'); });
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('mouseout', stopDraw);
+
+        // Event Touch (HP)
+        canvas.addEventListener('touchstart', startDraw, { passive: false });
+        canvas.addEventListener('touchmove', draw, { passive: false });
+        canvas.addEventListener('touchend', stopDraw);
 
         // Tombol Hapus
-        document.getElementById('btn-clear-sig').addEventListener('click', () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            outSig.classList.add('hidden');
-            outSig.src = '';
-        });
+        const btnClear = document.getElementById('btn-clear-sig');
+        if (btnClear) {
+            btnClear.addEventListener('click', () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (outSig) {
+                    outSig.src = '';
+                    outSig.classList.add('hidden');
+                }
+            });
+        }
 
-        // Tombol Putar (Biar Landscape/Portrait aman)
-        document.getElementById('btn-rotate-sig').addEventListener('click', () => {
-            isRotated = !isRotated;
-            if(isRotated) {
-                outSig.classList.add('rotate-90');
-            } else {
-                outSig.classList.remove('rotate-90');
-            }
-        });
+        // Tombol Putar
+        const btnRotate = document.getElementById('btn-rotate-sig');
+        if (btnRotate) {
+            btnRotate.addEventListener('click', () => {
+                isRotated = !isRotated;
+                if (outSig) {
+                    if (isRotated) outSig.classList.add('rotate-90');
+                    else outSig.classList.remove('rotate-90');
+                }
+            });
+        }
     }
 
-    // 5. PDF ENGINE
-    async downloadPDF() {
-        const originalText = this.btn.innerHTML;
-        this.btn.disabled = true;
-        this.btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROSES SULTAN...';
+    // 5. EKSEKUSI CETAK PDF
+    async generatePDF() {
+        const originalBtnHTML = this.btnPdf.innerHTML;
+        this.btnPdf.disabled = true;
+        this.btnPdf.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> MEMPROSES PDF...';
 
         const opt = {
             margin: 0,
-            filename: 'CV_CoverLetter_Ikram.pdf',
+            filename: 'Berkas_Lamaran_Ikram.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            // Ini kunci biar page break jalan!
+            pagebreak: { mode: ['css', 'legacy'] } 
         };
 
         try {
             await html2pdf().set(opt).from(this.preview).save();
-            this.btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL';
-        } catch (err) {
-            console.error(err);
+            this.btnPdf.innerHTML = '<i class="fas fa-check"></i> BERHASIL DIUNDUH';
+        } catch (error) {
+            console.error("PDF Gagal:", error);
+            alert("Sistem PDF utama sibuk. Membuka mode cetak bawaan HP...");
             window.print();
         } finally {
             setTimeout(() => {
-                this.btn.disabled = false;
-                this.btn.innerHTML = originalText;
-            }, 2000);
+                this.btnPdf.disabled = false;
+                this.btnPdf.innerHTML = originalBtnHTML;
+            }, 3000);
         }
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => new CVMaster());
+// Nyalakan Mesin Saat Layar Siap
+document.addEventListener('DOMContentLoaded', () => new CVMagicPro());
