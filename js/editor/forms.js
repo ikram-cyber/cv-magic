@@ -1,67 +1,65 @@
 /**
- * CV-MAGIC CORE ENGINE v2.0 
- * Zero Conflict - High Performance
+ * CV MAGIC CORE ENGINE v3.0
+ * Pure JS - Isolated Logic
  */
 
-const CVApp = {
+class CVMagic {
+    constructor() {
+        this.input = document.getElementById('main-input');
+        this.output = document.getElementById('output-content');
+        this.btnDownload = document.getElementById('btn-download');
+        this.preview = document.getElementById('capture-area');
+
+        this.init();
+    }
+
     init() {
-        console.log("System 100% Online.");
-        this.bindEvents();
-    },
+        // Live Sync
+        if (this.input && this.output) {
+            this.input.addEventListener('input', (e) => {
+                this.output.textContent = e.target.value;
+            });
+        }
 
-    bindEvents() {
-        document.addEventListener('click', (e) => {
-            const btn = e.target.closest('button');
-            if (!btn) return;
+        // PDF Trigger
+        if (this.btnDownload) {
+            this.btnDownload.addEventListener('click', () => this.generatePDF());
+        }
 
-            const text = btn.innerText.toLowerCase();
-            
-            // Logika Tunggal Cetak/Download
-            if (text.includes('cetak') || text.includes('download')) {
-                this.handleDownload(btn);
-            }
-        });
-    },
+        console.log("System Initialized: 100%");
+    }
 
-    handleDownload(btn) {
-        const element = document.getElementById('preview-container');
-        if (!element) return;
-
-        const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> GENERATING PDF...';
-        btn.disabled = true;
+    async generatePDF() {
+        const originalText = this.btnDownload.innerHTML;
+        
+        // Status Loading
+        this.btnDownload.disabled = true;
+        this.btnDownload.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> MEMPROSES PDF...';
 
         const opt = {
             margin: 0,
-            filename: 'CV_Professional_Ikram.pdf',
-            image: { type: 'jpeg', quality: 1.0 },
-            html2canvas: { scale: 2, useCORS: true, logging: false },
+            filename: 'Dokumen_Ikram_Final.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         };
 
-        html2pdf().set(opt).from(element).save().then(() => {
-            btn.innerHTML = originalHTML;
-            btn.disabled = false;
-        }).catch(err => {
-            console.error("PDF Engine Error:", err);
-            btn.innerHTML = originalHTML;
-            btn.disabled = false;
-            window.print(); // Native Fallback
-        });
+        try {
+            await html2pdf().set(opt).from(this.preview).save();
+            this.btnDownload.innerHTML = '<i class="fas fa-check"></i> BERHASIL DIUNDUH';
+        } catch (err) {
+            console.error(err);
+            alert("Terjadi kesalahan. Mengalihkan ke mode cetak sistem.");
+            window.print();
+        } finally {
+            setTimeout(() => {
+                this.btnDownload.disabled = false;
+                this.btnDownload.innerHTML = originalText;
+            }, 3000);
+        }
     }
-};
-
-// Start Engine
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => CVApp.init());
-} else {
-    CVApp.init();
 }
 
-/* AKTIVASI TOMBOL CETAK */
-document.addEventListener('click', function(e) {
-    if(e.target.closest('button') && e.target.closest('button').innerText.toLowerCase().includes('cetak')) {
-        window.print();
-    }
-});
+// Start Engine
+document.addEventListener('DOMContentLoaded', () => new CVMagic());

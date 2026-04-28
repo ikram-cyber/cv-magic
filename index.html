@@ -2,170 +2,66 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DocuMagic | Elite CV Builder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Magic - Professional Build</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/premium.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
-<body class="bg-[#020617] text-white h-screen overflow-hidden flex flex-col md:flex-row font-sans">
-    <div id="bg-particles"></div>
-
-    <div class="md:hidden flex bg-[#0f172a] border-b border-slate-800 z-50 shrink-0">
-        <button id="tab-edit" class="flex-1 py-4 text-cyan-400 font-bold border-b-2 border-cyan-400 text-xs tracking-widest"><i class="fas fa-pen-nib mr-2"></i>EDITOR</button>
-        <button id="tab-view" class="flex-1 py-4 text-slate-500 font-bold border-b-2 border-transparent text-xs tracking-widest"><i class="fas fa-eye mr-2"></i>PREVIEW</button>
-    </div>
-
-    <div id="panel-edit" class="w-full md:w-1/3 h-full bg-slate-900 flex flex-col z-10 transition-all md:block shadow-2xl">
-        <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#0f172a] hidden md:flex shrink-0 relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent"></div>
-            <h1 class="text-xl font-black tracking-widest text-white relative z-10"><i class="fas fa-bolt text-cyan-400 mr-2"></i>DOCU<span class="text-cyan-400">MAGIC</span></h1>
-            <span class="text-[10px] bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded border border-cyan-500/50 font-bold relative z-10">GOD TIER</span>
-        </div>
-        <div class="px-6 py-3 bg-[#0f172a] border-b border-slate-800 hidden md:block shrink-0">
-            <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-1 tracking-wider"><span>KEKUATAN PROFIL</span><span id="cv-score-text" class="text-emerald-400">0%</span></div>
-            <div class="w-full bg-slate-800 rounded-full h-1.5"><div id="cv-score-bar" class="bg-emerald-500 h-1.5 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)] transition-all duration-500" style="width: 0%"></div></div>
-        </div>
-        
-        <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar pb-48 md:pb-6">
-            
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700">
-                    <h3 class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2"><i class="fas fa-camera mr-1"></i> Pas Foto</h3>
-                    <label class="flex items-center justify-center w-full h-10 transition bg-slate-900 border border-slate-600 border-dashed rounded cursor-pointer hover:border-cyan-500 hover:bg-slate-800 text-slate-400 hover:text-cyan-400">
-                        <span class="text-[10px] font-bold tracking-wider">PILIH FOTO</span>
-                        <input type="file" id="input-photo" accept="image/*" class="hidden">
-                    </label>
+<body class="bg-slate-900 text-slate-100 overflow-hidden h-screen w-screen">
+    
+    <div class="flex flex-col md:flex-row h-full w-full">
+        <aside class="w-full md:w-[420px] bg-slate-800 border-r border-slate-700 p-6 flex flex-col h-full shadow-2xl z-10">
+            <div class="mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="bg-sky-500 p-2 rounded-lg"><i class="fas fa-magic text-white"></i></div>
+                    <h2 class="text-2xl font-black text-white tracking-tight">CV MAGIC</h2>
                 </div>
-                <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700">
-                    <h3 class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2"><i class="fas fa-signature mr-1"></i> Tanda Tangan</h3>
-                    <label class="flex items-center justify-center w-full h-10 transition bg-slate-900 border border-slate-600 border-dashed rounded cursor-pointer hover:border-cyan-500 hover:bg-slate-800 text-slate-400 hover:text-cyan-400">
-                        <span class="text-[10px] font-bold tracking-wider">PILIH TTD</span>
-                    <div id="sig-controls" class="flex gap-2 mb-2">
-                        <button id="btn-sig-redo" type="button" class="hidden py-1.5 px-3 bg-slate-700 text-cyan-400 text-[10px] font-bold rounded hover:bg-slate-600 transition-all"><i class="fas fa-redo-alt mr-1"></i>Ulang TTD</button>
-                        <button id="btn-sig-delete" type="button" class="hidden py-1.5 px-3 bg-rose-500/20 text-rose-400 text-[10px] font-bold rounded hover:bg-rose-500/40 transition-all"><i class="fas fa-trash-alt mr-1"></i>Hapus TTD</button>
-                    </div>
-                        <input type="file" id="input-signature" accept="image/*" class="hidden">
-                    <div class="flex gap-2 mt-2">
-                        <button id="btn-draw-sig" type="button" class="flex-1 py-1.5 bg-slate-700 text-cyan-400 text-[10px] font-bold rounded hover:bg-slate-600 transition-all shadow-md"><i class="fas fa-pen-nib mr-1"></i>Gambar TTD Langsung</button>
-                        <button id="btn-clear-sig" type="button" class="hidden py-1.5 px-3 bg-rose-500/20 text-rose-400 text-[10px] font-bold rounded hover:bg-rose-500/40 transition-all"><i class="fas fa-trash"></i></button>
-                    </div>
-                    <canvas id="sig-canvas" class="hidden w-full h-64 bg-slate-100 rounded border-2 border-cyan-500/50 mt-2 cursor-crosshair touch-none shadow-inner"></canvas>
-                    </label>
-                </div>
+                <p class="text-[10px] text-slate-400 mt-2 uppercase tracking-widest font-bold">Studio Desain v2.0</p>
             </div>
 
-            <div>
-                <h3 class="text-[11px] font-bold text-cyan-500 uppercase tracking-widest mb-3 border-b border-slate-700 pb-1">Identitas Inti</h3>
-                <div id="section-editor-cv" class="space-y-4">
-                <input type="text" id="input-name" class="form-input bg-slate-800/50 text-sm font-bold" placeholder="Nama Lengkap">
-                <input type="text" id="input-dob" class="form-input mt-2" placeholder="Tempat, Tanggal Lahir">
-                <input type="text" id="input-role" class="form-input mt-2" placeholder="Posisi / Profesi">
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                    <input type="text" id="input-email" class="form-input" placeholder="Email">
-                    <input type="text" id="input-phone" class="form-input" placeholder="No. HP">
-                    <input type="text" id="input-address" class="form-input col-span-2" placeholder="Alamat Lengkap">
-                    <input type="text" id="input-link" class="form-input col-span-2 border-cyan-500/30" placeholder="Link Portofolio (Biar Muncul QR Code)">
-                </div>
-            </div>
-
-            <div class="bg-slate-800/30 p-4 rounded-lg border border-slate-700/50">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-[11px] font-bold text-cyan-500 uppercase tracking-widest">Profil Profesional</h3>
-                    <button id="btn-ai-writer" class="text-[10px] bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-900 font-bold px-3 py-1 rounded shadow-lg hover:shadow-emerald-500/30 transition-all transform hover:scale-105"><i class="fas fa-magic"></i> AI WRITE</button>
-                </div>
-                <select id="input-career-status" class="form-input mb-2 bg-slate-900/50 text-[11px] font-bold border-cyan-500/30 text-slate-300 cursor-pointer outline-none"><option value="gap">Mode: Jeda Karier / Mandiri</option><option value="fresh">Mode: Fresh Graduate Baru</option><option value="pro">Mode: Profesional (Ada Pengalaman)</option><option value="General Manager">Tujuan: General Manager (Bandara/Logistik)</option><option value="Branch Manager">Tujuan: Branch Manager (Kepala Cabang)</option><option value="Manager Operasional">Tujuan: Manager Operasional (Lapangan)</option></select>
-                <textarea id="input-summary" class="form-input h-24 resize-none bg-slate-900/50" placeholder="Tulis deskripsi atau gunakan AI..."></textarea>
-            </div>
-
-            <div>
-                <div class="flex justify-between items-center mb-3 border-b border-slate-700 pb-1">
-                    <h3 class="text-[11px] font-bold text-cyan-500 uppercase tracking-widest">Pengalaman</h3>
-                    <button id="btn-add-exp" class="text-[10px] font-bold bg-cyan-500/20 border border-cyan-500/50 text-cyan-400 px-3 py-1 rounded hover:bg-cyan-500 hover:text-slate-900 transition-all"><i class="fas fa-plus mr-1"></i> TAMBAH</button>
-                </div>
-                <div id="exp-container" class="space-y-4"></div>
-            </div>
-
-            <div>
-                <h3 class="text-[11px] font-bold text-cyan-500 uppercase tracking-widest mb-3 border-b border-slate-700 pb-1">Detail Ekstra (Kosongkan = Hilang)</h3>
+            <div class="flex-1 space-y-6 overflow-y-auto pr-2 custom-scroll">
                 <div class="space-y-2">
-                    <textarea id="input-certifications" class="form-input h-14 resize-none" placeholder="Lisensi & Sertifikasi (Enter)"></textarea>
-                    <textarea id="input-projects" class="form-input h-14 resize-none" placeholder="Proyek & Portofolio (Enter)"></textarea>
-                    <textarea id="input-skills" class="form-input h-14 resize-none" placeholder="Keahlian Utama (Enter)"></textarea>
-                    <textarea id="input-languages" class="form-input h-14 resize-none" placeholder="Penguasaan Bahasa (Enter)"></textarea>
-                    <textarea id="input-organizations" class="form-input h-14 resize-none" placeholder="Pengalaman Organisasi (Enter)"></textarea>
-                    <textarea id="input-education" class="form-input h-14 resize-none" placeholder="Riwayat Pendidikan (Enter)"></textarea>
-                    <textarea id="input-readiness" class="form-input h-14 resize-none border-emerald-500/40" placeholder="Kesiapan Kerja (Enter)"></textarea>
-                </div>
-                <div id="section-editor-cl" class="hidden space-y-4">
-                    <div class="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mb-3 mt-6 border-b border-cyan-500/30 pb-1"><i class="fas fa-envelope-open-text mr-2"></i>Pengaturan Surat Lamaran</div>
-                    <select id="input-recipient-title" class="form-input mb-2 bg-indigo-500/5 text-[11px] font-bold border-indigo-500/30 text-slate-300 cursor-pointer outline-none"><option value="HRD Manager">Tujuan: HRD Manager (Standar)</option><option value="Kepala Personalia">Tujuan: Kepala Personalia (Pabrik)</option><option value="Human Capital Manager">Tujuan: Human Capital Manager (Modern)</option><option value="Pimpinan">Tujuan: Pimpinan (Umum/Apotek)</option><option value="Bapak/Ibu Pimpinan">Tujuan: Bapak/Ibu Pimpinan (Sangat Sopan)</option><option value="General Manager">Tujuan: General Manager (Bandara/Logistik)</option><option value="Branch Manager">Tujuan: Branch Manager (Kepala Cabang)</option><option value="Manager Operasional">Tujuan: Manager Operasional (Lapangan)</option></select>
-                    <textarea id="input-recipient" class="form-input h-20 resize-none border-indigo-500/50 bg-indigo-500/5" placeholder="Tujuan Surat Lamaran (Cth: Yth. HRD PT Sinar Maju
-                    <input type="text" id="input-custom-date" oninput="window.updateState('custom-date', this.value)" class="form-input mb-2 bg-indigo-500/5 text-[11px] font-bold border-indigo-500/30 text-slate-300 outline-none" placeholder="Tanggal Surat (Kosongkan untuk otomatis)">
-                    <textarea id="input-attachments" oninput="window.updateState('attachments', this.value)" class="form-input h-24 resize-none border-indigo-500/30 bg-indigo-500/5 mt-2 text-xs" placeholder="Daftar Lampiran (Contoh:\n1. Curriculum Vitae\n2. Ijazah\n3. SKCK)"></textarea>
-                </div>
-                    <input type="text" id="input-custom-date" oninput="window.updateState('custom-date', this.value)" class="form-input mb-2 bg-indigo-500/5 text-[11px] font-bold border-indigo-500/30 text-slate-300 outline-none" placeholder="Tanggal Surat (Kosongkan untuk otomatis)">
-                    <textarea id="input-attachments" oninput="window.updateState('attachments', this.value)" class="form-input h-24 resize-none border-indigo-500/30 bg-indigo-500/5 mt-2" placeholder="Daftar Lampiran (Contoh:
-                </div>
-1. Curriculum Vitae
-2. Ijazah & Transkrip
-3. SKCK)"></textarea>
-Jl. Sudirman No.10)"></textarea>
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Isi Dokumen / Lampiran</label>
+                    <textarea id="main-input" class="w-full h-64 bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none transition-all" placeholder="Ketik isi surat atau lampiran di sini..."></textarea>
                 </div>
             </div>
-            
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-inner">
-                <h3 class="text-[11px] font-bold text-white uppercase tracking-widest mb-4 flex items-center"><i class="fas fa-paint-roller text-cyan-400 mr-2"></i> Studio Desain</h3>
-                
-                <div class="flex gap-2 bg-slate-900 p-1 rounded-lg mb-4">
-                    <button id="btn-font-modern" class="flex-1 py-1.5 rounded-md bg-slate-700 text-white font-bold text-[10px] tracking-widest font-sans transition-all">SANS</button>
-                    <button id="btn-font-classic" class="flex-1 py-1.5 rounded-md text-slate-400 hover:text-white font-bold text-[10px] tracking-widest font-serif transition-all">SERIF</button>
-                    <button id="btn-font-tech" class="flex-1 py-1.5 rounded-md text-slate-400 hover:text-white font-bold text-[10px] tracking-widest font-mono transition-all">MONO</button>
-                </div>
 
-                <div class="grid grid-cols-2 gap-2 mb-4">
-                    <button id="btn-theme-classic" class="py-2 border border-cyan-500 bg-cyan-500/10 text-cyan-400 rounded text-[10px] font-bold tracking-widest transition-all"><i class="fas fa-university mr-1"></i> CLASSIC</button>
-                    <button id="btn-theme-pro" class="py-2 border border-slate-600 bg-transparent text-slate-400 rounded text-[10px] font-bold tracking-widest hover:border-slate-400 transition-all"><i class="fas fa-briefcase mr-1"></i> PRO</button>
-                    <button id="btn-theme-ats" class="py-2 border border-slate-600 bg-transparent text-slate-400 rounded text-[10px] font-bold tracking-widest hover:border-slate-400 transition-all"><i class="fas fa-robot mr-1"></i> ATS</button>
-                    <button id="btn-theme-tech" class="py-2 border border-slate-600 bg-transparent text-slate-400 rounded text-[10px] font-bold tracking-widest hover:border-slate-400 transition-all"><i class="fas fa-code mr-1"></i> TECH</button>
-                </div>
+            <div class="mt-6 pt-6 border-t border-slate-700 space-y-3">
+                <button id="btn-download" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all flex justify-center items-center gap-3 group">
+                    <i class="fas fa-file-pdf group-hover:scale-125 transition-transform"></i>
+                    <span>DOWNLOAD DOKUMEN</span>
+                </button>
+                <p class="text-[9px] text-center text-slate-500 italic">Otomatis memisahkan halaman jika konten terlalu panjang</p>
+            </div>
+        </aside>
 
-                <div class="flex items-center justify-between bg-slate-900 px-3 py-2 rounded-lg border border-slate-700">
-                    <span class="text-[10px] font-bold text-slate-400 tracking-widest uppercase">Warna Dokumen</span>
-                    <input type="color" id="input-color" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0">
+        <main class="flex-1 bg-slate-950 p-4 md:p-12 flex justify-center overflow-y-auto scroll-smooth">
+            <div id="capture-area" class="origin-top transition-transform">
+                <div class="a4-paper">
+                    <header class="header-minimal">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h1 class="text-4xl font-black tracking-tighter text-slate-900 leading-none">IKRAM</h1>
+                                <p class="text-sky-600 font-extrabold text-xs tracking-[0.3em] mt-2 uppercase">Tenaga Teknis Kefarmasian & Developer</p>
+                            </div>
+                            <div class="text-right text-[9px] text-slate-500 font-bold space-y-0.5">
+                                <p><i class="fas fa-envelope text-sky-500 mr-1"></i> GITHUB.COM/IKRAM-CYBER</p>
+                                <p><i class="fas fa-map-marker-alt text-sky-500 mr-1"></i> BEKASI, INDONESIA</p>
+                            </div>
+                        </div>
+                        <div class="h-1 bg-slate-900 mt-4"></div>
+                    </header>
+                    
+                    <div id="output-content" class="content-style">
+                        Isi surat lamaran atau dokumen lampiran Anda akan muncul di sini secara otomatis...
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="p-4 border-t border-slate-800 bg-[#0f172a] fixed md:static bottom-0 left-0 w-full z-20 shrink-0">
-            <button id="btn-export" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-black py-3 rounded-lg uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] transform hover:scale-[1.02]"><i class="fas fa-print mr-2"></i> CETAK DOKUMEN</button>
-            <div class="mt-3 text-center text-[9px] text-slate-500 font-bold tracking-widest uppercase">&copy; 2026 DocuMagic &bull; Crafted by Ikram Cyber</div>
-        </div>
+        </main>
     </div>
 
-    <div id="panel-view" class="hidden md:flex w-full md:w-2/3 h-full bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] bg-[#020617] overflow-y-auto justify-center py-6 md:py-20 custom-scrollbar relative pb-48 md:pb-10">
-        
-        <div class="fixed top-6 md:top-8 flex bg-slate-900/80 backdrop-blur-md p-1.5 rounded-full border border-slate-700 shadow-2xl z-50">
-            <button id="btn-mode-cv" class="bg-cyan-500 text-slate-900 text-[11px] font-black px-5 py-2 rounded-full shadow-lg transition-all tracking-widest"><i class="fas fa-file-alt mr-1"></i> CV</button>
-            <button id="btn-mode-cl" class="text-slate-400 hover:text-white text-[11px] font-bold px-5 py-2 rounded-full transition-all tracking-widest"><i class="fas fa-envelope-open-text mr-1"></i> SURAT</button>
-            <div class="w-px bg-slate-700 mx-1 my-1"></div>
-            <button id="btn-lang-toggle" class="text-indigo-400 hover:text-indigo-300 text-[11px] font-bold px-5 py-2 rounded-full transition-all tracking-widest"><i class="fas fa-language mr-1"></i> ID/EN</button>
-        </div>
-
-        <div id="cv-paper" class="a4-paper bg-white shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden transition-all duration-500 transform origin-top"></div>
-    </div>
-
-    <script type="module" src="js/core/app.js"></script>
-    <div id="sig-modal">
-        <canvas id="sig-canvas-landscape"></canvas>
-        <div class="sig-controls">
-            <button id="btn-sig-cancel" class="px-6 py-3 bg-slate-200 text-slate-700 font-bold rounded-full">Batal</button>
-            <button id="btn-sig-save" class="px-8 py-3 bg-cyan-500 text-white font-bold rounded-full shadow-lg">Simpan TTD</button>
-        </div>
-    </div>
-    <button id="btn-export-pdf" class="fixed bottom-6 right-6 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black px-6 py-4 rounded-full shadow-[0_10px_25px_rgba(6,182,212,0.5)] hover:scale-105 transition-all z-50 flex items-center gap-2 border-2 border-cyan-300/30"><i class="fas fa-file-pdf text-xl"></i> CETAK PDF VIP</button>
+    <script src="js/editor/forms.js"></script>
 </body>
 </html>

@@ -1,112 +1,50 @@
-/* CV-MAGIC MASTER UI v2.0 
-   Architecture: Clean, Professional, High-Density
-*/
+/* CV MAGIC MASTER STYLES */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
 
-:root {
-    --primary: #0ea5e9;
-    --bg-dark: #0f172a;
-    --panel-dark: #1e293b;
-    --text-slate: #94a3b8;
-}
+body { font-family: 'Inter', sans-serif; }
 
-body {
-    background-color: var(--bg-dark);
-    color: #f8fafc;
-    margin: 0;
-    font-family: 'Inter', -apple-system, sans-serif;
-    overflow: hidden;
+/* KERTAS A4 STANDAR FISIK */
+.a4-paper {
+    background: white;
+    color: #1e293b;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 10mm 15mm; /* Margin dipersempit agar lega */
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    margin: 0 auto;
+    position: relative;
 }
 
-/* LAYOUT: SPLIT SCREEN ENGINE */
-.flex.flex-col.md\:flex-row {
-    display: grid !important;
-    grid-template-columns: 420px 1fr !important;
-    height: 100vh !important;
-    width: 100vw !important;
-    overflow: hidden !important;
+/* HEADER MINIMALIS (Request: Ramping) */
+.header-minimal {
+    margin-bottom: 15px;
 }
 
-/* SIDEBAR EDITOR (KIRI) */
-.md\:w-1\/3, .glass-panel {
-    width: 100% !important;
-    height: 100vh !important;
-    background: var(--panel-dark) !important;
-    border-right: 1px solid rgba(255,255,255,0.1) !important;
-    padding: 2rem !important;
-    overflow-y: auto !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
+.content-style {
+    font-size: 10.5pt;
+    line-height: 1.6;
+    color: #1e293b;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
-/* MAIN CANVAS (KANAN) */
-.md\:w-2\/3 {
-    height: 100vh !important;
-    overflow-y: auto !important;
-    background: var(--bg-dark) !important;
-    padding: 50px !important;
-    display: flex !important;
-    justify-content: center !important;
-}
-
-/* KERTAS A4: DESIGN SULTAN & COMPACT */
-#preview-container > div {
-    background: white !important;
-    color: #1e293b !important;
-    width: 210mm !important;
-    min-height: 297mm !important;
-    padding: 12mm 18mm !important; /* Padding rapat agar muat banyak */
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
-    border-radius: 2px !important;
-}
-
-/* HEADER COMPACT (Melongo Factor) */
-#preview-container h1 { 
-    font-size: 26pt !important; 
-    font-weight: 800 !important;
-    letter-spacing: -1px;
-    margin: 0 !important;
-    color: #0f172a !important;
-}
-#preview-container .tracking-widest { 
-    font-size: 10pt !important; 
-    color: var(--primary) !important;
-    font-weight: 700 !important;
-    margin-bottom: 10px !important;
-    text-transform: uppercase;
-}
-.contact-info-row {
-    display: flex;
-    gap: 15px;
-    font-size: 8.5pt !important;
-    border-top: 1.5px solid #e2e8f0;
-    padding-top: 8px;
-    margin-top: 5px;
-}
-
-/* MOBILE RESPONSIVE (Penyelamat HP) */
+/* RESPONSIVE SCALE UNTUK HP */
 @media (max-width: 1024px) {
-    .flex.flex-col.md\:flex-row {
-        grid-template-columns: 1fr !important;
-        overflow-y: auto !important;
-    }
-    .md\:w-1\/3, .md\:w-2\/3 { height: auto !important; padding: 15px !important; }
-    #preview-container > div {
-        transform: scale(0.48) !important;
-        transform-origin: top center !important;
-        margin-bottom: -55% !important;
+    #capture-area {
+        transform: scale(0.45);
+        transform-origin: top center;
+        margin-bottom: -60%;
     }
 }
 
-/* PRINT ENGINE (Native & High Res) */
+/* CUSTOM SCROLLBAR SIDEBAR */
+.custom-scroll::-webkit-scrollbar { width: 4px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+/* PRINT RULES */
 @media print {
-    .md\:w-1\/3, nav, button, aside, .fixed { display: none !important; }
-    .md\:w-2\/3 { padding: 0 !important; margin: 0 !important; overflow: visible !important; width: 100% !important;}
-    body { background: white !important; }
-    #preview-container > div { box-shadow: none !important; border: none !important; width: 100% !important; page-break-after: always; }
+    aside { display: none !important; }
+    main { padding: 0 !important; background: white !important; }
+    .a4-paper { box-shadow: none !important; width: 100%; }
 }
-
-/* PENYUSUTAN HEADER UNTUK RUANG LAMPIRAN */
-#preview-container h1 { font-size: 20pt !important; margin-bottom: 0 !important; }
-#preview-container .tracking-widest { font-size: 9pt !important; margin-bottom: 4px !important; }
-#preview-container .flex.gap-4 { font-size: 8pt !important; margin-top: 2px !important; }
-#preview-container > div { padding-top: 10mm !important; }
