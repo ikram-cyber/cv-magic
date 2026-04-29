@@ -53,10 +53,16 @@ class CVBuilder {
             if(btn.disabled) return;
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
+            
+            // REVISI: Nama File Cerdas Ngikutin Nama Pelamar
+            let userName = document.getElementById('cv-name').value || 'Profesional';
+            userName = userName.replace(/[^a-zA-Z0-9]/g, '_'); // Hapus karakter aneh biar aman di HP
+            let fileName = `CV_${userName}.pdf`;
+
             try {
                 await html2pdf().set({
                     margin: 0, 
-                    filename: 'CV_Profesional.pdf', 
+                    filename: fileName, 
                     image: { type: 'jpeg', quality: 1 }, 
                     html2canvas: { scale: 3, useCORS: true }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -94,25 +100,20 @@ class CVBuilder {
     }
 
     bindMedia() {
-        // Logika Upload Foto
         document.getElementById('cv-photo').onchange = (e) => {
             const f = e.target.files[0];
             if(f) { const r = new FileReader(); r.onload = (ev) => { this.data.photo = ev.target.result; localStorage.setItem('cv-photo', ev.target.result); this.renderPaper(); }; r.readAsDataURL(f); }
         };
 
-        // REVISI: Logika Hapus Foto Individual
         const btnRemPhoto = document.getElementById('btn-remove-photo');
         if(btnRemPhoto) {
             btnRemPhoto.onclick = (e) => {
-                e.stopPropagation(); // Biar gak trigger file upload
-                this.data.photo = null;
-                localStorage.removeItem('cv-photo');
-                document.getElementById('cv-photo').value = '';
-                this.renderPaper();
+                e.stopPropagation();
+                this.data.photo = null; localStorage.removeItem('cv-photo');
+                document.getElementById('cv-photo').value = ''; this.renderPaper();
             };
         }
 
-        // Tanda Tangan
         const canvas = document.getElementById('cv-sig-pad');
         if(!canvas) return;
         const ctx = canvas.getContext('2d');
@@ -120,8 +121,7 @@ class CVBuilder {
 
         document.getElementById('btn-open-sig').onclick = () => document.getElementById('modal-sig').classList.remove('hidden');
         document.getElementById('btn-clear-sig').onclick = () => { 
-            ctx.clearRect(0,0,canvas.width,canvas.height); 
-            this.data.sig = null; localStorage.removeItem('cv-sig'); this.renderPaper(); 
+            ctx.clearRect(0,0,canvas.width,canvas.height); this.data.sig = null; localStorage.removeItem('cv-sig'); this.renderPaper(); 
         };
         document.getElementById('btn-save-sig').onclick = () => {
             this.data.sig = canvas.toDataURL(); localStorage.setItem('cv-sig', this.data.sig);
@@ -143,13 +143,14 @@ class CVBuilder {
     renderLists() {
         const elExp = document.getElementById('cv-exp-list'); elExp.innerHTML = '';
         this.data.exps.forEach((x,i) => {
+            // REVISI: w-16 diganti jadi w-28 biar ngetik tahun lebih lega
             elExp.innerHTML += `
             <div class="bg-slate-800 border border-slate-700 p-3 rounded-lg flex items-center gap-3">
                 <div class="flex-1 space-y-2">
                     <input class="w-full bg-transparent text-xs outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Posisi / Jabatan" value="${x.role}" oninput="appCV.upD('exps',${i},'role',this.value)">
                     <div class="flex gap-2">
                         <input class="flex-1 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Perusahaan" value="${x.comp}" oninput="appCV.upD('exps',${i},'comp',this.value)">
-                        <input class="w-16 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Tahun" value="${x.year}" oninput="appCV.upD('exps',${i},'year',this.value)">
+                        <input class="w-28 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Bulan Tahun" value="${x.year}" oninput="appCV.upD('exps',${i},'year',this.value)">
                     </div>
                 </div>
                 <button onclick="appCV.delD('exps', ${i})" class="text-red-500 bg-red-500/10 p-2 rounded hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>
@@ -158,13 +159,14 @@ class CVBuilder {
         
         const elEdu = document.getElementById('cv-edu-list'); elEdu.innerHTML = '';
         this.data.edus.forEach((x,i) => {
+            // REVISI: w-16 diganti jadi w-28
             elEdu.innerHTML += `
             <div class="bg-slate-800 border border-slate-700 p-3 rounded-lg flex items-center gap-3">
                 <div class="flex-1 space-y-2">
                     <input class="w-full bg-transparent text-xs outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Sekolah / Kampus" value="${x.school}" oninput="appCV.upD('edus',${i},'school',this.value)">
                     <div class="flex gap-2">
                         <input class="flex-1 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Jurusan" value="${x.degree}" oninput="appCV.upD('edus',${i},'degree',this.value)">
-                        <input class="w-16 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Tahun" value="${x.year}" oninput="appCV.upD('edus',${i},'year',this.value)">
+                        <input class="w-28 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Bulan Tahun" value="${x.year}" oninput="appCV.upD('edus',${i},'year',this.value)">
                     </div>
                 </div>
                 <button onclick="appCV.delD('edus', ${i})" class="text-red-500 bg-red-500/10 p-2 rounded hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>
@@ -177,10 +179,7 @@ class CVBuilder {
 
     loadLocal() {
         ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile', 'cv-skills', 'cv-cert'].forEach(id => {
-            if(localStorage.getItem(id)) {
-                const el = document.getElementById(id);
-                if(el) el.value = localStorage.getItem(id);
-            }
+            if(localStorage.getItem(id)) { const el = document.getElementById(id); if(el) el.value = localStorage.getItem(id); }
         });
         if(localStorage.getItem('cv-photo')) this.data.photo = localStorage.getItem('cv-photo');
         if(localStorage.getItem('cv-sig')) this.data.sig = localStorage.getItem('cv-sig');
@@ -192,24 +191,20 @@ class CVBuilder {
         const p = document.getElementById('cv-paper');
         if(!p) return;
 
-        // Munculin tombol Hapus Foto cuma kalau ada fotonya
         const btnRemPhoto = document.getElementById('btn-remove-photo');
         if(btnRemPhoto) btnRemPhoto.classList.toggle('hidden', !this.data.photo);
         
         const n = document.getElementById('cv-name').value || "NAMA LENGKAP";
         const t = document.getElementById('cv-title').value || "PROFESI / POSISI";
-        
         const ttl = document.getElementById('cv-ttl').value;
         const port = document.getElementById('cv-port').value;
         const ph = document.getElementById('cv-phone').value;
         const e = document.getElementById('cv-email').value;
         const a = document.getElementById('cv-address').value;
-        
         const prof = document.getElementById('cv-profile').value;
-        
-        // REVISI: SKILLS & CERT JADI TEXTAREA YANG NERIMA NEWLINE (<br>)
         const skillsVal = document.getElementById('cv-skills') ? document.getElementById('cv-skills').value : '';
         const certVal = document.getElementById('cv-cert') ? document.getElementById('cv-cert').value : '';
+
         const skills = skillsVal ? skillsVal.replace(/\n/g, '<br>') : '';
         const cert = certVal ? certVal.replace(/\n/g, '<br>') : '';
 

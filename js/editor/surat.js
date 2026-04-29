@@ -42,23 +42,27 @@ class SuratBuilder {
         if(btnReset) {
             btnReset.onclick = () => {
                 if(confirm("Yakin mau hapus data surat lamaran?")) {
-                    ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-content'].forEach(id => localStorage.removeItem(id));
-                    localStorage.removeItem('surat-sig');
-                    location.reload();
+                    ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content'].forEach(id => localStorage.removeItem(id));
+                    localStorage.removeItem('surat-sig'); location.reload();
                 }
             };
         }
 
-        // BUG FIX: ANTI CRASH & DOUBLE CLICK
         document.getElementById('btn-export-surat').onclick = async () => {
             const btn = document.getElementById('btn-export-surat');
             if(btn.disabled) return;
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
+            
+            // REVISI: Nama File Cerdas Ngikutin Nama Pelamar
+            let userName = document.getElementById('surat-name').value || 'Pelamar';
+            userName = userName.replace(/[^a-zA-Z0-9]/g, '_');
+            let fileName = `Surat_Lamaran_${userName}.pdf`;
+
             try {
                 await html2pdf().set({
                     margin: 0, 
-                    filename: 'Surat_Lamaran.pdf', 
+                    filename: fileName, 
                     image: { type: 'jpeg', quality: 1 }, 
                     html2canvas: { scale: 3, useCORS: true }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -86,7 +90,8 @@ class SuratBuilder {
     }
 
     bindInputs() {
-        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-content'].forEach(id => {
+        // Tambahan surat-address
+        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
         });
@@ -95,8 +100,6 @@ class SuratBuilder {
         if(btnTemp) {
             btnTemp.onclick = () => {
                 const t = document.getElementById('surat-title').value || "[Posisi]";
-                
-                // PINTAR: Tarik data dari CV kalau lu udah ngisi
                 const n = document.getElementById('surat-name').value || localStorage.getItem('cv-name') || "[Nama Lengkap]";
                 const ttl = localStorage.getItem('cv-ttl') || "[Tempat, Tanggal Lahir]";
                 const ph = localStorage.getItem('cv-phone') || "[No WhatsApp]";
@@ -105,13 +108,10 @@ class SuratBuilder {
                 document.getElementById('surat-hal').value = "Lamaran Pekerjaan";
                 document.getElementById('surat-lamp').value = "1 (satu) Berkas";
                 
-                // Template Surat Resmi Indonesia (Pake Biodata Singkat)
                 const c = document.getElementById('surat-content');
                 c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan pekerjaan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di perusahaan yang Bapak/Ibu pimpin. Adapun data diri singkat saya adalah sebagai berikut:\n\nNama : ${n}\nTempat, Tgl Lahir : ${ttl}\nNo. HP/WA : ${ph}\nEmail : ${e}\n\nSaya memiliki kualifikasi yang relevan, berdedikasi tinggi, siap bekerja keras, dan mampu berkolaborasi dengan baik dalam tim. Sebagai bahan pertimbangan, saya melampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
                 
-                ['surat-hal', 'surat-lamp', 'surat-content'].forEach(id => {
-                    document.getElementById(id).dispatchEvent(new Event('input'));
-                });
+                ['surat-hal', 'surat-lamp', 'surat-content'].forEach(id => { document.getElementById(id).dispatchEvent(new Event('input')); });
             };
         }
     }
@@ -123,18 +123,8 @@ class SuratBuilder {
         let draw = false;
 
         document.getElementById('btn-open-sig').onclick = () => document.getElementById('modal-sig').classList.remove('hidden');
-        
-        document.getElementById('btn-clear-sig').onclick = () => { 
-            ctx.clearRect(0,0,canvas.width,canvas.height); 
-            this.data.sig = null; 
-            localStorage.removeItem('surat-sig'); 
-            this.renderPaper(); 
-        };
-
-        document.getElementById('btn-save-sig').onclick = () => {
-            this.data.sig = canvas.toDataURL(); localStorage.setItem('surat-sig', this.data.sig);
-            document.getElementById('modal-sig').classList.add('hidden'); this.renderPaper();
-        };
+        document.getElementById('btn-clear-sig').onclick = () => { ctx.clearRect(0,0,canvas.width,canvas.height); this.data.sig = null; localStorage.removeItem('surat-sig'); this.renderPaper(); };
+        document.getElementById('btn-save-sig').onclick = () => { this.data.sig = canvas.toDataURL(); localStorage.setItem('surat-sig', this.data.sig); document.getElementById('modal-sig').classList.add('hidden'); this.renderPaper(); };
 
         const drawLine = (e) => {
             if(!draw) return; e.preventDefault();
@@ -150,14 +140,13 @@ class SuratBuilder {
     }
 
     loadLocal() {
-        // PINTAR: Tarik Nama dari CV kalau lu pindah ke tab Surat Lamaran
         if(!localStorage.getItem('surat-name') && localStorage.getItem('cv-name')) {
             const el = document.getElementById('surat-name');
             if(el) { el.value = localStorage.getItem('cv-name'); localStorage.setItem('surat-name', el.value); }
         }
 
-        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-content'].forEach(id => {
-            if(localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
+        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content'].forEach(id => {
+            if(localStorage.getItem(id)) { const el = document.getElementById(id); if(el) el.value = localStorage.getItem(id); }
         });
         if(localStorage.getItem('surat-sig')) this.data.sig = localStorage.getItem('surat-sig');
         if(localStorage.getItem('surat-font')) this.data.font = localStorage.getItem('surat-font');
@@ -178,6 +167,7 @@ class SuratBuilder {
         const lamp = document.getElementById('surat-lamp').value;
         const hrd = document.getElementById('surat-hrd').value;
         const comp = document.getElementById('surat-comp').value;
+        const addr = document.getElementById('surat-address') ? document.getElementById('surat-address').value : '';
         
         const contentVal = document.getElementById('surat-content').value;
         const contHtml = contentVal ? contentVal.replace(/\n/g, '<br>') : '';
@@ -188,7 +178,8 @@ class SuratBuilder {
 
         const hrdHtml = hrd ? `<p>${hrd}</p>` : '';
         const compHtml = comp ? `<p class="text-accent">${comp}</p>` : '';
-        const diTempatHtml = (hrd || comp) ? `<p>Di Tempat</p>` : '';
+        const addrHtml = addr ? `<p class="font-normal text-[10pt] mt-1">${addr}</p>` : '';
+        const diTempatHtml = (hrd || comp) && !addr ? `<p>Di Tempat</p>` : '';
 
         p.className = `a4-sheet p-[20mm] ${this.data.font} ${this.data.theme} text-[11pt] leading-relaxed text-slate-900 bg-white`;
         p.innerHTML = `
@@ -199,6 +190,7 @@ class SuratBuilder {
             <div class="font-bold mb-8 leading-tight">
                 ${hrdHtml}
                 ${compHtml}
+                ${addrHtml}
                 ${diTempatHtml}
             </div>
             <div class="text-justify mb-16 space-y-2">${contHtml}</div>
