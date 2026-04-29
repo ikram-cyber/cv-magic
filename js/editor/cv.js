@@ -120,8 +120,9 @@ class CVBuilder {
             };
         }
 
-        document.getElementById('btn-add-exp').onclick = () => { this.data.exps.push({role:'', comp:'', year:''}); this.renderLists(); this.renderPaper(); };
-        document.getElementById('btn-add-edu').onclick = () => { this.data.edus.push({school:'', degree:'', year:''}); this.renderLists(); this.renderPaper(); };
+        // REVISI: Tambah key 'desc' dan 'score'
+        document.getElementById('btn-add-exp').onclick = () => { this.data.exps.push({role:'', comp:'', year:'', desc:''}); this.renderLists(); this.renderPaper(); };
+        document.getElementById('btn-add-edu').onclick = () => { this.data.edus.push({school:'', degree:'', year:'', score:''}); this.renderLists(); this.renderPaper(); };
     }
 
     bindMedia() {
@@ -219,31 +220,35 @@ class CVBuilder {
     renderLists() {
         const elExp = document.getElementById('cv-exp-list'); elExp.innerHTML = '';
         this.data.exps.forEach((x,i) => {
+            // REVISI: Ditambahin Textarea Deskripsi Pekerjaan
             elExp.innerHTML += `
-            <div class="bg-slate-800 border border-slate-700 p-3 rounded-lg flex items-center gap-3">
+            <div class="bg-slate-800 border border-slate-700 p-3 rounded-lg flex items-start gap-3">
                 <div class="flex-1 space-y-2">
-                    <input class="w-full bg-transparent text-xs outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Posisi / Jabatan" value="${x.role}" oninput="appCV.upD('exps',${i},'role',this.value)">
+                    <input class="w-full bg-transparent text-xs outline-none border-b border-slate-700 pb-1 focus:border-sky-500 font-bold" placeholder="Posisi / Jabatan" value="${x.role||''}" oninput="appCV.upD('exps',${i},'role',this.value)">
                     <div class="flex gap-2">
-                        <input class="flex-1 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Perusahaan" value="${x.comp}" oninput="appCV.upD('exps',${i},'comp',this.value)">
-                        <input class="w-28 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Bulan Tahun" value="${x.year}" oninput="appCV.upD('exps',${i},'year',this.value)">
+                        <input class="flex-1 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Perusahaan" value="${x.comp||''}" oninput="appCV.upD('exps',${i},'comp',this.value)">
+                        <input class="w-28 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Bulan Tahun" value="${x.year||''}" oninput="appCV.upD('exps',${i},'year',this.value)">
                     </div>
+                    <textarea class="w-full bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500 resize-none custom-scroll h-10 mt-1" placeholder="Deskripsi Tugas/Pencapaian (Opsional, bisa di-Enter)..." oninput="appCV.upD('exps',${i},'desc',this.value)">${x.desc||''}</textarea>
                 </div>
-                <button onclick="appCV.delD('exps', ${i})" class="text-red-500 bg-red-500/10 p-2 rounded hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                <button onclick="appCV.delD('exps', ${i})" class="text-red-500 bg-red-500/10 p-2 rounded hover:bg-red-500 hover:text-white transition mt-1"><i class="fas fa-trash"></i></button>
             </div>`;
         });
         
         const elEdu = document.getElementById('cv-edu-list'); elEdu.innerHTML = '';
         this.data.edus.forEach((x,i) => {
+            // REVISI: Ditambahin Kotak IPK / Nilai
             elEdu.innerHTML += `
-            <div class="bg-slate-800 border border-slate-700 p-3 rounded-lg flex items-center gap-3">
+            <div class="bg-slate-800 border border-slate-700 p-3 rounded-lg flex items-start gap-3">
                 <div class="flex-1 space-y-2">
-                    <input class="w-full bg-transparent text-xs outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Sekolah / Kampus" value="${x.school}" oninput="appCV.upD('edus',${i},'school',this.value)">
+                    <input class="w-full bg-transparent text-xs outline-none border-b border-slate-700 pb-1 focus:border-sky-500 font-bold" placeholder="Sekolah / Kampus" value="${x.school||''}" oninput="appCV.upD('edus',${i},'school',this.value)">
                     <div class="flex gap-2">
-                        <input class="flex-1 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Jurusan" value="${x.degree}" oninput="appCV.upD('edus',${i},'degree',this.value)">
-                        <input class="w-28 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Bulan Tahun" value="${x.year}" oninput="appCV.upD('edus',${i},'year',this.value)">
+                        <input class="flex-1 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Jurusan" value="${x.degree||''}" oninput="appCV.upD('edus',${i},'degree',this.value)">
+                        <input class="w-16 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="IPK / Nilai" value="${x.score||''}" oninput="appCV.upD('edus',${i},'score',this.value)">
+                        <input class="w-24 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Bulan Tahun" value="${x.year||''}" oninput="appCV.upD('edus',${i},'year',this.value)">
                     </div>
                 </div>
-                <button onclick="appCV.delD('edus', ${i})" class="text-red-500 bg-red-500/10 p-2 rounded hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                <button onclick="appCV.delD('edus', ${i})" class="text-red-500 bg-red-500/10 p-2 rounded hover:bg-red-500 hover:text-white transition mt-1"><i class="fas fa-trash"></i></button>
             </div>`;
         });
     }
@@ -300,9 +305,9 @@ class CVBuilder {
         const skillsHtml = skills ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Keahlian (Skills)</h3><p class="text-[10px] font-bold text-accent leading-relaxed">${skills}</p></div>` : '';
         const certHtml = cert ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Lisensi & Sertifikasi</h3><p class="text-[10px] leading-relaxed text-slate-800">${cert}</p></div>` : '';
 
-        // REVISI SMART FILTER: Ngebuang array kosong biar gak kecetak blok putih
-        const validExps = this.data.exps.filter(x => x.role.trim() !== '' || x.comp.trim() !== '' || x.year.trim() !== '');
-        const validEdus = this.data.edus.filter(x => x.school.trim() !== '' || x.degree.trim() !== '' || x.year.trim() !== '');
+        // Anti-Kosong: Cek semua field, termasuk desc & score
+        const validExps = this.data.exps.filter(x => (x.role && x.role.trim()!=='') || (x.comp && x.comp.trim()!=='') || (x.year && x.year.trim()!=='') || (x.desc && x.desc.trim()!==''));
+        const validEdus = this.data.edus.filter(x => (x.school && x.school.trim()!=='') || (x.degree && x.degree.trim()!=='') || (x.year && x.year.trim()!==''));
 
         p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-800 relative`;
         p.innerHTML = `
@@ -320,8 +325,10 @@ class CVBuilder {
                 ${profHtml}
                 ${skillsHtml}
                 ${certHtml}
-                ${validExps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pengalaman Kerja</h3><div class="space-y-2">${validExps.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
-                ${validEdus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pendidikan</h3><div class="space-y-2">${validEdus.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
+                
+                ${validExps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pengalaman Kerja</h3><div class="space-y-3">${validExps.map(x=>`<div class="break-inside-avoid"><div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>${x.desc ? `<p class="text-[9.5px] mt-1 text-slate-700 leading-relaxed">${x.desc.replace(/\n/g, '<br>')}</p>` : ''}</div>`).join('')}</div></div>` : ''}
+                
+                ${validEdus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pendidikan</h3><div class="space-y-2">${validEdus.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'} ${x.score ? `<span class="text-slate-500 font-normal">| IPK: ${x.score}</span>` : ''}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
             </div>
             
             <div class="mt-12 flex justify-end w-full page-break-inside-avoid">
