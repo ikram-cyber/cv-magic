@@ -77,7 +77,7 @@ class CVBuilder {
     }
 
     bindInputs() {
-        ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile', 'cv-skills'].forEach(id => {
+        ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile', 'cv-skills', 'cv-cert'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
         });
@@ -160,7 +160,7 @@ class CVBuilder {
     delD(list, i) { this.data[list].splice(i, 1); this.renderLists(); this.renderPaper(); }
 
     loadLocal() {
-        ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile','cv-skills'].forEach(id => {
+        ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile', 'cv-skills', 'cv-cert'].forEach(id => {
             if(localStorage.getItem(id)) {
                 const el = document.getElementById(id);
                 if(el) el.value = localStorage.getItem(id);
@@ -176,7 +176,6 @@ class CVBuilder {
         const p = document.getElementById('cv-paper');
         if(!p) return;
         
-        // REVISI: SMART HIDE (Kalau kosong, string jadi kosong, gak pakai placeholder abal-abal)
         const n = document.getElementById('cv-name').value || "NAMA LENGKAP";
         const t = document.getElementById('cv-title').value || "PROFESI / POSISI";
         
@@ -188,16 +187,17 @@ class CVBuilder {
         
         const prof = document.getElementById('cv-profile').value;
         const skills = document.getElementById('cv-skills') ? document.getElementById('cv-skills').value : '';
+        const cert = document.getElementById('cv-cert') ? document.getElementById('cv-cert').value : '';
 
-        // Render HTML cuma kalau datanya ada isinya
         const ttlHtml = ttl ? `<p><i class="fas fa-calendar-alt w-4 text-accent"></i> ${ttl}</p>` : '';
         const phHtml = ph ? `<p><i class="fas fa-phone w-4 text-accent"></i> ${ph}</p>` : '';
         const portHtml = port ? `<p><i class="fas fa-link w-4 text-accent"></i> ${port}</p>` : '';
         const eHtml = e ? `<p><i class="fas fa-envelope w-4 text-accent"></i> ${e}</p>` : '';
         const aHtml = a ? `<p class="col-span-2 mt-1"><i class="fas fa-map-marker-alt w-4 text-accent"></i> ${a}</p>` : '';
 
-        const profHtml = prof ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Profil Profesional</h3><p class="text-[10px] leading-relaxed text-justify">${prof}</p></div>` : '';
-        const skillsHtml = skills ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Keahlian (Skills)</h3><p class="text-[10px] font-bold text-accent">${skills}</p></div>` : '';
+        const profHtml = prof ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Profil Profesional</h3><p class="text-[10px] leading-relaxed text-justify">${prof}</p></div>` : '';
+        const skillsHtml = skills ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Keahlian (Skills)</h3><p class="text-[10px] font-bold text-accent">${skills}</p></div>` : '';
+        const certHtml = cert ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Lisensi & Sertifikasi</h3><p class="text-[10px] leading-relaxed text-slate-800">${cert.replace(/\n/g, '<br>')}</p></div>` : '';
 
         p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-800`;
         p.innerHTML = `
@@ -216,6 +216,7 @@ class CVBuilder {
             <div class="space-y-4">
                 ${profHtml}
                 ${skillsHtml}
+                ${certHtml}
                 ${this.data.exps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pengalaman Kerja</h3><div class="space-y-2">${this.data.exps.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
                 ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
             </div>
