@@ -57,7 +57,6 @@ class CVBuilder {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
             
-            // REVISI: Kasih napas 150ms biar browser sempet muterin ikon loading
             await new Promise(resolve => setTimeout(resolve, 150));
             
             let userName = document.getElementById('cv-name').value || 'Profesional';
@@ -221,6 +220,17 @@ class CVBuilder {
         canvas.ontouchstart = (e) => { draw = true; drawLine(e); }; canvas.ontouchmove = drawLine; canvas.ontouchend = () => { draw = false; ctx.beginPath(); };
     }
 
+    // REVISI: Mesin Penggeser Urutan (Move Up / Down)
+    moveD(list, i, dir) {
+        const arr = this.data[list];
+        if (i + dir < 0 || i + dir >= arr.length) return;
+        const temp = arr[i];
+        arr[i] = arr[i + dir];
+        arr[i + dir] = temp;
+        this.renderLists();
+        this.renderPaper();
+    }
+
     renderLists() {
         const elExp = document.getElementById('cv-exp-list'); elExp.innerHTML = '';
         this.data.exps.forEach((x,i) => {
@@ -234,7 +244,11 @@ class CVBuilder {
                     </div>
                     <textarea class="w-full bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500 resize-none custom-scroll h-10 mt-1" placeholder="Deskripsi Tugas/Pencapaian (Opsional, bisa di-Enter)..." oninput="appCV.upD('exps',${i},'desc',this.value)">${x.desc||''}</textarea>
                 </div>
-                <button onclick="appCV.delD('exps', ${i})" class="text-red-500 bg-red-500/10 p-2 rounded hover:bg-red-500 hover:text-white transition mt-1"><i class="fas fa-trash"></i></button>
+                <div class="flex flex-col gap-1 mt-1 items-center">
+                    ${i > 0 ? `<button onclick="appCV.moveD('exps', ${i}, -1)" class="text-slate-400 hover:text-sky-400 bg-slate-700 p-1 px-2 rounded transition"><i class="fas fa-chevron-up text-[10px]"></i></button>` : ''}
+                    <button onclick="appCV.delD('exps', ${i})" class="text-red-500 bg-red-500/10 p-1.5 px-2 rounded hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash text-xs"></i></button>
+                    ${i < this.data.exps.length - 1 ? `<button onclick="appCV.moveD('exps', ${i}, 1)" class="text-slate-400 hover:text-sky-400 bg-slate-700 p-1 px-2 rounded transition"><i class="fas fa-chevron-down text-[10px]"></i></button>` : ''}
+                </div>
             </div>`;
         });
         
@@ -250,7 +264,11 @@ class CVBuilder {
                         <input class="w-24 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Bulan Tahun" value="${x.year||''}" oninput="appCV.upD('edus',${i},'year',this.value)">
                     </div>
                 </div>
-                <button onclick="appCV.delD('edus', ${i})" class="text-red-500 bg-red-500/10 p-2 rounded hover:bg-red-500 hover:text-white transition mt-1"><i class="fas fa-trash"></i></button>
+                <div class="flex flex-col gap-1 mt-1 items-center">
+                    ${i > 0 ? `<button onclick="appCV.moveD('edus', ${i}, -1)" class="text-slate-400 hover:text-sky-400 bg-slate-700 p-1 px-2 rounded transition"><i class="fas fa-chevron-up text-[10px]"></i></button>` : ''}
+                    <button onclick="appCV.delD('edus', ${i})" class="text-red-500 bg-red-500/10 p-1.5 px-2 rounded hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash text-xs"></i></button>
+                    ${i < this.data.edus.length - 1 ? `<button onclick="appCV.moveD('edus', ${i}, 1)" class="text-slate-400 hover:text-sky-400 bg-slate-700 p-1 px-2 rounded transition"><i class="fas fa-chevron-down text-[10px]"></i></button>` : ''}
+                </div>
             </div>`;
         });
 
@@ -268,7 +286,11 @@ class CVBuilder {
                         </div>
                         <textarea class="w-full bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500 resize-none custom-scroll h-10 mt-1" placeholder="Deskripsi/Pencapaian Proyek (Opsional)..." oninput="appCV.upD('prjs',${i},'desc',this.value)">${x.desc||''}</textarea>
                     </div>
-                    <button onclick="appCV.delD('prjs', ${i})" class="text-red-500 bg-red-500/10 p-2 rounded hover:bg-red-500 hover:text-white transition mt-1"><i class="fas fa-trash"></i></button>
+                    <div class="flex flex-col gap-1 mt-1 items-center">
+                        ${i > 0 ? `<button onclick="appCV.moveD('prjs', ${i}, -1)" class="text-slate-400 hover:text-sky-400 bg-slate-700 p-1 px-2 rounded transition"><i class="fas fa-chevron-up text-[10px]"></i></button>` : ''}
+                        <button onclick="appCV.delD('prjs', ${i})" class="text-red-500 bg-red-500/10 p-1.5 px-2 rounded hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash text-xs"></i></button>
+                        ${i < this.data.prjs.length - 1 ? `<button onclick="appCV.moveD('prjs', ${i}, 1)" class="text-slate-400 hover:text-sky-400 bg-slate-700 p-1 px-2 rounded transition"><i class="fas fa-chevron-down text-[10px]"></i></button>` : ''}
+                    </div>
                 </div>`;
             });
         }
