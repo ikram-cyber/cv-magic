@@ -26,3 +26,13 @@ body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f1f5f9; }
 @media (max-width: 768px) {
     #capture-area { transform: scale(0.42); transform-origin: top center; margin-bottom: -50%; }
 }
+
+/* ANTI-SCALING BUG: Paksa ukuran 100% saat diexport jadi PDF */
+@media print {
+    #capture-area { transform: none !important; margin: 0 !important; width: 100% !important; }
+}
+.html2canvas-container #capture-area {
+    transform: none !important;
+    margin: 0 !important;
+    width: 210mm !important;
+}

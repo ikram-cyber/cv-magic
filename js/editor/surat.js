@@ -201,7 +201,7 @@ class SuratBuilder {
                 ${diTempatHtml}
             </div>
             <div class="text-justify mb-16 space-y-2">${contHtml}</div>
-            <div class="w-48 ml-auto text-center page-break-inside-avoid">
+            <div class="w-48 ml-auto text-center break-inside-avoid">
                 <p class="mb-2">Hormat saya,</p>
                 <div class="h-16 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
                 <p class="font-bold border-t-[1.5px] border-accent mt-1 pt-1 uppercase">${n}</p>

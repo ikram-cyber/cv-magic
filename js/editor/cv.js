@@ -248,7 +248,7 @@ class CVBuilder {
                 ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
             </div>
             
-            <div class="mt-12 flex justify-end w-full page-break-inside-avoid">
+            <div class="mt-12 flex justify-end w-full break-inside-avoid">
                 <div class="text-center w-32">
                     <p class="text-[10px] font-bold mb-1">Hormat Saya,</p>
                     <div class="h-14 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
