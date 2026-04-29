@@ -26,25 +26,25 @@
             
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-black text-white">EDITOR CV</h2>
-                <button id="btn-reset" class="text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded border border-red-500/20"><i class="fas fa-trash"></i> RESET DATA</button>
+                <button id="btn-reset" class="text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded border border-red-500/20 hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i> RESET DATA</button>
             </div>
 
             <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-4">
                 <div>
                     <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Warna Aksen</h3>
                     <div class="grid grid-cols-4 gap-2">
-                        <button class="cv-theme w-full h-8 rounded bg-sky-600 border-2 border-transparent" data-theme="theme-sky"></button>
-                        <button class="cv-theme w-full h-8 rounded bg-emerald-600 border-2 border-transparent" data-theme="theme-emerald"></button>
-                        <button class="cv-theme w-full h-8 rounded bg-red-600 border-2 border-transparent" data-theme="theme-crimson"></button>
-                        <button class="cv-theme w-full h-8 rounded bg-purple-600 border-2 border-transparent" data-theme="theme-royal"></button>
+                        <button class="cv-theme w-full h-8 rounded bg-sky-600 border-2 border-transparent transition-all" data-theme="theme-sky"></button>
+                        <button class="cv-theme w-full h-8 rounded bg-emerald-600 border-2 border-transparent transition-all" data-theme="theme-emerald"></button>
+                        <button class="cv-theme w-full h-8 rounded bg-red-600 border-2 border-transparent transition-all" data-theme="theme-crimson"></button>
+                        <button class="cv-theme w-full h-8 rounded bg-purple-600 border-2 border-transparent transition-all" data-theme="theme-royal"></button>
                     </div>
                 </div>
                 <div>
                     <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Gaya Tulisan</h3>
                     <div class="grid grid-cols-3 gap-2">
-                        <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent" data-font="font-sans">SANS</button>
-                        <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent" data-font="font-serif">SERIF</button>
-                        <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent" data-font="font-mono">MONO</button>
+                        <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent transition-all" data-font="font-sans">SANS</button>
+                        <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent transition-all" data-font="font-serif">SERIF</button>
+                        <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent transition-all" data-font="font-mono">MONO</button>
                     </div>
                 </div>
             </div>
@@ -53,9 +53,9 @@
                 <div class="flex-1 bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center relative overflow-hidden group">
                     <i class="fas fa-camera text-sky-500 mb-1"></i><p class="text-[10px] font-bold">PAS FOTO</p>
                     <input type="file" id="cv-photo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10">
-                    <button id="btn-remove-photo" class="absolute top-1 right-1 bg-red-600 text-white text-[10px] w-6 h-6 rounded-full z-20 hidden shadow-lg hover:bg-red-500" title="Hapus Foto"><i class="fas fa-times"></i></button>
+                    <button id="btn-remove-photo" class="absolute top-1 right-1 bg-red-600 text-white text-[10px] w-6 h-6 rounded-full z-20 hidden shadow-lg hover:bg-red-500 flex items-center justify-center" title="Hapus Foto"><i class="fas fa-times"></i></button>
                 </div>
-                <div class="flex-1 bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center cursor-pointer" id="btn-open-sig">
+                <div class="flex-1 bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center cursor-pointer hover:bg-slate-700 transition" id="btn-open-sig">
                     <i class="fas fa-pen-nib text-sky-500 mb-1"></i><p class="text-[10px] font-bold">TANDA TANGAN</p>
                 </div>
             </div>
@@ -63,7 +63,7 @@
             <div class="space-y-3">
                 <h3 class="text-sky-500 text-[10px] font-black uppercase">Data Diri</h3>
                 <input type="text" id="cv-name" placeholder="Nama Lengkap" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
-                <input type="text" id="cv-title" placeholder="Profesi / Gelar" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
+                <input type="text" id="cv-title" placeholder="Profesi / Gelar (ex: Programmer)" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
                 <div class="grid grid-cols-2 gap-2">
                     <input type="text" id="cv-ttl" placeholder="Tempat, Tgl Lahir" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
                     <input type="text" id="cv-port" placeholder="Link Portofolio" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
@@ -71,7 +71,21 @@
                     <input type="text" id="cv-email" placeholder="Email" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
                 </div>
                 <input type="text" id="cv-address" placeholder="Alamat Domisili" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
-                <textarea id="cv-profile" placeholder="Profil Profesional Singkat..." class="w-full h-24 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll"></textarea>
+                
+                <div class="pt-3 border-t border-slate-700 mt-2">
+                    <div class="flex justify-between items-end mb-2">
+                        <h3 class="text-sky-500 text-[10px] font-black uppercase">Profil Profesional</h3>
+                    </div>
+                    <div class="flex gap-2 mb-2">
+                        <select id="cv-sel-exp" class="flex-1 bg-slate-800 p-2 rounded-lg text-[10px] border border-slate-700 outline-none focus:border-sky-500 text-slate-200">
+                            <option value="fresh">Baru Lulus (Fresh Grad)</option>
+                            <option value="zero">Belum Pengalaman</option>
+                            <option value="pro">Berpengalaman</option>
+                        </select>
+                        <button id="btn-gen-profile" class="bg-emerald-600 hover:bg-emerald-500 px-3 rounded-lg font-bold text-white text-[10px] transition"><i class="fas fa-magic"></i> BUAT PROFIL</button>
+                    </div>
+                    <textarea id="cv-profile" placeholder="Ketik manual profil singkat Anda atau gunakan tombol otomatis di atas..." class="w-full h-24 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll"></textarea>
+                </div>
                 
                 <div class="pt-3 border-t border-slate-700">
                     <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Keahlian / Skills</h3>
@@ -86,7 +100,7 @@
             <div class="space-y-3">
                 <div class="flex justify-between items-center">
                     <h3 class="text-sky-500 text-[10px] font-black uppercase">Pengalaman</h3>
-                    <button id="btn-add-exp" class="text-[10px] bg-slate-700 px-3 py-1 rounded font-bold">+ TAMBAH</button>
+                    <button id="btn-add-exp" class="text-[10px] bg-sky-500/20 text-sky-400 px-3 py-1 rounded font-bold border border-sky-500/30 hover:bg-sky-500 hover:text-white transition">+ TAMBAH</button>
                 </div>
                 <div id="cv-exp-list" class="space-y-2"></div>
             </div>
@@ -94,7 +108,7 @@
             <div class="space-y-3">
                 <div class="flex justify-between items-center">
                     <h3 class="text-sky-500 text-[10px] font-black uppercase">Pendidikan</h3>
-                    <button id="btn-add-edu" class="text-[10px] bg-slate-700 px-3 py-1 rounded font-bold">+ TAMBAH</button>
+                    <button id="btn-add-edu" class="text-[10px] bg-sky-500/20 text-sky-400 px-3 py-1 rounded font-bold border border-sky-500/30 hover:bg-sky-500 hover:text-white transition">+ TAMBAH</button>
                 </div>
                 <div id="cv-edu-list" class="space-y-2"></div>
             </div>
@@ -106,15 +120,21 @@
             </div>
         </section>
 
-        <button id="btn-export-cv" class="fixed bottom-4 right-4 left-4 md:left-[470px] bg-sky-500 text-white font-black py-4 rounded-xl shadow-xl z-40 active:scale-95 transition-transform flex items-center justify-center gap-2">
+        <button id="btn-export-cv" class="fixed bottom-4 right-4 left-4 md:left-[470px] bg-sky-500 hover:bg-sky-600 text-white font-black py-4 rounded-xl shadow-[0_10px_20px_rgba(14,165,233,0.3)] z-40 active:scale-95 transition-all flex items-center justify-center gap-2">
             <i class="fas fa-print text-xl"></i> DOWNLOAD PDF CV
         </button>
     </main>
 
     <div id="modal-sig" class="fixed inset-0 bg-black/90 z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-slate-800 w-full max-w-sm rounded-2xl p-4 space-y-4">
-            <div class="flex justify-between items-center"><h3 class="text-sky-400 font-bold text-xs tracking-widest">TANDA TANGAN</h3><label class="text-[10px] bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded cursor-pointer transition text-white font-bold shadow-md"><i class="fas fa-upload"></i> UPLOAD FOTO<input type="file" id="cv-sig-upload" accept="image/*" class="hidden"></label></div>
-            <canvas id="cv-sig-pad" class="w-full bg-white rounded-xl aspect-video touch-none cursor-crosshair"></canvas>
+            <div class="flex justify-between items-center">
+                <h3 class="text-sky-400 font-bold text-xs tracking-widest">TANDA TANGAN</h3>
+                <label class="text-[10px] bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded cursor-pointer transition text-white font-bold shadow-md">
+                    <i class="fas fa-upload"></i> UPLOAD FOTO
+                    <input type="file" id="cv-sig-upload" accept="image/*" class="hidden">
+                </label>
+            </div>
+            <canvas id="cv-sig-pad" width="800" height="400" class="w-full bg-white rounded-xl aspect-video touch-none cursor-crosshair border border-slate-300"></canvas>
             <div class="flex gap-2">
                 <button id="btn-clear-sig" class="flex-1 bg-red-600 py-3 rounded-lg font-bold text-xs">HAPUS</button>
                 <button id="btn-save-sig" class="flex-1 bg-sky-500 py-3 rounded-lg font-bold text-xs">SIMPAN</button>

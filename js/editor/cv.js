@@ -98,6 +98,29 @@ class CVBuilder {
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
         });
 
+        // REVISI: Mesin Pembuat Profil Otomatis
+        const btnGenProf = document.getElementById('btn-gen-profile');
+        if(btnGenProf) {
+            btnGenProf.onclick = () => {
+                const titleVal = document.getElementById('cv-title').value;
+                const title = titleVal ? titleVal : "profesional";
+                const expMode = document.getElementById('cv-sel-exp').value;
+                let profText = "";
+
+                if(expMode === 'fresh') {
+                    profText = `Seorang ${title} yang baru lulus dengan motivasi tinggi dan fondasi akademik yang kuat. Memiliki kemampuan adaptasi yang cepat, kemauan belajar yang tinggi, dan siap memberikan dedikasi penuh serta berkontribusi positif dalam lingkungan kerja yang dinamis.`;
+                } else if(expMode === 'zero') {
+                    profText = `Individu yang sangat antusias dan berdedikasi tinggi untuk membangun karir sebagai ${title}. Meskipun belum memiliki pengalaman kerja formal, saya dibekali dengan etos kerja yang kuat, disiplin, dan kesiapan untuk belajar serta berkembang bersama tim guna mencapai target perusahaan.`;
+                } else {
+                    profText = `Seorang ${title} berpengalaman dengan rekam jejak yang terbukti dalam menyelesaikan tanggung jawab pekerjaan secara profesional. Berorientasi pada detail, mampu bekerja efektif di bawah tekanan, dan memiliki kemampuan kolaborasi tim yang solid untuk mencapai target operasional dengan optimal.`;
+                }
+
+                const profInput = document.getElementById('cv-profile');
+                profInput.value = profText;
+                profInput.dispatchEvent(new Event('input'));
+            };
+        }
+
         document.getElementById('btn-add-exp').onclick = () => { this.data.exps.push({role:'', comp:'', year:''}); this.renderLists(); this.renderPaper(); };
         document.getElementById('btn-add-edu').onclick = () => { this.data.edus.push({school:'', degree:'', year:''}); this.renderLists(); this.renderPaper(); };
     }
@@ -138,7 +161,6 @@ class CVBuilder {
             };
         }
 
-        // --- SISTEM UPLOAD TTD ---
         const sigUpload = document.getElementById('cv-sig-upload');
         if(sigUpload) {
             sigUpload.onchange = (e) => {
@@ -155,7 +177,6 @@ class CVBuilder {
                             canvas.height = img.height * scaleSize;
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            // Pakai PNG biar kalau fotonya transparan tetep kece
                             const compData = canvas.toDataURL('image/png'); 
                             
                             this.data.sig = compData;
