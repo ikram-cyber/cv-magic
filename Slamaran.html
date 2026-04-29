@@ -9,21 +9,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="css/premium.css">
 </head>
-<body class="overflow-hidden h-screen w-screen flex flex-col">
-
+<body class="overflow-hidden h-screen w-screen flex flex-col bg-slate-900">
     <nav class="bg-slate-900 flex text-xs font-black tracking-widest z-50 shrink-0">
         <a href="index.html" class="flex-1 text-center py-4 text-slate-500 border-b-2 border-slate-800 hover:text-slate-300"><i class="fas fa-user-tie"></i> DESAIN CV</a>
         <a href="Slamaran.html" class="flex-1 text-center py-4 bg-sky-600 text-white shadow-inner"><i class="fas fa-envelope"></i> SURAT LAMARAN</a>
     </nav>
-
     <div class="bg-slate-800 p-2 flex shrink-0 md:hidden z-40">
         <button id="tab-edit" class="flex-1 py-2 bg-slate-700 text-sky-400 font-bold rounded-lg text-xs border border-slate-600 shadow-md">TULIS SURAT</button>
         <button id="tab-prev" class="flex-1 py-2 text-slate-400 font-bold text-xs">LIHAT HASIL</button>
     </div>
 
     <main class="flex-1 flex overflow-hidden relative">
-        <section id="panel-editor" class="w-full md:w-[450px] h-full overflow-y-auto p-5 pb-40 border-r border-slate-800 custom-scroll space-y-6">
-            
+        <section id="panel-editor" class="w-full md:w-[450px] h-full overflow-y-auto p-5 pb-32 border-r border-slate-800 custom-scroll space-y-6 relative">
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-black text-white">EDITOR SURAT</h2>
                 <button id="btn-reset" class="text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded border border-red-500/20 hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i> RESET DATA</button>
@@ -49,25 +46,23 @@
             </div>
 
             <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center cursor-pointer hover:bg-slate-700 transition" id="btn-open-sig">
-                <i class="fas fa-pen-nib text-sky-500 mb-1"></i><p class="text-[10px] font-bold">GAMBAR TANDA TANGAN</p>
+                <i class="fas fa-pen-nib text-sky-500 mb-1"></i><p class="text-[10px] font-bold text-slate-200">GAMBAR TANDA TANGAN</p>
             </div>
 
             <div class="space-y-3">
                 <h3 class="text-sky-500 text-[10px] font-black uppercase">Detail Surat</h3>
-                <input type="text" id="surat-name" placeholder="Nama Anda" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
-                <input type="text" id="surat-title" placeholder="Posisi yang dilamar" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
-                
+                <input type="text" id="surat-name" placeholder="Nama Anda" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500 text-white">
+                <input type="text" id="surat-title" placeholder="Posisi yang dilamar" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500 text-white">
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="surat-hal" placeholder="Hal (ex: Lamaran Kerja)" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
-                    <input type="text" id="surat-lamp" placeholder="Lampiran (ex: 1 Berkas)" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
+                    <input type="text" id="surat-hal" placeholder="Hal (ex: Lamaran Kerja)" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500 text-white">
+                    <input type="text" id="surat-lamp" placeholder="Lampiran (ex: 1 Berkas)" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500 text-white">
                 </div>
-
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="surat-date" placeholder="Kota, Tanggal" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
-                    <input type="text" id="surat-hrd" placeholder="Yth. HRD / Pimpinan" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
+                    <input type="text" id="surat-date" placeholder="Kota, Tanggal" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none text-white">
+                    <input type="text" id="surat-hrd" placeholder="Yth. HRD / Pimpinan" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none text-white">
                 </div>
-                <input type="text" id="surat-comp" placeholder="Nama Perusahaan" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
-                <textarea id="surat-address" placeholder="Alamat Instansi / Perusahaan (Bisa di-Enter)" class="w-full h-20 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll"></textarea>
+                <input type="text" id="surat-comp" placeholder="Nama Perusahaan" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none text-white">
+                <textarea id="surat-address" placeholder="Alamat Instansi / Perusahaan (Bisa di-Enter)" class="w-full h-20 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll text-white"></textarea>
             </div>
 
             <div class="space-y-3 pt-3 border-t border-slate-700">
@@ -96,40 +91,39 @@
                 <button id="btn-template" class="w-full text-[10px] bg-emerald-600 hover:bg-emerald-500 px-3 py-3 rounded-lg font-bold text-white transition flex items-center justify-center gap-2">
                     <i class="fas fa-magic"></i> BUAT ISI SURAT OTOMATIS
                 </button>
-                <textarea id="surat-content" placeholder="Ketik manual isi surat lamaran di sini atau gunakan mesin pembuat surat di atas..." class="w-full h-64 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll"></textarea>
+                <textarea id="surat-content" placeholder="Ketik manual isi surat lamaran di sini atau gunakan mesin pembuat surat di atas..." class="w-full h-64 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll text-slate-200"></textarea>
             </div>
+
+            <footer class="w-full text-center py-8 mt-4 border-t border-slate-700/30">
+                <p class="text-xs font-bold text-slate-500 tracking-widest uppercase">&copy; 2026 <a href="https://ikram-cyber.web.id" target="_blank" class="text-sky-500 hover:text-sky-400 transition-all">IKRAM CYBER</a></p>
+                <p class="text-[9px] text-slate-600 mt-2 uppercase tracking-tighter">Crafted with <i class="fas fa-code text-sky-600"></i> for Career Excellence</p>
+            </footer>
         </section>
 
         <section id="panel-preview" class="hidden md:flex flex-1 h-full overflow-y-auto bg-slate-950 p-4 justify-center custom-scroll pb-24">
             <div id="capture-area" class="origin-top shadow-2xl">
-                <div id="surat-paper" class="a4-sheet p-[20mm] font-sans text-[11pt] leading-relaxed"></div>
+                <div id="surat-paper" class="a4-sheet p-[12mm] font-sans text-[10pt] leading-normal text-slate-900 bg-white"></div>
             </div>
         </section>
 
-        <button id="btn-export-surat" class="fixed bottom-4 right-4 left-4 md:left-[470px] bg-sky-500 hover:bg-sky-600 text-white font-black py-4 rounded-xl shadow-[0_10px_20px_rgba(14,165,233,0.3)] z-40 active:scale-95 transition-transform flex items-center justify-center gap-2">
-            <i class="fas fa-file-pdf text-xl"></i> DOWNLOAD PDF SURAT
+        <button id="btn-export-surat" class="fixed bottom-4 right-4 left-4 md:left-[470px] bg-sky-500 hover:bg-sky-400 text-white font-bold py-3.5 rounded-2xl shadow-[0_10px_25px_rgba(14,165,233,0.4)] border border-sky-400/50 flex items-center justify-center gap-3 transition-all active:scale-95 z-50">
+            <i class="fas fa-file-pdf text-lg"></i> DOWNLOAD PDF SURAT
         </button>
     </main>
 
     <div id="modal-sig" class="fixed inset-0 bg-black/90 z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-slate-800 w-full max-w-sm rounded-2xl p-4 space-y-4">
-            <div class="flex justify-between items-center"><h3 class="text-sky-400 font-bold text-xs tracking-widest">TANDA TANGAN</h3><label class="text-[10px] bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded cursor-pointer transition text-white font-bold shadow-md"><i class="fas fa-upload"></i> UPLOAD FOTO<input type="file" id="surat-sig-upload" accept="image/*" class="hidden"></label></div>
+            <div class="flex justify-between items-center">
+                <h3 class="text-sky-400 font-bold text-xs tracking-widest">TANDA TANGAN</h3>
+                <label class="text-[10px] bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded cursor-pointer transition text-white font-bold shadow-md"><i class="fas fa-upload"></i> UPLOAD FOTO<input type="file" id="surat-sig-upload" accept="image/*" class="hidden"></label>
+            </div>
             <canvas id="surat-sig-pad" width="800" height="400" class="w-full bg-white rounded-xl aspect-video touch-none cursor-crosshair border border-slate-300"></canvas>
             <div class="flex gap-2">
-                <button id="btn-clear-sig" class="flex-1 bg-red-600 py-3 rounded-lg font-bold text-xs">HAPUS</button>
-                <button id="btn-save-sig" class="flex-1 bg-sky-500 py-3 rounded-lg font-bold text-xs">SIMPAN</button>
+                <button id="btn-clear-sig" class="flex-1 bg-red-600 py-3 rounded-lg font-bold text-xs text-white">HAPUS</button>
+                <button id="btn-save-sig" class="flex-1 bg-sky-500 py-3 rounded-lg font-bold text-xs text-white">SIMPAN</button>
             </div>
         </div>
     </div>
-
     <script src="js/editor/surat.js"></script>
-<footer class="w-full text-center py-10 mt-10 border-t border-slate-700/30">
-    <p class="text-xs font-bold text-slate-500 tracking-widest">
-        &copy; 2026 <a href="https://ikram-cyber.web.id" target="_blank" class="text-sky-500 hover:text-sky-400 transition-all">IKRAM CYBER</a>. ALL RIGHTS RESERVED.
-    </p>
-    <p class="text-[9px] text-slate-600 mt-2 uppercase tracking-tighter">
-        Crafted with <i class="fas fa-code text-sky-600"></i> for Career Excellence
-    </p>
-</footer>
 </body>
 </html>

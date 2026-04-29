@@ -296,14 +296,14 @@ class SuratBuilder {
 
         const lampHtml = lamp ? `<tr><td class="pr-2 align-top">Lampiran</td><td class="pr-2 align-top">:</td><td>${lamp}</td></tr>` : '';
         const halHtml = hal ? `<tr><td class="pr-2 align-top">Hal</td><td class="pr-2 align-top">:</td><td><b>${hal}</b></td></tr>` : '';
-        const headerTable = (lamp || hal) ? `<table class="text-[11pt] mb-8">${lampHtml}${halHtml}</table>` : '';
+        const headerTable = (lamp || hal) ? `<table class="text-[10pt] mb-8">${lampHtml}${halHtml}</table>` : '';
 
         const hrdHtml = hrd ? `<p>${hrd}</p>` : '';
         const compHtml = comp ? `<p class="text-accent">${comp}</p>` : '';
         const addrHtml = addrVal ? `<p class="font-normal text-[10pt] mt-1">${addrVal.replace(/\n/g, '<br>')}</p>` : '';
         const diTempatHtml = (hrd || comp) && !addrVal ? `<p>Di Tempat</p>` : '';
 
-        p.className = `a4-sheet p-[20mm] ${this.data.font} ${this.data.theme} text-[11pt] leading-relaxed text-slate-900 bg-white`;
+        p.className = `a4-sheet p-[12mm] ${this.data.font} ${this.data.theme} text-[10pt] leading-normal text-slate-900 bg-white`;
         p.innerHTML = `
             ${senderHeaderHtml}
             <div class="text-right mb-8">${date}</div>
