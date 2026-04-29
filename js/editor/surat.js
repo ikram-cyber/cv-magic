@@ -97,7 +97,6 @@ class SuratBuilder {
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
         });
 
-        // REVISI: LOGIKA MESIN SURAT OTOMATIS
         const btnTemp = document.getElementById('btn-template');
         if(btnTemp) {
             btnTemp.onclick = () => {
@@ -110,15 +109,27 @@ class SuratBuilder {
                 const expMode = document.getElementById('sel-exp').value;
                 const indMode = document.getElementById('sel-ind').value;
 
-                // Tentukan nama industri
+                // REVISI CERDAS: Tentukan nama industri DAN Jabatan HRD yang pas
                 let indText = "perusahaan";
-                if(indMode === 'pabrik') indText = "pabrik / perusahaan manufaktur";
-                else if(indMode === 'apotek') indText = "apotek";
-                else if(indMode === 'rs') indText = "rumah sakit";
-                else if(indMode === 'bandara') indText = "instansi otoritas bandara";
-                else if(indMode === 'logistik') indText = "perusahaan logistik / ekspedisi";
+                let hrdText = "Yth. HRD Manager";
 
-                // Tentukan paragraf pengalaman
+                if(indMode === 'pabrik') {
+                    indText = "perusahaan manufaktur";
+                    hrdText = "Yth. HRD Manager / Pimpinan Pabrik";
+                } else if(indMode === 'apotek') {
+                    indText = "apotek";
+                    hrdText = "Yth. Apoteker Pengelola Apotek (APA) / Pimpinan";
+                } else if(indMode === 'rs') {
+                    indText = "rumah sakit / instansi kesehatan";
+                    hrdText = "Yth. Direktur / Kepala HRD Rumah Sakit";
+                } else if(indMode === 'bandara') {
+                    indText = "instansi / perusahaan aviasi";
+                    hrdText = "Yth. HRD Manager / Pimpinan Instansi";
+                } else if(indMode === 'logistik') {
+                    indText = "perusahaan logistik / ekspedisi";
+                    hrdText = "Yth. HRD Manager / Kepala Cabang";
+                }
+
                 let expText = "";
                 if(expMode === 'fresh') {
                     expText = `Sebagai fresh graduate, saya telah dibekali dengan ilmu pengetahuan terkini dan semangat tinggi untuk terjun langsung ke dunia kerja. Saya terbiasa beradaptasi dengan cepat, memiliki integritas, dan siap memberikan dedikasi penuh untuk berkontribusi di lingkungan operasional ${indText} yang Bapak/Ibu pimpin.`;
@@ -128,13 +139,15 @@ class SuratBuilder {
                     expText = `Berbekal pengalaman kerja yang saya miliki, saya terbukti mampu menangani tanggung jawab secara profesional, bekerja berorientasi pada target operasional, dan berkolaborasi secara solid di dalam tim. Saya yakin kompetensi dan rekam jejak saya dapat memberikan nilai tambah bagi ${indText} yang Bapak/Ibu pimpin.`;
                 }
 
+                // Masukin nilai ke input fields
                 document.getElementById('surat-hal').value = "Lamaran Pekerjaan";
                 document.getElementById('surat-lamp').value = "1 (satu) Berkas";
+                document.getElementById('surat-hrd').value = hrdText; // <-- INI YANG BERUBAH OTOMATIS
                 
                 const c = document.getElementById('surat-content');
                 c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan pekerjaan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di ${indText} yang Bapak/Ibu pimpin. Adapun data diri singkat saya adalah sebagai berikut:\n\nNama : ${n}\nTempat, Tgl Lahir : ${ttl}\nNo. HP/WA : ${ph}\nEmail : ${e}\n\n${expText}\n\nSebagai bahan pertimbangan, saya melampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
                 
-                ['surat-hal', 'surat-lamp', 'surat-content'].forEach(id => { document.getElementById(id).dispatchEvent(new Event('input')); });
+                ['surat-hal', 'surat-lamp', 'surat-hrd', 'surat-content'].forEach(id => { document.getElementById(id).dispatchEvent(new Event('input')); });
             };
         }
     }
