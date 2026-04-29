@@ -62,7 +62,6 @@ class CVBuilder {
             let fileName = `CV_${userName}.pdf`;
 
             try {
-                // Konfigurasi enableLinks biar hyperlink-nya aktif di PDF
                 await html2pdf().set({
                     margin: 0, 
                     filename: fileName, 
@@ -121,11 +120,7 @@ class CVBuilder {
                         const compressedData = canvas.toDataURL('image/jpeg', 0.8); 
                         
                         this.data.photo = compressedData; 
-                        try {
-                            localStorage.setItem('cv-photo', compressedData); 
-                        } catch(err) {
-                            console.error("Storage limit reached.");
-                        }
+                        try { localStorage.setItem('cv-photo', compressedData); } catch(err) {}
                         this.renderPaper(); 
                     };
                     img.src = ev.target.result;
@@ -140,6 +135,38 @@ class CVBuilder {
                 e.stopPropagation();
                 this.data.photo = null; localStorage.removeItem('cv-photo');
                 document.getElementById('cv-photo').value = ''; this.renderPaper();
+            };
+        }
+
+        // --- SISTEM UPLOAD TTD ---
+        const sigUpload = document.getElementById('cv-sig-upload');
+        if(sigUpload) {
+            sigUpload.onchange = (e) => {
+                const f = e.target.files[0];
+                if(f) {
+                    const r = new FileReader();
+                    r.onload = (ev) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 400; 
+                            const scaleSize = MAX_WIDTH / img.width;
+                            canvas.width = MAX_WIDTH;
+                            canvas.height = img.height * scaleSize;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            // Pakai PNG biar kalau fotonya transparan tetep kece
+                            const compData = canvas.toDataURL('image/png'); 
+                            
+                            this.data.sig = compData;
+                            try { localStorage.setItem('cv-sig', compData); } catch(err) {}
+                            document.getElementById('modal-sig').classList.add('hidden');
+                            this.renderPaper();
+                        };
+                        img.src = ev.target.result;
+                    };
+                    r.readAsDataURL(f);
+                }
             };
         }
 
@@ -236,13 +263,10 @@ class CVBuilder {
         const skills = skillsVal ? skillsVal.replace(/\n/g, '<br>') : '';
         const cert = certVal ? certVal.replace(/\n/g, '<br>') : '';
 
-        // REVISI SMART LINK: Bikin Email dan Portofolio bisa di-klik di PDF
         const ttlHtml = ttl ? `<p><i class="fas fa-calendar-alt w-4 text-accent"></i> ${ttl}</p>` : '';
         const phHtml = ph ? `<p><i class="fas fa-phone w-4 text-accent"></i> ${ph}</p>` : '';
-        
         const portUrl = port ? (port.startsWith('http') ? port : 'https://' + port) : '#';
         const portHtml = port ? `<p><i class="fas fa-link w-4 text-accent"></i> <a href="${portUrl}" target="_blank" style="text-decoration:none; color:inherit;">${port}</a></p>` : '';
-        
         const eHtml = e ? `<p><i class="fas fa-envelope w-4 text-accent"></i> <a href="mailto:${e}" style="text-decoration:none; color:inherit;">${e}</a></p>` : '';
         const aHtml = a ? `<p class="col-span-2 mt-1"><i class="fas fa-map-marker-alt w-4 text-accent"></i> ${a}</p>` : '';
 
