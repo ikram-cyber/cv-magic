@@ -56,7 +56,6 @@ class SuratBuilder {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
             
-            // REVISI: Kasih napas 150ms biar browser sempet muterin ikon loading
             await new Promise(resolve => setTimeout(resolve, 150));
 
             let userName = document.getElementById('surat-name').value || 'Pelamar';
@@ -114,7 +113,6 @@ class SuratBuilder {
                 const ph = localStorage.getItem('cv-phone') || "[No WhatsApp]";
                 const e = localStorage.getItem('cv-email') || "[Email]";
                 
-                // REVISI: Ambil nama PT kalau diisi!
                 const cName = document.getElementById('surat-comp').value || "";
 
                 const expMode = document.getElementById('sel-exp').value;
@@ -140,7 +138,6 @@ class SuratBuilder {
                     hrdText = "Yth. Kepala Cabang / HRD Manager Logistik";
                 }
 
-                // REVISI: Gabungin nama PT ke kalimat AI
                 const targetCompany = cName !== "" ? cName : `${indText} yang Bapak/Ibu pimpin`;
 
                 let expText = "";
@@ -241,7 +238,6 @@ class SuratBuilder {
         let autoCity = "Jakarta";
         const savedAddr = localStorage.getItem('cv-address');
         if (savedAddr) {
-            // REVISI: Logika pinter nyari Kota biar gak aneh (Ngambil bagian paling belakang sebelum Provinsi)
             const parts = savedAddr.split(',');
             if(parts.length > 1) {
                 autoCity = parts[parts.length > 2 ? parts.length - 2 : parts.length - 1].trim();
@@ -264,6 +260,21 @@ class SuratBuilder {
         const contentVal = document.getElementById('surat-content').value;
         const contHtml = contentVal ? contentVal.replace(/\n/g, '<br>') : '';
 
+        // REVISI: Tarik Kontak dari CV buat dijadiin Kop Surat Keren
+        const myName = localStorage.getItem('cv-name') || n;
+        const myPhone = localStorage.getItem('cv-phone') || "";
+        const myEmail = localStorage.getItem('cv-email') || "";
+        const myPort = localStorage.getItem('cv-port') || "";
+
+        let senderHeaderHtml = `<div class="mb-8 border-b-2 border-slate-300 pb-3">
+            <h1 class="text-2xl font-black text-accent uppercase tracking-wide">${myName}</h1>
+            <div class="text-[9px] font-bold text-slate-600 flex gap-4 mt-2">
+                ${myPhone ? `<span><i class="fas fa-phone text-accent"></i> ${myPhone}</span>` : ''}
+                ${myEmail ? `<span><i class="fas fa-envelope text-accent"></i> ${myEmail}</span>` : ''}
+                ${myPort ? `<span><i class="fas fa-link text-accent"></i> ${myPort}</span>` : ''}
+            </div>
+        </div>`;
+
         const lampHtml = lamp ? `<tr><td class="pr-2 align-top">Lampiran</td><td class="pr-2 align-top">:</td><td>${lamp}</td></tr>` : '';
         const halHtml = hal ? `<tr><td class="pr-2 align-top">Hal</td><td class="pr-2 align-top">:</td><td><b>${hal}</b></td></tr>` : '';
         const headerTable = (lamp || hal) ? `<table class="text-[11pt] mb-8">${lampHtml}${halHtml}</table>` : '';
@@ -275,6 +286,7 @@ class SuratBuilder {
 
         p.className = `a4-sheet p-[20mm] ${this.data.font} ${this.data.theme} text-[11pt] leading-relaxed text-slate-900 bg-white`;
         p.innerHTML = `
+            ${senderHeaderHtml}
             <div class="text-right mb-8">${date}</div>
             
             ${headerTable}

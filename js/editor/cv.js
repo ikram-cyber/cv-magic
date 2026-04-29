@@ -122,10 +122,11 @@ class CVBuilder {
             };
         }
 
-        document.getElementById('btn-add-exp').onclick = () => { this.data.exps.push({role:'', comp:'', year:'', desc:''}); this.renderLists(); this.renderPaper(); };
-        document.getElementById('btn-add-edu').onclick = () => { this.data.edus.push({school:'', degree:'', year:'', score:''}); this.renderLists(); this.renderPaper(); };
+        // REVISI: Fungsi Tambah langsung di-Save ke memori
+        document.getElementById('btn-add-exp').onclick = () => { this.data.exps.push({role:'', comp:'', year:'', desc:''}); this.saveLists(); this.renderLists(); this.renderPaper(); };
+        document.getElementById('btn-add-edu').onclick = () => { this.data.edus.push({school:'', degree:'', year:'', score:''}); this.saveLists(); this.renderLists(); this.renderPaper(); };
         const btnPrj = document.getElementById('btn-add-prj');
-        if(btnPrj) btnPrj.onclick = () => { this.data.prjs.push({name:'', inst:'', year:'', desc:''}); this.renderLists(); this.renderPaper(); };
+        if(btnPrj) btnPrj.onclick = () => { this.data.prjs.push({name:'', inst:'', year:'', desc:''}); this.saveLists(); this.renderLists(); this.renderPaper(); };
     }
 
     bindMedia() {
@@ -220,15 +221,35 @@ class CVBuilder {
         canvas.ontouchstart = (e) => { draw = true; drawLine(e); }; canvas.ontouchmove = drawLine; canvas.ontouchend = () => { draw = false; ctx.beginPath(); };
     }
 
-    // REVISI: Mesin Penggeser Urutan (Move Up / Down)
+    // REVISI: Mesin Penyimpan List ke LocalStorage
+    saveLists() {
+        localStorage.setItem('cv-exps', JSON.stringify(this.data.exps));
+        localStorage.setItem('cv-edus', JSON.stringify(this.data.edus));
+        localStorage.setItem('cv-prjs', JSON.stringify(this.data.prjs));
+    }
+
     moveD(list, i, dir) {
         const arr = this.data[list];
         if (i + dir < 0 || i + dir >= arr.length) return;
         const temp = arr[i];
         arr[i] = arr[i + dir];
         arr[i + dir] = temp;
+        this.saveLists(); // Save kalau digeser
         this.renderLists();
         this.renderPaper();
+    }
+
+    upD(list, i, key, val) { 
+        this.data[list][i][key] = val; 
+        this.saveLists(); // Save kalau diketik
+        this.renderPaper(); 
+    }
+    
+    delD(list, i) { 
+        this.data[list].splice(i, 1); 
+        this.saveLists(); // Save kalau dihapus
+        this.renderLists(); 
+        this.renderPaper(); 
     }
 
     renderLists() {
@@ -296,9 +317,6 @@ class CVBuilder {
         }
     }
 
-    upD(list, i, key, val) { this.data[list][i][key] = val; this.renderPaper(); }
-    delD(list, i) { this.data[list].splice(i, 1); this.renderLists(); this.renderPaper(); }
-
     loadLocal() {
         ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile', 'cv-skills', 'cv-cert'].forEach(id => {
             if(localStorage.getItem(id)) { const el = document.getElementById(id); if(el) el.value = localStorage.getItem(id); }
@@ -307,6 +325,11 @@ class CVBuilder {
         if(localStorage.getItem('cv-sig')) this.data.sig = localStorage.getItem('cv-sig');
         if(localStorage.getItem('cv-font')) this.data.font = localStorage.getItem('cv-font');
         if(localStorage.getItem('cv-theme')) this.data.theme = localStorage.getItem('cv-theme');
+        
+        // REVISI: Load List Pengalaman dari Memori saat Browser di-Refresh
+        if(localStorage.getItem('cv-exps')) this.data.exps = JSON.parse(localStorage.getItem('cv-exps'));
+        if(localStorage.getItem('cv-edus')) this.data.edus = JSON.parse(localStorage.getItem('cv-edus'));
+        if(localStorage.getItem('cv-prjs')) this.data.prjs = JSON.parse(localStorage.getItem('cv-prjs'));
     }
 
     renderPaper() {
