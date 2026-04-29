@@ -51,7 +51,6 @@ class SuratBuilder {
 
         document.getElementById('btn-export-surat').onclick = async () => {
             const btn = document.getElementById('btn-export-surat'); btn.innerHTML = 'MEMPROSES...';
-            // REVISI: Tambah pagebreak config biar kalau surat kepanjangan otomatis pindah halaman
             await html2pdf().set({
                 margin: 0, 
                 filename: 'Surat_Lamaran.pdf', 
@@ -102,7 +101,14 @@ class SuratBuilder {
         let draw = false;
 
         document.getElementById('btn-open-sig').onclick = () => document.getElementById('modal-sig').classList.remove('hidden');
-        document.getElementById('btn-clear-sig').onclick = () => { ctx.clearRect(0,0,canvas.width,canvas.height); this.data.sig = null; localStorage.removeItem('surat-sig'); this.renderPaper(); };
+        
+        document.getElementById('btn-clear-sig').onclick = () => { 
+            ctx.clearRect(0,0,canvas.width,canvas.height); 
+            this.data.sig = null; 
+            localStorage.removeItem('surat-sig'); 
+            this.renderPaper(); 
+        };
+
         document.getElementById('btn-save-sig').onclick = () => {
             this.data.sig = canvas.toDataURL(); localStorage.setItem('surat-sig', this.data.sig);
             document.getElementById('modal-sig').classList.add('hidden'); this.renderPaper();
@@ -134,28 +140,34 @@ class SuratBuilder {
         const p = document.getElementById('surat-paper');
         if(!p) return;
         
-        // REVISI: Bikin Tanggal Dinamis Hari Ini
         const today = new Date();
         const autoDate = "Jakarta, " + today.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
 
-        const d = {
-            n: document.getElementById('surat-name').value || "NAMA ANDA", 
-            date: document.getElementById('surat-date').value || autoDate,
-            hrd: document.getElementById('surat-hrd').value || "Yth. Pimpinan HRD", 
-            comp: document.getElementById('surat-comp').value || "Perusahaan",
-            // REVISI: Benerin jarak paragraf (Cuma <br> aja, jangan <br><br> biar gak kegedean spasinya)
-            cont: (document.getElementById('surat-content').value || "Ketik isi surat di panel kiri...").replace(/\n/g, '<br>')
-        };
+        const n = document.getElementById('surat-name').value || "NAMA ANDA";
+        const date = document.getElementById('surat-date').value || autoDate;
+        const hrd = document.getElementById('surat-hrd').value;
+        const comp = document.getElementById('surat-comp').value;
+        
+        const contentVal = document.getElementById('surat-content').value;
+        const contHtml = contentVal ? contentVal.replace(/\n/g, '<br>') : '';
+
+        const hrdHtml = hrd ? `<p>${hrd}</p>` : '';
+        const compHtml = comp ? `<p class="text-accent">${comp}</p>` : '';
+        const diTempatHtml = (hrd || comp) ? `<p>Di Tempat</p>` : '';
 
         p.className = `a4-sheet p-[20mm] ${this.data.font} ${this.data.theme} text-[11pt] leading-relaxed text-slate-900 bg-white`;
         p.innerHTML = `
-            <div class="text-right mb-10">${d.date}</div>
-            <div class="font-bold mb-10 leading-tight"><p>${d.hrd}</p><p class="text-accent">${d.comp}</p><p>Di Tempat</p></div>
-            <div class="text-justify mb-16 space-y-2">${d.cont}</div>
+            <div class="text-right mb-10">${date}</div>
+            <div class="font-bold mb-10 leading-tight">
+                ${hrdHtml}
+                ${compHtml}
+                ${diTempatHtml}
+            </div>
+            <div class="text-justify mb-16 space-y-2">${contHtml}</div>
             <div class="w-48 ml-auto text-center page-break-inside-avoid">
                 <p class="mb-2">Hormat saya,</p>
                 <div class="h-16 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
-                <p class="font-bold border-t-[1.5px] border-accent mt-1 pt-1 uppercase">${d.n}</p>
+                <p class="font-bold border-t-[1.5px] border-accent mt-1 pt-1 uppercase">${n}</p>
             </div>
         `;
     }

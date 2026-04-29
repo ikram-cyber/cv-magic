@@ -77,7 +77,6 @@ class CVBuilder {
     }
 
     bindInputs() {
-        // Tambahan id cv-skills
         ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile', 'cv-skills'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
@@ -100,7 +99,6 @@ class CVBuilder {
 
         document.getElementById('btn-open-sig').onclick = () => document.getElementById('modal-sig').classList.remove('hidden');
         
-        // BUG FIX: Hapus TTD benar-benar membuang data dari memori
         document.getElementById('btn-clear-sig').onclick = () => { 
             ctx.clearRect(0,0,canvas.width,canvas.height); 
             this.data.sig = null; 
@@ -177,15 +175,30 @@ class CVBuilder {
     renderPaper() {
         const p = document.getElementById('cv-paper');
         if(!p) return;
-        const skillsVal = document.getElementById('cv-skills') ? document.getElementById('cv-skills').value : '';
-        const d = {
-            n: document.getElementById('cv-name').value || "NAMA LENGKAP", t: document.getElementById('cv-title').value || "PROFESI / POSISI",
-            ttl: document.getElementById('cv-ttl').value || "Kota, Tanggal Lahir", port: document.getElementById('cv-port').value || "linkedin.com/in/anda",
-            ph: document.getElementById('cv-phone').value || "08xx-xxxx", e: document.getElementById('cv-email').value || "email@anda.com",
-            a: document.getElementById('cv-address').value || "Alamat Anda", prof: document.getElementById('cv-profile').value || "Profil singkat Anda...",
-            skills: skillsVal // Ambil data skills
-        };
         
+        // REVISI: SMART HIDE (Kalau kosong, string jadi kosong, gak pakai placeholder abal-abal)
+        const n = document.getElementById('cv-name').value || "NAMA LENGKAP";
+        const t = document.getElementById('cv-title').value || "PROFESI / POSISI";
+        
+        const ttl = document.getElementById('cv-ttl').value;
+        const port = document.getElementById('cv-port').value;
+        const ph = document.getElementById('cv-phone').value;
+        const e = document.getElementById('cv-email').value;
+        const a = document.getElementById('cv-address').value;
+        
+        const prof = document.getElementById('cv-profile').value;
+        const skills = document.getElementById('cv-skills') ? document.getElementById('cv-skills').value : '';
+
+        // Render HTML cuma kalau datanya ada isinya
+        const ttlHtml = ttl ? `<p><i class="fas fa-calendar-alt w-4 text-accent"></i> ${ttl}</p>` : '';
+        const phHtml = ph ? `<p><i class="fas fa-phone w-4 text-accent"></i> ${ph}</p>` : '';
+        const portHtml = port ? `<p><i class="fas fa-link w-4 text-accent"></i> ${port}</p>` : '';
+        const eHtml = e ? `<p><i class="fas fa-envelope w-4 text-accent"></i> ${e}</p>` : '';
+        const aHtml = a ? `<p class="col-span-2 mt-1"><i class="fas fa-map-marker-alt w-4 text-accent"></i> ${a}</p>` : '';
+
+        const profHtml = prof ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Profil Profesional</h3><p class="text-[10px] leading-relaxed text-justify">${prof}</p></div>` : '';
+        const skillsHtml = skills ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Keahlian (Skills)</h3><p class="text-[10px] font-bold text-accent">${skills}</p></div>` : '';
+
         p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-800`;
         p.innerHTML = `
             <div class="flex gap-5 border-b-[3px] border-accent pb-4 mb-4">
@@ -193,30 +206,23 @@ class CVBuilder {
                     ${this.data.photo ? `<img src="${this.data.photo}" class="w-full h-full object-cover object-top">` : '<i class="fas fa-user text-3xl text-slate-300"></i>'}
                 </div>
                 <div class="flex-1">
-                    <h1 class="text-3xl font-black uppercase leading-none text-accent">${d.n}</h1>
-                    <h2 class="text-[11px] font-bold uppercase tracking-[0.2em] mt-1 mb-3 text-slate-600">${d.t}</h2>
+                    <h1 class="text-3xl font-black uppercase leading-none text-accent">${n}</h1>
+                    <h2 class="text-[11px] font-bold uppercase tracking-[0.2em] mt-1 mb-3 text-slate-600">${t}</h2>
                     <div class="grid grid-cols-2 gap-y-1 text-[9px] font-bold text-slate-700">
-                        <p><i class="fas fa-calendar-alt w-4 text-accent"></i> ${d.ttl}</p>
-                        <p><i class="fas fa-phone w-4 text-accent"></i> ${d.ph}</p>
-                        <p><i class="fas fa-link w-4 text-accent"></i> ${d.port}</p>
-                        <p><i class="fas fa-envelope w-4 text-accent"></i> ${d.e}</p>
-                        <p class="col-span-2"><i class="fas fa-map-marker-alt w-4 text-accent"></i> ${d.a}</p>
+                        ${ttlHtml} ${phHtml} ${portHtml} ${eHtml} ${aHtml}
                     </div>
                 </div>
             </div>
             <div class="space-y-4">
-                <div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Profil Profesional</h3><p class="text-[10px] leading-relaxed text-justify">${d.prof}</p></div>
-                
-                ${d.skills ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Keahlian (Skills)</h3><p class="text-[10px] font-bold text-accent">${d.skills}</p></div>` : ''}
-
+                ${profHtml}
+                ${skillsHtml}
                 ${this.data.exps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pengalaman Kerja</h3><div class="space-y-2">${this.data.exps.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
-                
                 ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
             </div>
             <div class="absolute bottom-10 right-10 text-center w-32 page-break-inside-avoid">
                 <p class="text-[10px] font-bold mb-1">Hormat Saya,</p>
                 <div class="h-14 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
-                <p class="text-[10px] font-black border-t-[1.5px] border-accent uppercase pt-1 mt-1">${d.n}</p>
+                <p class="text-[10px] font-black border-t-[1.5px] border-accent uppercase pt-1 mt-1">${n}</p>
             </div>
         `;
     }
