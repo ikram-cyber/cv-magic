@@ -48,18 +48,26 @@ class CVBuilder {
             };
         }
 
+        // BUG FIX: ANTI CRASH & DOUBLE CLICK
         document.getElementById('btn-export-cv').onclick = async () => {
-            const btn = document.getElementById('btn-export-cv'); btn.innerHTML = 'MEMPROSES...';
-            await html2pdf().set({
-                margin: 0, 
-                filename: 'CV_Profesional.pdf', 
-                image: { type: 'jpeg', quality: 1 }, 
-                html2canvas: { scale: 3, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['css', 'legacy'] }
-            }).from(document.getElementById('cv-paper')).save();
-            btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL';
-            setTimeout(() => btn.innerHTML = '<i class="fas fa-print text-xl"></i> DOWNLOAD PDF CV', 2000);
+            const btn = document.getElementById('btn-export-cv'); 
+            if(btn.disabled) return;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
+            try {
+                await html2pdf().set({
+                    margin: 0, 
+                    filename: 'CV_Profesional.pdf', 
+                    image: { type: 'jpeg', quality: 1 }, 
+                    html2canvas: { scale: 3, useCORS: true }, 
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: ['css', 'legacy'] }
+                }).from(document.getElementById('cv-paper')).save();
+                btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL';
+            } catch(e) {
+                btn.innerHTML = '<i class="fas fa-times"></i> GAGAL';
+            }
+            setTimeout(() => { btn.innerHTML = '<i class="fas fa-print text-xl"></i> DOWNLOAD PDF CV'; btn.disabled = false; }, 2000);
         };
     }
 

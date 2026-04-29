@@ -49,18 +49,26 @@ class SuratBuilder {
             };
         }
 
+        // BUG FIX: ANTI CRASH & DOUBLE CLICK
         document.getElementById('btn-export-surat').onclick = async () => {
-            const btn = document.getElementById('btn-export-surat'); btn.innerHTML = 'MEMPROSES...';
-            await html2pdf().set({
-                margin: 0, 
-                filename: 'Surat_Lamaran.pdf', 
-                image: { type: 'jpeg', quality: 1 }, 
-                html2canvas: { scale: 3, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['css', 'legacy'] }
-            }).from(document.getElementById('surat-paper')).save();
-            btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL';
-            setTimeout(() => btn.innerHTML = '<i class="fas fa-file-pdf text-xl"></i> DOWNLOAD PDF SURAT', 2000);
+            const btn = document.getElementById('btn-export-surat');
+            if(btn.disabled) return;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
+            try {
+                await html2pdf().set({
+                    margin: 0, 
+                    filename: 'Surat_Lamaran.pdf', 
+                    image: { type: 'jpeg', quality: 1 }, 
+                    html2canvas: { scale: 3, useCORS: true }, 
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: ['css', 'legacy'] }
+                }).from(document.getElementById('surat-paper')).save();
+                btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL';
+            } catch(e) {
+                btn.innerHTML = '<i class="fas fa-times"></i> GAGAL';
+            }
+            setTimeout(() => { btn.innerHTML = '<i class="fas fa-file-pdf text-xl"></i> DOWNLOAD PDF SURAT'; btn.disabled = false; }, 2000);
         };
     }
 
@@ -87,11 +95,19 @@ class SuratBuilder {
         if(btnTemp) {
             btnTemp.onclick = () => {
                 const t = document.getElementById('surat-title').value || "[Posisi]";
+                
+                // PINTAR: Tarik data dari CV kalau lu udah ngisi
+                const n = document.getElementById('surat-name').value || localStorage.getItem('cv-name') || "[Nama Lengkap]";
+                const ttl = localStorage.getItem('cv-ttl') || "[Tempat, Tanggal Lahir]";
+                const ph = localStorage.getItem('cv-phone') || "[No WhatsApp]";
+                const e = localStorage.getItem('cv-email') || "[Email]";
+
                 document.getElementById('surat-hal').value = "Lamaran Pekerjaan";
                 document.getElementById('surat-lamp').value = "1 (satu) Berkas";
                 
+                // Template Surat Resmi Indonesia (Pake Biodata Singkat)
                 const c = document.getElementById('surat-content');
-                c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di perusahaan yang Bapak/Ibu pimpin.\n\nSaya memiliki kualifikasi yang relevan, berdedikasi tinggi, siap bekerja keras, dan mampu berkolaborasi dengan baik dalam tim. Sebagai bahan pertimbangan, saya lampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
+                c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan pekerjaan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di perusahaan yang Bapak/Ibu pimpin. Adapun data diri singkat saya adalah sebagai berikut:\n\nNama : ${n}\nTempat, Tgl Lahir : ${ttl}\nNo. HP/WA : ${ph}\nEmail : ${e}\n\nSaya memiliki kualifikasi yang relevan, berdedikasi tinggi, siap bekerja keras, dan mampu berkolaborasi dengan baik dalam tim. Sebagai bahan pertimbangan, saya melampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
                 
                 ['surat-hal', 'surat-lamp', 'surat-content'].forEach(id => {
                     document.getElementById(id).dispatchEvent(new Event('input'));
@@ -134,6 +150,12 @@ class SuratBuilder {
     }
 
     loadLocal() {
+        // PINTAR: Tarik Nama dari CV kalau lu pindah ke tab Surat Lamaran
+        if(!localStorage.getItem('surat-name') && localStorage.getItem('cv-name')) {
+            const el = document.getElementById('surat-name');
+            if(el) { el.value = localStorage.getItem('cv-name'); localStorage.setItem('surat-name', el.value); }
+        }
+
         ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-content'].forEach(id => {
             if(localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
         });
@@ -160,7 +182,6 @@ class SuratBuilder {
         const contentVal = document.getElementById('surat-content').value;
         const contHtml = contentVal ? contentVal.replace(/\n/g, '<br>') : '';
 
-        // Block Hal & Lampiran
         const lampHtml = lamp ? `<tr><td class="pr-2 align-top">Lampiran</td><td class="pr-2 align-top">:</td><td>${lamp}</td></tr>` : '';
         const halHtml = hal ? `<tr><td class="pr-2 align-top">Hal</td><td class="pr-2 align-top">:</td><td><b>${hal}</b></td></tr>` : '';
         const headerTable = (lamp || hal) ? `<table class="text-[11pt] mb-8">${lampHtml}${halHtml}</table>` : '';
