@@ -51,8 +51,15 @@ class SuratBuilder {
 
         document.getElementById('btn-export-surat').onclick = async () => {
             const btn = document.getElementById('btn-export-surat'); btn.innerHTML = 'MEMPROSES...';
-            // RESOLUSI TINGGI UNTUK SURAT
-            await html2pdf().set({margin: 0, filename: 'Surat_Lamaran.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }}).from(document.getElementById('surat-paper')).save();
+            // REVISI: Tambah pagebreak config biar kalau surat kepanjangan otomatis pindah halaman
+            await html2pdf().set({
+                margin: 0, 
+                filename: 'Surat_Lamaran.pdf', 
+                image: { type: 'jpeg', quality: 1 }, 
+                html2canvas: { scale: 3, useCORS: true }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['css', 'legacy'] }
+            }).from(document.getElementById('surat-paper')).save();
             btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL';
             setTimeout(() => btn.innerHTML = '<i class="fas fa-file-pdf text-xl"></i> DOWNLOAD PDF SURAT', 2000);
         };
@@ -126,17 +133,26 @@ class SuratBuilder {
     renderPaper() {
         const p = document.getElementById('surat-paper');
         if(!p) return;
+        
+        // REVISI: Bikin Tanggal Dinamis Hari Ini
+        const today = new Date();
+        const autoDate = "Jakarta, " + today.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+
         const d = {
-            n: document.getElementById('surat-name').value || "NAMA ANDA", date: document.getElementById('surat-date').value || "Jakarta, 29 April 2026",
-            hrd: document.getElementById('surat-hrd').value || "Yth. Pimpinan HRD", comp: document.getElementById('surat-comp').value || "Nama Perusahaan",
-            cont: (document.getElementById('surat-content').value || "Ketik isi surat di panel kiri...").replace(/\n/g, '<br><br>')
+            n: document.getElementById('surat-name').value || "NAMA ANDA", 
+            date: document.getElementById('surat-date').value || autoDate,
+            hrd: document.getElementById('surat-hrd').value || "Yth. Pimpinan HRD", 
+            comp: document.getElementById('surat-comp').value || "Perusahaan",
+            // REVISI: Benerin jarak paragraf (Cuma <br> aja, jangan <br><br> biar gak kegedean spasinya)
+            cont: (document.getElementById('surat-content').value || "Ketik isi surat di panel kiri...").replace(/\n/g, '<br>')
         };
+
         p.className = `a4-sheet p-[20mm] ${this.data.font} ${this.data.theme} text-[11pt] leading-relaxed text-slate-900 bg-white`;
         p.innerHTML = `
             <div class="text-right mb-10">${d.date}</div>
             <div class="font-bold mb-10 leading-tight"><p>${d.hrd}</p><p class="text-accent">${d.comp}</p><p>Di Tempat</p></div>
             <div class="text-justify mb-16 space-y-2">${d.cont}</div>
-            <div class="w-48 ml-auto text-center">
+            <div class="w-48 ml-auto text-center page-break-inside-avoid">
                 <p class="mb-2">Hormat saya,</p>
                 <div class="h-16 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
                 <p class="font-bold border-t-[1.5px] border-accent mt-1 pt-1 uppercase">${d.n}</p>

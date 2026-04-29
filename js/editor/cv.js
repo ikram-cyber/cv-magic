@@ -5,7 +5,7 @@ class CVBuilder {
     }
 
     init() {
-        this.loadLocal(); // Load dulu biar tema langsung teraplikasi
+        this.loadLocal();
         this.bindTabs();
         this.bindInputs();
         this.bindMedia();
@@ -50,8 +50,15 @@ class CVBuilder {
 
         document.getElementById('btn-export-cv').onclick = async () => {
             const btn = document.getElementById('btn-export-cv'); btn.innerHTML = 'MEMPROSES...';
-            // RESOLUSI PDF DITAIKKAN (scale: 3) BIAR HD/TAJAM
-            await html2pdf().set({margin: 0, filename: 'CV_Profesional.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }}).from(document.getElementById('cv-paper')).save();
+            // REVISI: Tambah pagebreak { mode: ['css', 'legacy'] } biar gak kepotong
+            await html2pdf().set({
+                margin: 0, 
+                filename: 'CV_Profesional.pdf', 
+                image: { type: 'jpeg', quality: 1 }, 
+                html2canvas: { scale: 3, useCORS: true }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['css', 'legacy'] }
+            }).from(document.getElementById('cv-paper')).save();
             btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL';
             setTimeout(() => btn.innerHTML = '<i class="fas fa-print text-xl"></i> DOWNLOAD PDF CV', 2000);
         };
@@ -166,7 +173,8 @@ class CVBuilder {
             a: document.getElementById('cv-address').value || "Alamat Anda", prof: document.getElementById('cv-profile').value || "Profil singkat Anda..."
         };
         
-        p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-900`;
+        // REVISI: text-slate-800 biar lebih tebal pas diprint
+        p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-800`;
         p.innerHTML = `
             <div class="flex gap-5 border-b-[3px] border-accent pb-4 mb-4">
                 <div class="w-[30mm] h-[40mm] bg-slate-100 border-2 border-accent rounded overflow-hidden flex justify-center items-center shrink-0">
@@ -174,8 +182,8 @@ class CVBuilder {
                 </div>
                 <div class="flex-1">
                     <h1 class="text-3xl font-black uppercase leading-none text-accent">${d.n}</h1>
-                    <h2 class="text-[11px] font-bold uppercase tracking-[0.2em] mt-1 mb-3 text-slate-500">${d.t}</h2>
-                    <div class="grid grid-cols-2 gap-y-1 text-[9px] font-bold text-slate-600">
+                    <h2 class="text-[11px] font-bold uppercase tracking-[0.2em] mt-1 mb-3 text-slate-600">${d.t}</h2>
+                    <div class="grid grid-cols-2 gap-y-1 text-[9px] font-bold text-slate-700">
                         <p><i class="fas fa-calendar-alt w-4 text-accent"></i> ${d.ttl}</p>
                         <p><i class="fas fa-phone w-4 text-accent"></i> ${d.ph}</p>
                         <p><i class="fas fa-link w-4 text-accent"></i> ${d.port}</p>
@@ -185,13 +193,13 @@ class CVBuilder {
                 </div>
             </div>
             <div class="space-y-4">
-                <div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1 text-slate-800">Profil Profesional</h3><p class="text-[10px] leading-relaxed text-justify">${d.prof}</p></div>
+                <div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Profil Profesional</h3><p class="text-[10px] leading-relaxed text-justify">${d.prof}</p></div>
                 
-                ${this.data.exps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1 text-slate-800">Pengalaman Kerja</h3><div class="space-y-2">${this.data.exps.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-500">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
+                ${this.data.exps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pengalaman Kerja</h3><div class="space-y-2">${this.data.exps.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
                 
-                ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1 text-slate-800">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-500">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
+                ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
             </div>
-            <div class="absolute bottom-10 right-10 text-center w-32">
+            <div class="absolute bottom-10 right-10 text-center w-32 page-break-inside-avoid">
                 <p class="text-[10px] font-bold mb-1">Hormat Saya,</p>
                 <div class="h-14 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
                 <p class="text-[10px] font-black border-t-[1.5px] border-accent uppercase pt-1 mt-1">${d.n}</p>
