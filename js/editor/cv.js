@@ -50,7 +50,6 @@ class CVBuilder {
 
         document.getElementById('btn-export-cv').onclick = async () => {
             const btn = document.getElementById('btn-export-cv'); btn.innerHTML = 'MEMPROSES...';
-            // REVISI: Tambah pagebreak { mode: ['css', 'legacy'] } biar gak kepotong
             await html2pdf().set({
                 margin: 0, 
                 filename: 'CV_Profesional.pdf', 
@@ -78,7 +77,8 @@ class CVBuilder {
     }
 
     bindInputs() {
-        ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile'].forEach(id => {
+        // Tambahan id cv-skills
+        ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile', 'cv-skills'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
         });
@@ -99,7 +99,15 @@ class CVBuilder {
         let draw = false;
 
         document.getElementById('btn-open-sig').onclick = () => document.getElementById('modal-sig').classList.remove('hidden');
-        document.getElementById('btn-clear-sig').onclick = () => ctx.clearRect(0,0,canvas.width,canvas.height);
+        
+        // BUG FIX: Hapus TTD benar-benar membuang data dari memori
+        document.getElementById('btn-clear-sig').onclick = () => { 
+            ctx.clearRect(0,0,canvas.width,canvas.height); 
+            this.data.sig = null; 
+            localStorage.removeItem('cv-sig'); 
+            this.renderPaper(); 
+        };
+
         document.getElementById('btn-save-sig').onclick = () => {
             this.data.sig = canvas.toDataURL(); localStorage.setItem('cv-sig', this.data.sig);
             document.getElementById('modal-sig').classList.add('hidden'); this.renderPaper();
@@ -154,8 +162,11 @@ class CVBuilder {
     delD(list, i) { this.data[list].splice(i, 1); this.renderLists(); this.renderPaper(); }
 
     loadLocal() {
-        ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile'].forEach(id => {
-            if(localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
+        ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile','cv-skills'].forEach(id => {
+            if(localStorage.getItem(id)) {
+                const el = document.getElementById(id);
+                if(el) el.value = localStorage.getItem(id);
+            }
         });
         if(localStorage.getItem('cv-photo')) this.data.photo = localStorage.getItem('cv-photo');
         if(localStorage.getItem('cv-sig')) this.data.sig = localStorage.getItem('cv-sig');
@@ -166,19 +177,20 @@ class CVBuilder {
     renderPaper() {
         const p = document.getElementById('cv-paper');
         if(!p) return;
+        const skillsVal = document.getElementById('cv-skills') ? document.getElementById('cv-skills').value : '';
         const d = {
             n: document.getElementById('cv-name').value || "NAMA LENGKAP", t: document.getElementById('cv-title').value || "PROFESI / POSISI",
             ttl: document.getElementById('cv-ttl').value || "Kota, Tanggal Lahir", port: document.getElementById('cv-port').value || "linkedin.com/in/anda",
             ph: document.getElementById('cv-phone').value || "08xx-xxxx", e: document.getElementById('cv-email').value || "email@anda.com",
-            a: document.getElementById('cv-address').value || "Alamat Anda", prof: document.getElementById('cv-profile').value || "Profil singkat Anda..."
+            a: document.getElementById('cv-address').value || "Alamat Anda", prof: document.getElementById('cv-profile').value || "Profil singkat Anda...",
+            skills: skillsVal // Ambil data skills
         };
         
-        // REVISI: text-slate-800 biar lebih tebal pas diprint
         p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-800`;
         p.innerHTML = `
             <div class="flex gap-5 border-b-[3px] border-accent pb-4 mb-4">
                 <div class="w-[30mm] h-[40mm] bg-slate-100 border-2 border-accent rounded overflow-hidden flex justify-center items-center shrink-0">
-                    ${this.data.photo ? `<img src="${this.data.photo}" class="w-full h-full object-cover">` : '<i class="fas fa-user text-3xl text-slate-300"></i>'}
+                    ${this.data.photo ? `<img src="${this.data.photo}" class="w-full h-full object-cover object-top">` : '<i class="fas fa-user text-3xl text-slate-300"></i>'}
                 </div>
                 <div class="flex-1">
                     <h1 class="text-3xl font-black uppercase leading-none text-accent">${d.n}</h1>
@@ -195,6 +207,8 @@ class CVBuilder {
             <div class="space-y-4">
                 <div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Profil Profesional</h3><p class="text-[10px] leading-relaxed text-justify">${d.prof}</p></div>
                 
+                ${d.skills ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Keahlian (Skills)</h3><p class="text-[10px] font-bold text-accent">${d.skills}</p></div>` : ''}
+
                 ${this.data.exps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pengalaman Kerja</h3><div class="space-y-2">${this.data.exps.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
                 
                 ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}

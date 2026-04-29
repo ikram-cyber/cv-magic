@@ -102,7 +102,7 @@ class SuratBuilder {
         let draw = false;
 
         document.getElementById('btn-open-sig').onclick = () => document.getElementById('modal-sig').classList.remove('hidden');
-        document.getElementById('btn-clear-sig').onclick = () => ctx.clearRect(0,0,canvas.width,canvas.height);
+        document.getElementById('btn-clear-sig').onclick = () => { ctx.clearRect(0,0,canvas.width,canvas.height); this.data.sig = null; localStorage.removeItem('surat-sig'); this.renderPaper(); };
         document.getElementById('btn-save-sig').onclick = () => {
             this.data.sig = canvas.toDataURL(); localStorage.setItem('surat-sig', this.data.sig);
             document.getElementById('modal-sig').classList.add('hidden'); this.renderPaper();
