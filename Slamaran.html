@@ -22,33 +22,33 @@
     </div>
 
     <main class="flex-1 flex overflow-hidden relative">
-        <section id="panel-editor" class="w-full md:w-[450px] h-full overflow-y-auto p-5 pb-24 border-r border-slate-800 custom-scroll space-y-6">
+        <section id="panel-editor" class="w-full md:w-[450px] h-full overflow-y-auto p-5 pb-40 border-r border-slate-800 custom-scroll space-y-6">
             
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-black text-white">EDITOR SURAT</h2>
-                <button id="btn-reset" class="text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded border border-red-500/20"><i class="fas fa-trash"></i> RESET DATA</button>
+                <button id="btn-reset" class="text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded border border-red-500/20 hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i> RESET DATA</button>
             </div>
 
             <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-4">
                 <div>
                     <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Warna Aksen</h3>
                     <div class="grid grid-cols-4 gap-2">
-                        <button class="surat-theme w-full h-8 rounded bg-sky-600 border-2 border-transparent" data-theme="theme-sky"></button>
-                        <button class="surat-theme w-full h-8 rounded bg-emerald-600 border-2 border-transparent" data-theme="theme-emerald"></button>
-                        <button class="surat-theme w-full h-8 rounded bg-red-600 border-2 border-transparent" data-theme="theme-crimson"></button>
-                        <button class="surat-theme w-full h-8 rounded bg-purple-600 border-2 border-transparent" data-theme="theme-royal"></button>
+                        <button class="surat-theme w-full h-8 rounded bg-sky-600 border-2 border-transparent transition-all" data-theme="theme-sky"></button>
+                        <button class="surat-theme w-full h-8 rounded bg-emerald-600 border-2 border-transparent transition-all" data-theme="theme-emerald"></button>
+                        <button class="surat-theme w-full h-8 rounded bg-red-600 border-2 border-transparent transition-all" data-theme="theme-crimson"></button>
+                        <button class="surat-theme w-full h-8 rounded bg-purple-600 border-2 border-transparent transition-all" data-theme="theme-royal"></button>
                     </div>
                 </div>
                 <div>
                     <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Gaya Tulisan</h3>
                     <div class="grid grid-cols-2 gap-2">
-                        <button class="surat-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent" data-font="font-sans">SANS (Modern)</button>
-                        <button class="surat-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent" data-font="font-serif">SERIF (Formal)</button>
+                        <button class="surat-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent transition-all" data-font="font-sans">SANS (Modern)</button>
+                        <button class="surat-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent transition-all" data-font="font-serif">SERIF (Formal)</button>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center cursor-pointer" id="btn-open-sig">
+            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center cursor-pointer hover:bg-slate-700 transition" id="btn-open-sig">
                 <i class="fas fa-pen-nib text-sky-500 mb-1"></i><p class="text-[10px] font-bold">GAMBAR TANDA TANGAN</p>
             </div>
 
@@ -67,15 +67,36 @@
                     <input type="text" id="surat-hrd" placeholder="Yth. HRD / Pimpinan" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
                 </div>
                 <input type="text" id="surat-comp" placeholder="Nama Perusahaan" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
-                <textarea id="surat-address" placeholder="Alamat Perusahaan (Bisa di-Enter)" class="w-full h-20 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll"></textarea>
+                <textarea id="surat-address" placeholder="Alamat Instansi / Perusahaan (Bisa di-Enter)" class="w-full h-20 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll"></textarea>
             </div>
 
-            <div class="space-y-3">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-sky-500 text-[10px] font-black uppercase">Isi Surat</h3>
-                    <button id="btn-template" class="text-[10px] bg-emerald-600 px-3 py-1 rounded font-bold text-white">TEMPLATE OTOMATIS</button>
+            <div class="space-y-3 pt-3 border-t border-slate-700">
+                <h3 class="text-sky-500 text-[10px] font-black uppercase">Mesin Otomatisasi Surat</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[9px] text-slate-400 font-bold mb-1 block">Level Pengalaman</label>
+                        <select id="sel-exp" class="w-full bg-slate-800 p-2 rounded-lg text-xs border border-slate-700 outline-none focus:border-sky-500 text-slate-200">
+                            <option value="fresh">Baru Lulus Sekolah/Kuliah</option>
+                            <option value="zero">Belum Pengalaman Sama Sekali</option>
+                            <option value="pro">Sudah Berpengalaman</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[9px] text-slate-400 font-bold mb-1 block">Tujuan Instansi</label>
+                        <select id="sel-ind" class="w-full bg-slate-800 p-2 rounded-lg text-xs border border-slate-700 outline-none focus:border-sky-500 text-slate-200">
+                            <option value="umum">Umum / Perusahaan</option>
+                            <option value="pabrik">Pabrik / Manufaktur</option>
+                            <option value="apotek">Apotek / Farmasi</option>
+                            <option value="rs">Rumah Sakit / Klinik</option>
+                            <option value="bandara">Bandara / Aviasi</option>
+                            <option value="logistik">Logistik / Gudang</option>
+                        </select>
+                    </div>
                 </div>
-                <textarea id="surat-content" placeholder="Ketik isi surat lamaran di sini..." class="w-full h-64 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll"></textarea>
+                <button id="btn-template" class="w-full text-[10px] bg-emerald-600 hover:bg-emerald-500 px-3 py-3 rounded-lg font-bold text-white transition flex items-center justify-center gap-2">
+                    <i class="fas fa-magic"></i> BUAT ISI SURAT OTOMATIS
+                </button>
+                <textarea id="surat-content" placeholder="Ketik manual isi surat lamaran di sini atau gunakan mesin pembuat surat di atas..." class="w-full h-64 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll"></textarea>
             </div>
         </section>
 
@@ -85,7 +106,7 @@
             </div>
         </section>
 
-        <button id="btn-export-surat" class="fixed bottom-4 right-4 left-4 md:left-[470px] bg-sky-500 text-white font-black py-4 rounded-xl shadow-xl z-40 active:scale-95 transition-transform flex items-center justify-center gap-2">
+        <button id="btn-export-surat" class="fixed bottom-4 right-4 left-4 md:left-[470px] bg-sky-500 hover:bg-sky-600 text-white font-black py-4 rounded-xl shadow-[0_10px_20px_rgba(14,165,233,0.3)] z-40 active:scale-95 transition-transform flex items-center justify-center gap-2">
             <i class="fas fa-file-pdf text-xl"></i> DOWNLOAD PDF SURAT
         </button>
     </main>
@@ -93,7 +114,7 @@
     <div id="modal-sig" class="fixed inset-0 bg-black/90 z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-slate-800 w-full max-w-sm rounded-2xl p-4 space-y-4">
             <h3 class="text-sky-400 font-bold text-center text-xs tracking-widest">TANDA TANGAN</h3>
-            <canvas id="surat-sig-pad" class="w-full bg-white rounded-xl aspect-video touch-none cursor-crosshair"></canvas>
+            <canvas id="surat-sig-pad" width="800" height="400" class="w-full bg-white rounded-xl aspect-video touch-none cursor-crosshair border border-slate-300"></canvas>
             <div class="flex gap-2">
                 <button id="btn-clear-sig" class="flex-1 bg-red-600 py-3 rounded-lg font-bold text-xs">HAPUS</button>
                 <button id="btn-save-sig" class="flex-1 bg-sky-500 py-3 rounded-lg font-bold text-xs">SIMPAN</button>

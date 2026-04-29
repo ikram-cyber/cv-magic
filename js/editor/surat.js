@@ -92,25 +92,47 @@ class SuratBuilder {
     }
 
     bindInputs() {
-        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content'].forEach(id => {
+        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content', 'sel-exp', 'sel-ind'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
         });
 
+        // REVISI: LOGIKA MESIN SURAT OTOMATIS
         const btnTemp = document.getElementById('btn-template');
         if(btnTemp) {
             btnTemp.onclick = () => {
-                const t = document.getElementById('surat-title').value || "[Posisi]";
+                const t = document.getElementById('surat-title').value || "[Posisi yang Dilamar]";
                 const n = document.getElementById('surat-name').value || localStorage.getItem('cv-name') || "[Nama Lengkap]";
                 const ttl = localStorage.getItem('cv-ttl') || "[Tempat, Tanggal Lahir]";
                 const ph = localStorage.getItem('cv-phone') || "[No WhatsApp]";
                 const e = localStorage.getItem('cv-email') || "[Email]";
 
+                const expMode = document.getElementById('sel-exp').value;
+                const indMode = document.getElementById('sel-ind').value;
+
+                // Tentukan nama industri
+                let indText = "perusahaan";
+                if(indMode === 'pabrik') indText = "pabrik / perusahaan manufaktur";
+                else if(indMode === 'apotek') indText = "apotek";
+                else if(indMode === 'rs') indText = "rumah sakit";
+                else if(indMode === 'bandara') indText = "instansi otoritas bandara";
+                else if(indMode === 'logistik') indText = "perusahaan logistik / ekspedisi";
+
+                // Tentukan paragraf pengalaman
+                let expText = "";
+                if(expMode === 'fresh') {
+                    expText = `Sebagai fresh graduate, saya telah dibekali dengan ilmu pengetahuan terkini dan semangat tinggi untuk terjun langsung ke dunia kerja. Saya terbiasa beradaptasi dengan cepat, memiliki integritas, dan siap memberikan dedikasi penuh untuk berkontribusi di lingkungan operasional ${indText} yang Bapak/Ibu pimpin.`;
+                } else if(expMode === 'zero') {
+                    expText = `Meskipun saat ini saya belum memiliki pengalaman kerja formal, saya adalah individu yang pantang menyerah, pekerja keras, dan memiliki kemauan kuat untuk mempelajari hal-hal baru dengan cepat. Saya memiliki motivasi tinggi untuk membuktikan kinerja terbaik saya bagi ${indText} yang Bapak/Ibu pimpin.`;
+                } else {
+                    expText = `Berbekal pengalaman kerja yang saya miliki, saya terbukti mampu menangani tanggung jawab secara profesional, bekerja berorientasi pada target operasional, dan berkolaborasi secara solid di dalam tim. Saya yakin kompetensi dan rekam jejak saya dapat memberikan nilai tambah bagi ${indText} yang Bapak/Ibu pimpin.`;
+                }
+
                 document.getElementById('surat-hal').value = "Lamaran Pekerjaan";
                 document.getElementById('surat-lamp').value = "1 (satu) Berkas";
                 
                 const c = document.getElementById('surat-content');
-                c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan pekerjaan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di perusahaan yang Bapak/Ibu pimpin. Adapun data diri singkat saya adalah sebagai berikut:\n\nNama : ${n}\nTempat, Tgl Lahir : ${ttl}\nNo. HP/WA : ${ph}\nEmail : ${e}\n\nSaya memiliki kualifikasi yang relevan, berdedikasi tinggi, siap bekerja keras, dan mampu berkolaborasi dengan baik dalam tim. Sebagai bahan pertimbangan, saya melampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
+                c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan pekerjaan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di ${indText} yang Bapak/Ibu pimpin. Adapun data diri singkat saya adalah sebagai berikut:\n\nNama : ${n}\nTempat, Tgl Lahir : ${ttl}\nNo. HP/WA : ${ph}\nEmail : ${e}\n\n${expText}\n\nSebagai bahan pertimbangan, saya melampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
                 
                 ['surat-hal', 'surat-lamp', 'surat-content'].forEach(id => { document.getElementById(id).dispatchEvent(new Event('input')); });
             };
@@ -150,7 +172,7 @@ class SuratBuilder {
             if(el) { el.value = localStorage.getItem('cv-name'); localStorage.setItem('surat-name', el.value); }
         }
 
-        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content'].forEach(id => {
+        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content', 'sel-exp', 'sel-ind'].forEach(id => {
             if(localStorage.getItem(id)) { const el = document.getElementById(id); if(el) el.value = localStorage.getItem(id); }
         });
         if(localStorage.getItem('surat-sig')) this.data.sig = localStorage.getItem('surat-sig');
@@ -177,10 +199,7 @@ class SuratBuilder {
         const lamp = document.getElementById('surat-lamp').value;
         const hrd = document.getElementById('surat-hrd').value;
         const comp = document.getElementById('surat-comp').value;
-        
-        // REVISI: Alamat perusahaan pakai replace newline biar multiline bisa jalan
         const addrVal = document.getElementById('surat-address') ? document.getElementById('surat-address').value : '';
-        const addrHtml = addrVal ? `<p class="font-normal text-[10pt] mt-1">${addrVal.replace(/\n/g, '<br>')}</p>` : '';
         
         const contentVal = document.getElementById('surat-content').value;
         const contHtml = contentVal ? contentVal.replace(/\n/g, '<br>') : '';
@@ -191,6 +210,7 @@ class SuratBuilder {
 
         const hrdHtml = hrd ? `<p>${hrd}</p>` : '';
         const compHtml = comp ? `<p class="text-accent">${comp}</p>` : '';
+        const addrHtml = addrVal ? `<p class="font-normal text-[10pt] mt-1">${addrVal.replace(/\n/g, '<br>')}</p>` : '';
         const diTempatHtml = (hrd || comp) && !addrVal ? `<p>Di Tempat</p>` : '';
 
         p.className = `a4-sheet p-[20mm] ${this.data.font} ${this.data.theme} text-[11pt] leading-relaxed text-slate-900 bg-white`;
