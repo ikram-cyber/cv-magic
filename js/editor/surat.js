@@ -64,7 +64,8 @@ class SuratBuilder {
                 await html2pdf().set({
                     margin: 0, 
                     filename: fileName, 
-                    image: { type: 'jpeg', quality: 1 }, 
+                    // REVISI: Quality diturunin ke 0.82 biar size file < 2MB (Aman buat portal Loker)
+                    image: { type: 'jpeg', quality: 0.82 }, 
                     html2canvas: { scale: 3, useCORS: true }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                     pagebreak: { mode: ['css', 'legacy'] },
@@ -92,7 +93,7 @@ class SuratBuilder {
     }
 
     bindInputs() {
-        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content'].forEach(id => {
+        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content', 'sel-exp', 'sel-ind'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
         });
@@ -100,25 +101,58 @@ class SuratBuilder {
         const btnTemp = document.getElementById('btn-template');
         if(btnTemp) {
             btnTemp.onclick = () => {
-                const t = document.getElementById('surat-title').value || "[Posisi]";
+                const t = document.getElementById('surat-title').value || "[Posisi yang Dilamar]";
                 const n = document.getElementById('surat-name').value || localStorage.getItem('cv-name') || "[Nama Lengkap]";
                 const ttl = localStorage.getItem('cv-ttl') || "[Tempat, Tanggal Lahir]";
                 const ph = localStorage.getItem('cv-phone') || "[No WhatsApp]";
                 const e = localStorage.getItem('cv-email') || "[Email]";
 
+                const expMode = document.getElementById('sel-exp').value;
+                const indMode = document.getElementById('sel-ind').value;
+
+                // REVISI DIKSI: Lebih Spesifik dan Profesional
+                let indText = "perusahaan";
+                let hrdText = "Yth. HRD Manager / Pimpinan Perusahaan";
+
+                if(indMode === 'pabrik') {
+                    indText = "perusahaan manufaktur";
+                    hrdText = "Yth. HRD Manager / Pimpinan Plant Manufaktur";
+                } else if(indMode === 'apotek') {
+                    indText = "apotek";
+                    hrdText = "Yth. Apoteker Pengelola Apotek (APA) / Pimpinan Apotek";
+                } else if(indMode === 'rs') {
+                    indText = "rumah sakit / instansi kesehatan";
+                    hrdText = "Yth. Direktur / Kepala Bagian HRD Rumah Sakit";
+                } else if(indMode === 'bandara') {
+                    indText = "perusahaan aviasi / otoritas bandara";
+                    hrdText = "Yth. HRD Manager / Pimpinan Otoritas Bandara";
+                } else if(indMode === 'logistik') {
+                    indText = "perusahaan logistik dan rantai pasok";
+                    hrdText = "Yth. Kepala Cabang / HRD Manager Logistik";
+                }
+
+                let expText = "";
+                if(expMode === 'fresh') {
+                    expText = `Sebagai fresh graduate yang energik dan memiliki fondasi akademik yang kuat, saya siap terjun langsung ke dunia kerja. Saya terbiasa beradaptasi dengan cepat, memiliki integritas, dan berkomitmen penuh untuk berkontribusi maksimal pada operasional ${indText} yang Bapak/Ibu pimpin.`;
+                } else if(expMode === 'zero') {
+                    expText = `Meskipun saat ini saya belum memiliki pengalaman kerja formal, saya adalah individu pekerja keras yang pantang menyerah dan memiliki kemauan kuat untuk mempelajari hal-hal baru. Saya siap dilatih, disiplin, dan memiliki motivasi tinggi untuk memberikan kinerja terbaik bagi ${indText} yang Bapak/Ibu pimpin.`;
+                } else {
+                    expText = `Berbekal pengalaman kerja yang relevan sebelumnya, saya terbukti mampu menangani tanggung jawab secara profesional, terbiasa bekerja dengan target, dan mampu berkolaborasi secara solid dalam tim. Saya yakin kompetensi dan rekam jejak saya dapat memberikan nilai tambah nyata bagi kelancaran operasional ${indText} yang Bapak/Ibu pimpin.`;
+                }
+
                 document.getElementById('surat-hal').value = "Lamaran Pekerjaan";
                 document.getElementById('surat-lamp').value = "1 (satu) Berkas";
+                document.getElementById('surat-hrd').value = hrdText;
                 
                 const c = document.getElementById('surat-content');
-                c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan pekerjaan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di perusahaan yang Bapak/Ibu pimpin. Adapun data diri singkat saya adalah sebagai berikut:\n\nNama : ${n}\nTempat, Tgl Lahir : ${ttl}\nNo. HP/WA : ${ph}\nEmail : ${e}\n\nSaya memiliki kualifikasi yang relevan, berdedikasi tinggi, siap bekerja keras, dan mampu berkolaborasi dengan baik dalam tim. Sebagai bahan pertimbangan, saya melampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
+                c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan pekerjaan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di ${indText} yang Bapak/Ibu pimpin. Adapun data diri singkat saya adalah sebagai berikut:\n\nNama : ${n}\nTempat, Tgl Lahir : ${ttl}\nNo. HP/WA : ${ph}\nEmail : ${e}\n\n${expText}\n\nSebagai bahan pertimbangan, saya melampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
                 
-                ['surat-hal', 'surat-lamp', 'surat-content'].forEach(id => { document.getElementById(id).dispatchEvent(new Event('input')); });
+                ['surat-hal', 'surat-lamp', 'surat-hrd', 'surat-content'].forEach(id => { document.getElementById(id).dispatchEvent(new Event('input')); });
             };
         }
     }
 
     bindMedia() {
-        // --- SISTEM UPLOAD TTD SURAT ---
         const sigUpload = document.getElementById('surat-sig-upload');
         if(sigUpload) {
             sigUpload.onchange = (e) => {
@@ -181,7 +215,7 @@ class SuratBuilder {
             if(el) { el.value = localStorage.getItem('cv-name'); localStorage.setItem('surat-name', el.value); }
         }
 
-        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content'].forEach(id => {
+        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content', 'sel-exp', 'sel-ind'].forEach(id => {
             if(localStorage.getItem(id)) { const el = document.getElementById(id); if(el) el.value = localStorage.getItem(id); }
         });
         if(localStorage.getItem('surat-sig')) this.data.sig = localStorage.getItem('surat-sig');
@@ -235,7 +269,7 @@ class SuratBuilder {
                 ${diTempatHtml}
             </div>
             <div class="text-justify mb-16 space-y-2">${contHtml}</div>
-            <div class="w-48 ml-auto text-center page-break-inside-avoid">
+            <div class="w-48 ml-auto text-center break-inside-avoid">
                 <p class="mb-2">Hormat saya,</p>
                 <div class="h-16 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
                 <p class="font-bold border-t-[1.5px] border-accent mt-1 pt-1 uppercase">${n}</p>

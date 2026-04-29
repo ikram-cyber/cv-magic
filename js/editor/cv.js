@@ -65,7 +65,7 @@ class CVBuilder {
                 await html2pdf().set({
                     margin: 0, 
                     filename: fileName, 
-                    image: { type: 'jpeg', quality: 1 }, 
+                    image: { type: 'jpeg', quality: 0.82 }, 
                     html2canvas: { scale: 3, useCORS: true }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                     pagebreak: { mode: ['css', 'legacy'] },
@@ -325,7 +325,7 @@ class CVBuilder {
             </div>
             
             <div class="mt-12 flex justify-end w-full page-break-inside-avoid">
-                <div class="text-center w-32">
+                <div class="text-center w-48">
                     <p class="text-[10px] font-bold mb-1">Hormat Saya,</p>
                     <div class="h-14 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
                     <p class="text-[10px] font-black border-t-[1.5px] border-accent uppercase pt-1 mt-1">${n}</p>
