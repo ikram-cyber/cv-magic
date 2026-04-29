@@ -53,10 +53,18 @@ class SuratBuilder {
         document.getElementById('btn-export-surat').onclick = async () => {
             const btn = document.getElementById('btn-export-surat');
             if(btn.disabled) return;
+            
+            // REVISI FATAL: Auto-Switch Tab ke Preview biar PDF Surat gak BLANK di HP
+            const pPan = document.getElementById('panel-preview');
+            const pBtn = document.getElementById('tab-prev');
+            if (pPan.classList.contains('hidden') && pBtn) {
+                pBtn.click();
+            }
+
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
             
-            await new Promise(resolve => setTimeout(resolve, 150));
+            await new Promise(resolve => setTimeout(resolve, 300));
 
             let userName = document.getElementById('surat-name').value || 'Pelamar';
             userName = userName.replace(/[^a-zA-Z0-9]/g, '_');
@@ -64,10 +72,11 @@ class SuratBuilder {
 
             try {
                 await html2pdf().set({
-                    margin: 0, 
+                    margin: [5, 0, 5, 0], // Margin aman atas-bawah
                     filename: fileName, 
                     image: { type: 'jpeg', quality: 0.82 }, 
-                    html2canvas: { scale: 3, useCORS: true }, 
+                    // REVISI FATAL: scrollY: 0 biar kop surat gak kepotong di HP
+                    html2canvas: { scale: 3, useCORS: true, scrollY: 0 }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                     pagebreak: { mode: ['css', 'legacy'] },
                     enableLinks: true
@@ -260,7 +269,6 @@ class SuratBuilder {
         const contentVal = document.getElementById('surat-content').value;
         const contHtml = contentVal ? contentVal.replace(/\n/g, '<br>') : '';
 
-        // REVISI: Tarik Kontak dari CV buat dijadiin Kop Surat Keren
         const myName = localStorage.getItem('cv-name') || n;
         const myPhone = localStorage.getItem('cv-phone') || "";
         const myEmail = localStorage.getItem('cv-email') || "";

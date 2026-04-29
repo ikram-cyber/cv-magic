@@ -54,10 +54,19 @@ class CVBuilder {
         document.getElementById('btn-export-cv').onclick = async () => {
             const btn = document.getElementById('btn-export-cv'); 
             if(btn.disabled) return;
+
+            // REVISI FATAL: Auto-Switch Tab ke Preview kalau di HP biar PDF gak BLANK
+            const pPan = document.getElementById('panel-preview');
+            const pBtn = document.getElementById('tab-prev');
+            if (pPan.classList.contains('hidden') && pBtn) {
+                pBtn.click();
+            }
+
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
             
-            await new Promise(resolve => setTimeout(resolve, 150));
+            // Kasih napas 300ms biar animasi buka tab kelar
+            await new Promise(resolve => setTimeout(resolve, 300));
             
             let userName = document.getElementById('cv-name').value || 'Profesional';
             userName = userName.replace(/[^a-zA-Z0-9]/g, '_');
@@ -65,10 +74,11 @@ class CVBuilder {
 
             try {
                 await html2pdf().set({
-                    margin: 0, 
+                    margin: [5, 0, 5, 0], // Kasih jarak aman 5mm atas bawah biar multi-page gak nabrak
                     filename: fileName, 
                     image: { type: 'jpeg', quality: 0.82 }, 
-                    html2canvas: { scale: 3, useCORS: true }, 
+                    // REVISI FATAL: scrollY: 0 biar kepala CV gak terpotong pas di-scroll ke bawah
+                    html2canvas: { scale: 3, useCORS: true, scrollY: 0 }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                     pagebreak: { mode: ['css', 'legacy'] },
                     enableLinks: true
@@ -122,7 +132,6 @@ class CVBuilder {
             };
         }
 
-        // REVISI: Fungsi Tambah langsung di-Save ke memori
         document.getElementById('btn-add-exp').onclick = () => { this.data.exps.push({role:'', comp:'', year:'', desc:''}); this.saveLists(); this.renderLists(); this.renderPaper(); };
         document.getElementById('btn-add-edu').onclick = () => { this.data.edus.push({school:'', degree:'', year:'', score:''}); this.saveLists(); this.renderLists(); this.renderPaper(); };
         const btnPrj = document.getElementById('btn-add-prj');
@@ -221,7 +230,6 @@ class CVBuilder {
         canvas.ontouchstart = (e) => { draw = true; drawLine(e); }; canvas.ontouchmove = drawLine; canvas.ontouchend = () => { draw = false; ctx.beginPath(); };
     }
 
-    // REVISI: Mesin Penyimpan List ke LocalStorage
     saveLists() {
         localStorage.setItem('cv-exps', JSON.stringify(this.data.exps));
         localStorage.setItem('cv-edus', JSON.stringify(this.data.edus));
@@ -234,20 +242,20 @@ class CVBuilder {
         const temp = arr[i];
         arr[i] = arr[i + dir];
         arr[i + dir] = temp;
-        this.saveLists(); // Save kalau digeser
+        this.saveLists(); 
         this.renderLists();
         this.renderPaper();
     }
 
     upD(list, i, key, val) { 
         this.data[list][i][key] = val; 
-        this.saveLists(); // Save kalau diketik
+        this.saveLists(); 
         this.renderPaper(); 
     }
     
     delD(list, i) { 
         this.data[list].splice(i, 1); 
-        this.saveLists(); // Save kalau dihapus
+        this.saveLists(); 
         this.renderLists(); 
         this.renderPaper(); 
     }
@@ -326,7 +334,6 @@ class CVBuilder {
         if(localStorage.getItem('cv-font')) this.data.font = localStorage.getItem('cv-font');
         if(localStorage.getItem('cv-theme')) this.data.theme = localStorage.getItem('cv-theme');
         
-        // REVISI: Load List Pengalaman dari Memori saat Browser di-Refresh
         if(localStorage.getItem('cv-exps')) this.data.exps = JSON.parse(localStorage.getItem('cv-exps'));
         if(localStorage.getItem('cv-edus')) this.data.edus = JSON.parse(localStorage.getItem('cv-edus'));
         if(localStorage.getItem('cv-prjs')) this.data.prjs = JSON.parse(localStorage.getItem('cv-prjs'));
