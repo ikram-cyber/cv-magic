@@ -13,10 +13,8 @@ class SuratBuilder {
     }
 
     bindTabs() {
-        const eBtn = document.getElementById('tab-edit');
-        const pBtn = document.getElementById('tab-prev');
-        const ePan = document.getElementById('panel-editor');
-        const pPan = document.getElementById('panel-preview');
+        const eBtn = document.getElementById('tab-edit'); const pBtn = document.getElementById('tab-prev');
+        const ePan = document.getElementById('panel-editor'); const pPan = document.getElementById('panel-preview');
 
         if(eBtn && pBtn) {
             eBtn.onclick = () => {
@@ -34,15 +32,12 @@ class SuratBuilder {
         document.querySelectorAll('.surat-font').forEach(b => {
             b.onclick = () => {
                 document.querySelectorAll('.surat-font').forEach(x => x.classList.remove('border-sky-500'));
-                b.classList.add('border-sky-500');
-                this.data.font = b.dataset.font;
-                this.renderPaper();
+                b.classList.add('border-sky-500'); this.data.font = b.dataset.font; this.renderPaper();
             };
         });
 
         document.getElementById('btn-export-surat').onclick = async () => {
-            const btn = document.getElementById('btn-export-surat');
-            btn.innerHTML = 'MEMPROSES...';
+            const btn = document.getElementById('btn-export-surat'); btn.innerHTML = 'MEMPROSES...';
             await html2pdf().set({margin: 0, filename: 'Surat_Lamaran.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }}).from(document.getElementById('surat-paper')).save();
             btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL';
             setTimeout(() => btn.innerHTML = '<i class="fas fa-file-pdf text-xl"></i> DOWNLOAD PDF SURAT', 2000);
@@ -55,26 +50,28 @@ class SuratBuilder {
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
         });
 
-        document.getElementById('btn-template').onclick = () => {
-            const t = document.getElementById('surat-title').value || "[Posisi]";
-            const c = document.getElementById('surat-content');
-            c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan yang tersedia, saya bermaksud melamar untuk posisi ${t} di perusahaan yang Bapak/Ibu pimpin.\n\nSaya memiliki kualifikasi yang relevan, berdedikasi tinggi, dan siap untuk berkontribusi secara maksimal. Sebagai bahan pertimbangan, saya lampirkan dokumen pendukung beserta Curriculum Vitae.\n\nBesar harapan saya untuk dapat diberikan kesempatan wawancara. Atas perhatian Bapak/Ibu, saya ucapkan terima kasih.`;
-            c.dispatchEvent(new Event('input'));
-        };
+        const btnTemp = document.getElementById('btn-template');
+        if(btnTemp) {
+            btnTemp.onclick = () => {
+                const t = document.getElementById('surat-title').value || "[Posisi]";
+                const c = document.getElementById('surat-content');
+                c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di perusahaan yang Bapak/Ibu pimpin.\n\nSaya memiliki kualifikasi yang relevan, berdedikasi tinggi, siap bekerja keras, dan mampu berkolaborasi dengan baik dalam tim. Sebagai bahan pertimbangan, saya lampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
+                c.dispatchEvent(new Event('input'));
+            };
+        }
     }
 
     bindMedia() {
         const canvas = document.getElementById('surat-sig-pad');
+        if(!canvas) return;
         const ctx = canvas.getContext('2d');
         let draw = false;
 
         document.getElementById('btn-open-sig').onclick = () => document.getElementById('modal-sig').classList.remove('hidden');
         document.getElementById('btn-clear-sig').onclick = () => ctx.clearRect(0,0,canvas.width,canvas.height);
         document.getElementById('btn-save-sig').onclick = () => {
-            this.data.sig = canvas.toDataURL();
-            localStorage.setItem('surat-sig', this.data.sig);
-            document.getElementById('modal-sig').classList.add('hidden');
-            this.renderPaper();
+            this.data.sig = canvas.toDataURL(); localStorage.setItem('surat-sig', this.data.sig);
+            document.getElementById('modal-sig').classList.add('hidden'); this.renderPaper();
         };
 
         const drawLine = (e) => {
@@ -99,22 +96,21 @@ class SuratBuilder {
 
     renderPaper() {
         const p = document.getElementById('surat-paper');
+        if(!p) return;
         const d = {
-            n: document.getElementById('surat-name').value || "NAMA ANDA",
-            date: document.getElementById('surat-date').value || "Jakarta, 29 April 2026",
-            hrd: document.getElementById('surat-hrd').value || "Yth. Pimpinan HRD",
-            comp: document.getElementById('surat-comp').value || "Perusahaan",
-            cont: (document.getElementById('surat-content').value || "Isi surat lamaran...").replace(/\n/g, '<br>')
+            n: document.getElementById('surat-name').value || "NAMA ANDA", date: document.getElementById('surat-date').value || "Jakarta, 29 April 2026",
+            hrd: document.getElementById('surat-hrd').value || "Yth. Pimpinan HRD", comp: document.getElementById('surat-comp').value || "Nama Perusahaan",
+            cont: (document.getElementById('surat-content').value || "Ketik isi surat di panel kiri...").replace(/\n/g, '<br><br>') // Double br for clear paragraphs
         };
-        p.className = `a4-sheet p-[20mm] ${this.data.font} text-[11pt] leading-relaxed text-slate-900`;
+        p.className = `a4-sheet p-[20mm] ${this.data.font} text-[11pt] leading-relaxed text-slate-900 bg-white`;
         p.innerHTML = `
             <div class="text-right mb-10">${d.date}</div>
-            <div class="font-bold mb-10"><p>${d.hrd}</p><p>${d.comp}</p><p>Di Tempat</p></div>
-            <div class="text-justify mb-16">${d.cont}</div>
-            <div class="w-56 ml-auto text-center">
+            <div class="font-bold mb-10 leading-tight"><p>${d.hrd}</p><p>${d.comp}</p><p>Di Tempat</p></div>
+            <div class="text-justify mb-16 space-y-2">${d.cont}</div>
+            <div class="w-48 ml-auto text-center">
                 <p class="mb-2">Hormat saya,</p>
                 <div class="h-16 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
-                <p class="font-bold border-t-2 border-slate-900 mt-2 pt-1 uppercase">${d.n}</p>
+                <p class="font-bold border-t border-slate-900 mt-1 pt-1 uppercase">${d.n}</p>
             </div>
         `;
     }
