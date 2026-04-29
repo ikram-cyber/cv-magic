@@ -30,12 +30,34 @@ class CVBuilder {
             };
         }
 
+        // FONT SAKLAR
         document.querySelectorAll('.cv-font').forEach(b => {
             b.onclick = () => {
                 document.querySelectorAll('.cv-font').forEach(x => x.classList.remove('border-sky-500'));
                 b.classList.add('border-sky-500'); this.data.font = b.dataset.font; this.renderPaper();
             };
         });
+
+        // THEME SAKLAR
+        document.querySelectorAll('.cv-theme').forEach(b => {
+            b.onclick = () => {
+                document.querySelectorAll('.cv-theme').forEach(x => { x.classList.remove('border-white', 'ring-2', 'ring-sky-500'); x.classList.add('border-transparent'); });
+                b.classList.remove('border-transparent'); b.classList.add('border-white', 'ring-2', 'ring-sky-500');
+                this.data.theme = b.dataset.theme; this.renderPaper();
+            };
+        });
+
+        // TOMBOL RESET
+        const btnReset = document.getElementById('btn-reset');
+        if(btnReset) {
+            btnReset.onclick = () => {
+                if(confirm("Yakin mau hapus semua data CV?")) {
+                    ['cv-name','cv-title','cv-phone','cv-email','cv-address','cv-profile'].forEach(id => localStorage.removeItem(id));
+                    localStorage.removeItem('cv-photo'); localStorage.removeItem('cv-sig');
+                    location.reload();
+                }
+            };
+        }
 
         document.getElementById('btn-export-cv').onclick = async () => {
             const btn = document.getElementById('btn-export-cv'); btn.innerHTML = 'MEMPROSES...';
@@ -86,7 +108,6 @@ class CVBuilder {
         canvas.ontouchstart = (e) => { draw = true; drawLine(e); }; canvas.ontouchmove = drawLine; canvas.ontouchend = () => { draw = false; ctx.beginPath(); };
     }
 
-    // --- REVISI: Fungsi Hapus & Tampilan List yang Lebih Rapi ---
     renderLists() {
         const elExp = document.getElementById('cv-exp-list'); elExp.innerHTML = '';
         this.data.exps.forEach((x,i) => {
@@ -138,34 +159,34 @@ class CVBuilder {
             p: document.getElementById('cv-phone').value || "08xx-xxxx", e: document.getElementById('cv-email').value || "email@anda.com",
             a: document.getElementById('cv-address').value || "Alamat Anda", prof: document.getElementById('cv-profile').value || "Profil singkat Anda"
         };
-        // Set margin & font
-        p.className = `a4-sheet p-[15mm] ${this.data.font} bg-white text-slate-900`;
+        // Terapkan Tema dan Font
+        p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-900`;
         p.innerHTML = `
-            <div class="flex gap-5 border-b-2 border-sky-600 pb-4 mb-4">
-                <div class="w-[30mm] h-[40mm] bg-slate-100 border-2 border-slate-900 rounded overflow-hidden flex justify-center items-center shrink-0">
+            <div class="flex gap-5 border-b-[3px] border-accent pb-4 mb-4">
+                <div class="w-[30mm] h-[40mm] bg-slate-100 border-2 border-accent rounded overflow-hidden flex justify-center items-center shrink-0">
                     ${this.data.photo ? `<img src="${this.data.photo}" class="w-full h-full object-cover">` : '<i class="fas fa-user text-3xl text-slate-300"></i>'}
                 </div>
                 <div class="flex-1">
-                    <h1 class="text-3xl font-black uppercase text-slate-900 leading-none">${d.n}</h1>
-                    <h2 class="text-[11px] font-bold text-sky-600 uppercase tracking-widest mt-1 mb-3">${d.t}</h2>
+                    <h1 class="text-3xl font-black uppercase leading-none text-accent">${d.n}</h1>
+                    <h2 class="text-[11px] font-bold uppercase tracking-[0.2em] mt-1 mb-3 text-slate-500">${d.t}</h2>
                     <div class="text-[10px] space-y-1 font-bold text-slate-600">
-                        <p><i class="fas fa-phone text-sky-500 w-4"></i> ${d.p}</p>
-                        <p><i class="fas fa-envelope text-sky-500 w-4"></i> ${d.e}</p>
-                        <p><i class="fas fa-map-marker-alt text-sky-500 w-4"></i> ${d.a}</p>
+                        <p><i class="fas fa-phone w-4 text-accent"></i> ${d.p}</p>
+                        <p><i class="fas fa-envelope w-4 text-accent"></i> ${d.e}</p>
+                        <p><i class="fas fa-map-marker-alt w-4 text-accent"></i> ${d.a}</p>
                     </div>
                 </div>
             </div>
             <div class="space-y-4">
                 <div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1">Profil Profesional</h3><p class="text-[10px] leading-relaxed text-justify">${d.prof}</p></div>
                 
-                ${this.data.exps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1">Pengalaman Kerja</h3><div class="space-y-2">${this.data.exps.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold">${x.role||'Posisi'}</p><p class="text-[10px] text-sky-600 font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-500">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
+                ${this.data.exps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1">Pengalaman Kerja</h3><div class="space-y-2">${this.data.exps.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-500">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
                 
-                ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] text-sky-600 font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-500">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
+                ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-500">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
             </div>
             <div class="absolute bottom-10 right-10 text-center w-32">
                 <p class="text-[10px] font-bold mb-1">Hormat Saya,</p>
                 <div class="h-14 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
-                <p class="text-[10px] font-black border-t border-slate-900 uppercase pt-1 mt-1">${d.n}</p>
+                <p class="text-[10px] font-black border-t-2 border-accent uppercase pt-1 mt-1">${d.n}</p>
             </div>
         `;
     }

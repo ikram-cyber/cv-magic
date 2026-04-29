@@ -5,6 +5,15 @@ body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f1f5f9; }
 .font-serif { font-family: 'Merriweather', serif; }
 .font-mono { font-family: 'Space Mono', monospace; }
 
+/* SISTEM TEMA WARNA */
+.theme-sky { --accent: #0284c7; }
+.theme-emerald { --accent: #059669; }
+.theme-crimson { --accent: #dc2626; }
+.theme-royal { --accent: #6d28d9; }
+
+.text-accent { color: var(--accent, #0284c7) !important; }
+.border-accent { border-color: var(--accent, #0284c7) !important; }
+
 .a4-sheet {
     width: 210mm; min-height: 297mm; margin: 0 auto;
     background: white; color: #0f172a; position: relative;
