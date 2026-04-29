@@ -56,6 +56,9 @@ class SuratBuilder {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
             
+            // REVISI: Kasih napas 150ms biar browser sempet muterin ikon loading
+            await new Promise(resolve => setTimeout(resolve, 150));
+
             let userName = document.getElementById('surat-name').value || 'Pelamar';
             userName = userName.replace(/[^a-zA-Z0-9]/g, '_');
             let fileName = `Surat_Lamaran_${userName}.pdf`;
@@ -64,7 +67,6 @@ class SuratBuilder {
                 await html2pdf().set({
                     margin: 0, 
                     filename: fileName, 
-                    // REVISI: Quality diturunin ke 0.82 biar size file < 2MB (Aman buat portal Loker)
                     image: { type: 'jpeg', quality: 0.82 }, 
                     html2canvas: { scale: 3, useCORS: true }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -111,11 +113,13 @@ class SuratBuilder {
                 const ttl = localStorage.getItem('cv-ttl') || "[Tempat, Tanggal Lahir]";
                 const ph = localStorage.getItem('cv-phone') || "[No WhatsApp]";
                 const e = localStorage.getItem('cv-email') || "[Email]";
+                
+                // REVISI: Ambil nama PT kalau diisi!
+                const cName = document.getElementById('surat-comp').value || "";
 
                 const expMode = document.getElementById('sel-exp').value;
                 const indMode = document.getElementById('sel-ind').value;
 
-                // REVISI DIKSI: Lebih Spesifik dan Profesional
                 let indText = "perusahaan";
                 let hrdText = "Yth. HRD Manager / Pimpinan Perusahaan";
 
@@ -136,21 +140,23 @@ class SuratBuilder {
                     hrdText = "Yth. Kepala Cabang / HRD Manager Logistik";
                 }
 
+                // REVISI: Gabungin nama PT ke kalimat AI
+                const targetCompany = cName !== "" ? cName : `${indText} yang Bapak/Ibu pimpin`;
+
                 let expText = "";
                 if(expMode === 'fresh') {
-                    expText = `Sebagai fresh graduate yang energik dan memiliki fondasi akademik yang kuat, saya siap terjun langsung ke dunia kerja. Saya terbiasa beradaptasi dengan cepat, memiliki integritas, dan berkomitmen penuh untuk berkontribusi maksimal pada operasional ${indText} yang Bapak/Ibu pimpin.`;
+                    expText = `Sebagai fresh graduate yang energik dan memiliki fondasi akademik yang kuat, saya siap terjun langsung ke dunia kerja. Saya terbiasa beradaptasi dengan cepat, memiliki integritas, dan berkomitmen penuh untuk berkontribusi maksimal pada operasional ${targetCompany}.`;
                 } else if(expMode === 'zero') {
-                    expText = `Meskipun saat ini saya belum memiliki pengalaman kerja formal, saya adalah individu pekerja keras yang pantang menyerah dan memiliki kemauan kuat untuk mempelajari hal-hal baru. Saya siap dilatih, disiplin, dan memiliki motivasi tinggi untuk memberikan kinerja terbaik bagi ${indText} yang Bapak/Ibu pimpin.`;
+                    expText = `Meskipun saat ini saya belum memiliki pengalaman kerja formal, saya adalah individu pekerja keras yang pantang menyerah dan memiliki kemauan kuat untuk mempelajari hal-hal baru. Saya siap dilatih, disiplin, dan memiliki motivasi tinggi untuk memberikan kinerja terbaik bagi ${targetCompany}.`;
                 } else {
-                    expText = `Berbekal pengalaman kerja yang relevan sebelumnya, saya terbukti mampu menangani tanggung jawab secara profesional, terbiasa bekerja dengan target, dan mampu berkolaborasi secara solid dalam tim. Saya yakin kompetensi dan rekam jejak saya dapat memberikan nilai tambah nyata bagi kelancaran operasional ${indText} yang Bapak/Ibu pimpin.`;
+                    expText = `Berbekal pengalaman kerja yang relevan sebelumnya, saya terbukti mampu menangani tanggung jawab secara profesional, terbiasa bekerja dengan target, dan mampu berkolaborasi secara solid dalam tim. Saya yakin kompetensi dan rekam jejak saya dapat memberikan nilai tambah nyata bagi kelancaran operasional ${targetCompany}.`;
                 }
 
                 document.getElementById('surat-hal').value = "Lamaran Pekerjaan";
                 document.getElementById('surat-lamp').value = "1 (satu) Berkas";
                 document.getElementById('surat-hrd').value = hrdText;
                 
-                const c = document.getElementById('surat-content');
-                c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan pekerjaan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di ${indText} yang Bapak/Ibu pimpin. Adapun data diri singkat saya adalah sebagai berikut:\n\nNama : ${n}\nTempat, Tgl Lahir : ${ttl}\nNo. HP/WA : ${ph}\nEmail : ${e}\n\n${expText}\n\nSebagai bahan pertimbangan, saya melampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
+                c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan pekerjaan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di ${targetCompany}. Adapun data diri singkat saya adalah sebagai berikut:\n\nNama : ${n}\nTempat, Tgl Lahir : ${ttl}\nNo. HP/WA : ${ph}\nEmail : ${e}\n\n${expText}\n\nSebagai bahan pertimbangan, saya melampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
                 
                 ['surat-hal', 'surat-lamp', 'surat-hrd', 'surat-content'].forEach(id => { document.getElementById(id).dispatchEvent(new Event('input')); });
             };
@@ -220,7 +226,7 @@ class SuratBuilder {
             if(el) { el.value = localStorage.getItem('cv-name'); localStorage.setItem('surat-name', el.value); }
         }
 
-        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content', 'sel-exp', 'sel-ind'].forEach(id => {
+        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content'].forEach(id => {
             if(localStorage.getItem(id)) { const el = document.getElementById(id); if(el) el.value = localStorage.getItem(id); }
         });
         if(localStorage.getItem('surat-sig')) this.data.sig = localStorage.getItem('surat-sig');
@@ -235,7 +241,13 @@ class SuratBuilder {
         let autoCity = "Jakarta";
         const savedAddr = localStorage.getItem('cv-address');
         if (savedAddr) {
-            autoCity = savedAddr.split(',')[0].trim();
+            // REVISI: Logika pinter nyari Kota biar gak aneh (Ngambil bagian paling belakang sebelum Provinsi)
+            const parts = savedAddr.split(',');
+            if(parts.length > 1) {
+                autoCity = parts[parts.length > 2 ? parts.length - 2 : parts.length - 1].trim();
+            } else {
+                autoCity = parts[0].trim();
+            }
         }
         const today = new Date();
         const autoDate = autoCity + ", " + today.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });

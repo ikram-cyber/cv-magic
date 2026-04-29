@@ -57,6 +57,9 @@ class CVBuilder {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
             
+            // REVISI: Kasih napas 150ms biar browser sempet muterin ikon loading
+            await new Promise(resolve => setTimeout(resolve, 150));
+            
             let userName = document.getElementById('cv-name').value || 'Profesional';
             userName = userName.replace(/[^a-zA-Z0-9]/g, '_');
             let fileName = `CV_${userName}.pdf`;
@@ -122,8 +125,6 @@ class CVBuilder {
 
         document.getElementById('btn-add-exp').onclick = () => { this.data.exps.push({role:'', comp:'', year:'', desc:''}); this.renderLists(); this.renderPaper(); };
         document.getElementById('btn-add-edu').onclick = () => { this.data.edus.push({school:'', degree:'', year:'', score:''}); this.renderLists(); this.renderPaper(); };
-        
-        // REVISI: Tombol Tambah Proyek / Organisasi
         const btnPrj = document.getElementById('btn-add-prj');
         if(btnPrj) btnPrj.onclick = () => { this.data.prjs.push({name:'', inst:'', year:'', desc:''}); this.renderLists(); this.renderPaper(); };
     }
@@ -253,7 +254,6 @@ class CVBuilder {
             </div>`;
         });
 
-        // REVISI: Render Form Proyek / Organisasi
         const elPrj = document.getElementById('cv-prj-list');
         if(elPrj) {
             elPrj.innerHTML = '';
@@ -309,12 +309,12 @@ class CVBuilder {
         const skills = skillsVal ? skillsVal.replace(/\n/g, '<br>') : '';
         const cert = certVal ? certVal.replace(/\n/g, '<br>') : '';
 
-        const ttlHtml = ttl ? `<p><i class="fas fa-calendar-alt w-4 text-accent"></i> ${ttl}</p>` : '';
-        const phHtml = ph ? `<p><i class="fas fa-phone w-4 text-accent"></i> ${ph}</p>` : '';
+        const ttlHtml = ttl ? `<p><i class="fas fa-calendar-alt w-4 text-accent text-center"></i> ${ttl}</p>` : '';
+        const phHtml = ph ? `<p><i class="fas fa-phone w-4 text-accent text-center"></i> ${ph}</p>` : '';
         const portUrl = port ? (port.startsWith('http') ? port : 'https://' + port) : '#';
-        const portHtml = port ? `<p><i class="fas fa-link w-4 text-accent"></i> <a href="${portUrl}" target="_blank" style="text-decoration:none; color:inherit;">${port}</a></p>` : '';
-        const eHtml = e ? `<p><i class="fas fa-envelope w-4 text-accent"></i> <a href="mailto:${e}" style="text-decoration:none; color:inherit;">${e}</a></p>` : '';
-        const aHtml = a ? `<p class="col-span-2 mt-1"><i class="fas fa-map-marker-alt w-4 text-accent"></i> ${a}</p>` : '';
+        const portHtml = port ? `<p><i class="fas fa-link w-4 text-accent text-center"></i> <a href="${portUrl}" target="_blank" style="text-decoration:none; color:inherit;">${port}</a></p>` : '';
+        const eHtml = e ? `<p><i class="fas fa-envelope w-4 text-accent text-center"></i> <a href="mailto:${e}" style="text-decoration:none; color:inherit;">${e}</a></p>` : '';
+        const aHtml = a ? `<p class="col-span-2 mt-1"><i class="fas fa-map-marker-alt w-4 text-accent text-center"></i> ${a}</p>` : '';
 
         const photoBoxHtml = this.data.photo 
             ? `<div class="w-[30mm] h-[40mm] bg-slate-100 border-2 border-accent rounded overflow-hidden flex justify-center items-center shrink-0">
@@ -328,8 +328,6 @@ class CVBuilder {
 
         const validExps = this.data.exps.filter(x => (x.role && x.role.trim()!=='') || (x.comp && x.comp.trim()!=='') || (x.year && x.year.trim()!=='') || (x.desc && x.desc.trim()!==''));
         const validEdus = this.data.edus.filter(x => (x.school && x.school.trim()!=='') || (x.degree && x.degree.trim()!=='') || (x.year && x.year.trim()!==''));
-        
-        // REVISI: Cetak Proyek / Organisasi ke PDF
         const validPrjs = this.data.prjs ? this.data.prjs.filter(x => (x.name && x.name.trim()!=='') || (x.inst && x.inst.trim()!=='') || (x.year && x.year.trim()!=='') || (x.desc && x.desc.trim()!=='')) : [];
 
         p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-800 relative`;
@@ -337,7 +335,7 @@ class CVBuilder {
             <div class="flex gap-5 border-b-[3px] border-accent pb-4 mb-4 items-center">
                 ${photoBoxHtml}
                 <div class="flex-1">
-                    <h1 class="text-3xl font-black uppercase leading-none text-accent">${n}</h1>
+                    <h1 class="text-3xl font-black uppercase leading-none text-accent break-words">${n}</h1>
                     <h2 class="text-[11px] font-bold uppercase tracking-[0.2em] mt-1 mb-3 text-slate-600">${t}</h2>
                     <div class="grid grid-cols-2 gap-y-1 text-[9px] font-bold text-slate-700">
                         ${ttlHtml} ${phHtml} ${portHtml} ${eHtml} ${aHtml}
