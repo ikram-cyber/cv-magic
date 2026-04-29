@@ -101,6 +101,11 @@ class SuratBuilder {
         const btnTemp = document.getElementById('btn-template');
         if(btnTemp) {
             btnTemp.onclick = () => {
+                const c = document.getElementById('surat-content');
+                if(c.value.trim() !== "" && !c.value.includes("Dengan hormat,")) {
+                    if(!confirm("Anda sudah mengetik isi surat secara manual. Yakin ingin menimpanya dengan teks otomatis?")) return;
+                }
+
                 const t = document.getElementById('surat-title').value || "[Posisi yang Dilamar]";
                 const n = document.getElementById('surat-name').value || localStorage.getItem('cv-name') || "[Nama Lengkap]";
                 const ttl = localStorage.getItem('cv-ttl') || "[Tempat, Tanggal Lahir]";
