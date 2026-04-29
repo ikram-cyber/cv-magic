@@ -1,30 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700&family=Space+Mono&display=swap');
 
+body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f1f5f9; }
 .font-sans { font-family: 'Inter', sans-serif; }
 .font-serif { font-family: 'Merriweather', serif; }
 .font-mono { font-family: 'Space Mono', monospace; }
 
 .a4-sheet {
-    width: 210mm;
-    min-height: 297mm;
-    margin: 0 auto;
-    position: relative;
-    background: white;
+    width: 210mm; min-height: 297mm; margin: 0 auto;
+    background: white; color: #0f172a; position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .custom-scroll::-webkit-scrollbar { width: 4px; }
 .custom-scroll::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 10px; }
 
-.exp-card {
-    background: #1e293b;
-    border: 1px solid #334155;
-    padding: 10px;
-    border-radius: 10px;
-}
-
 @media (max-width: 768px) {
-    #capture-area {
-        transform: scale(0.42);
-        transform-origin: top center;
-    }
+    #capture-area { transform: scale(0.42); transform-origin: top center; margin-bottom: -50%; }
 }
