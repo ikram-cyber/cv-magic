@@ -67,7 +67,8 @@ class SuratBuilder {
                     image: { type: 'jpeg', quality: 1 }, 
                     html2canvas: { scale: 3, useCORS: true }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                    pagebreak: { mode: ['css', 'legacy'] }
+                    pagebreak: { mode: ['css', 'legacy'] },
+                    enableLinks: true
                 }).from(document.getElementById('surat-paper')).save();
                 btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL';
             } catch(e) {
@@ -161,11 +162,10 @@ class SuratBuilder {
         const p = document.getElementById('surat-paper');
         if(!p) return;
         
-        // REVISI: TANGGAL OTOMATIS CERDAS (Nariki Nama Kota dari CV)
         let autoCity = "Jakarta";
         const savedAddr = localStorage.getItem('cv-address');
         if (savedAddr) {
-            autoCity = savedAddr.split(',')[0].trim(); // Nyedot kata pertama sebelum koma, misal "Bekasi, Jawa Barat" -> "Bekasi"
+            autoCity = savedAddr.split(',')[0].trim();
         }
         const today = new Date();
         const autoDate = autoCity + ", " + today.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -177,7 +177,10 @@ class SuratBuilder {
         const lamp = document.getElementById('surat-lamp').value;
         const hrd = document.getElementById('surat-hrd').value;
         const comp = document.getElementById('surat-comp').value;
-        const addr = document.getElementById('surat-address') ? document.getElementById('surat-address').value : '';
+        
+        // REVISI: Alamat perusahaan pakai replace newline biar multiline bisa jalan
+        const addrVal = document.getElementById('surat-address') ? document.getElementById('surat-address').value : '';
+        const addrHtml = addrVal ? `<p class="font-normal text-[10pt] mt-1">${addrVal.replace(/\n/g, '<br>')}</p>` : '';
         
         const contentVal = document.getElementById('surat-content').value;
         const contHtml = contentVal ? contentVal.replace(/\n/g, '<br>') : '';
@@ -188,8 +191,7 @@ class SuratBuilder {
 
         const hrdHtml = hrd ? `<p>${hrd}</p>` : '';
         const compHtml = comp ? `<p class="text-accent">${comp}</p>` : '';
-        const addrHtml = addr ? `<p class="font-normal text-[10pt] mt-1">${addr}</p>` : '';
-        const diTempatHtml = (hrd || comp) && !addr ? `<p>Di Tempat</p>` : '';
+        const diTempatHtml = (hrd || comp) && !addrVal ? `<p>Di Tempat</p>` : '';
 
         p.className = `a4-sheet p-[20mm] ${this.data.font} ${this.data.theme} text-[11pt] leading-relaxed text-slate-900 bg-white`;
         p.innerHTML = `

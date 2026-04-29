@@ -62,13 +62,15 @@ class CVBuilder {
             let fileName = `CV_${userName}.pdf`;
 
             try {
+                // Konfigurasi enableLinks biar hyperlink-nya aktif di PDF
                 await html2pdf().set({
                     margin: 0, 
                     filename: fileName, 
                     image: { type: 'jpeg', quality: 1 }, 
                     html2canvas: { scale: 3, useCORS: true }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                    pagebreak: { mode: ['css', 'legacy'] }
+                    pagebreak: { mode: ['css', 'legacy'] },
+                    enableLinks: true
                 }).from(document.getElementById('cv-paper')).save();
                 btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL';
             } catch(e) {
@@ -102,7 +104,6 @@ class CVBuilder {
     }
 
     bindMedia() {
-        // REVISI: MESIN KOMPRESI FOTO OTOMATIS (Anti LocalStorage Crash)
         document.getElementById('cv-photo').onchange = (e) => {
             const f = e.target.files[0];
             if(f) { 
@@ -111,19 +112,19 @@ class CVBuilder {
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 400; // Dikompres jadi ukuran wajar
+                        const MAX_WIDTH = 400; 
                         const scaleSize = MAX_WIDTH / img.width;
                         canvas.width = MAX_WIDTH;
                         canvas.height = img.height * scaleSize;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        const compressedData = canvas.toDataURL('image/jpeg', 0.8); // Kualitas 80%
+                        const compressedData = canvas.toDataURL('image/jpeg', 0.8); 
                         
                         this.data.photo = compressedData; 
                         try {
                             localStorage.setItem('cv-photo', compressedData); 
                         } catch(err) {
-                            console.error("Storage limit reached, saving skipped.");
+                            console.error("Storage limit reached.");
                         }
                         this.renderPaper(); 
                     };
@@ -235,10 +236,14 @@ class CVBuilder {
         const skills = skillsVal ? skillsVal.replace(/\n/g, '<br>') : '';
         const cert = certVal ? certVal.replace(/\n/g, '<br>') : '';
 
+        // REVISI SMART LINK: Bikin Email dan Portofolio bisa di-klik di PDF
         const ttlHtml = ttl ? `<p><i class="fas fa-calendar-alt w-4 text-accent"></i> ${ttl}</p>` : '';
         const phHtml = ph ? `<p><i class="fas fa-phone w-4 text-accent"></i> ${ph}</p>` : '';
-        const portHtml = port ? `<p><i class="fas fa-link w-4 text-accent"></i> ${port}</p>` : '';
-        const eHtml = e ? `<p><i class="fas fa-envelope w-4 text-accent"></i> ${e}</p>` : '';
+        
+        const portUrl = port ? (port.startsWith('http') ? port : 'https://' + port) : '#';
+        const portHtml = port ? `<p><i class="fas fa-link w-4 text-accent"></i> <a href="${portUrl}" target="_blank" style="text-decoration:none; color:inherit;">${port}</a></p>` : '';
+        
+        const eHtml = e ? `<p><i class="fas fa-envelope w-4 text-accent"></i> <a href="mailto:${e}" style="text-decoration:none; color:inherit;">${e}</a></p>` : '';
         const aHtml = a ? `<p class="col-span-2 mt-1"><i class="fas fa-map-marker-alt w-4 text-accent"></i> ${a}</p>` : '';
 
         const photoBoxHtml = this.data.photo 
