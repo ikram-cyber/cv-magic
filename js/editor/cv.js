@@ -42,8 +42,7 @@ class CVBuilder {
         const btnReset = document.getElementById('btn-reset');
         if(btnReset) {
             btnReset.onclick = () => {
-                // REVISI: Smart Reset, cuma ngapus data CV, Surat Lamaran AMAN!
-                if(confirm("Yakin mau hapus data CV? (Data Surat Lamaran tidak akan hilang)")) {
+                if(confirm("Yakin mau hapus semua data CV?")) {
                     Object.keys(localStorage).forEach(key => {
                         if(key.startsWith('cv-')) localStorage.removeItem(key);
                     });
@@ -103,9 +102,35 @@ class CVBuilder {
     }
 
     bindMedia() {
+        // REVISI: MESIN KOMPRESI FOTO OTOMATIS (Anti LocalStorage Crash)
         document.getElementById('cv-photo').onchange = (e) => {
             const f = e.target.files[0];
-            if(f) { const r = new FileReader(); r.onload = (ev) => { this.data.photo = ev.target.result; localStorage.setItem('cv-photo', ev.target.result); this.renderPaper(); }; r.readAsDataURL(f); }
+            if(f) { 
+                const r = new FileReader(); 
+                r.onload = (ev) => { 
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 400; // Dikompres jadi ukuran wajar
+                        const scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scaleSize;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        const compressedData = canvas.toDataURL('image/jpeg', 0.8); // Kualitas 80%
+                        
+                        this.data.photo = compressedData; 
+                        try {
+                            localStorage.setItem('cv-photo', compressedData); 
+                        } catch(err) {
+                            console.error("Storage limit reached, saving skipped.");
+                        }
+                        this.renderPaper(); 
+                    };
+                    img.src = ev.target.result;
+                }; 
+                r.readAsDataURL(f); 
+            }
         };
 
         const btnRemPhoto = document.getElementById('btn-remove-photo');
@@ -136,8 +161,6 @@ class CVBuilder {
             const r = canvas.getBoundingClientRect();
             const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
             const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
-            
-            // REVISI: Tinta ditebelin (lineWidth = 4) biar di canvas HD kelihatan nyata
             ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.strokeStyle = '#0f172a';
             ctx.lineTo(x*(canvas.width/r.width), y*(canvas.height/r.height)); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x*(canvas.width/r.width), y*(canvas.height/r.height));
         };
@@ -248,7 +271,7 @@ class CVBuilder {
                 ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
             </div>
             
-            <div class="mt-12 flex justify-end w-full break-inside-avoid">
+            <div class="mt-12 flex justify-end w-full page-break-inside-avoid">
                 <div class="text-center w-32">
                     <p class="text-[10px] font-bold mb-1">Hormat Saya,</p>
                     <div class="h-14 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>

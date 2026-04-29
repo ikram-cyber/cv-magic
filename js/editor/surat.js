@@ -41,8 +41,7 @@ class SuratBuilder {
         const btnReset = document.getElementById('btn-reset');
         if(btnReset) {
             btnReset.onclick = () => {
-                // REVISI: Smart Reset, cuma ngapus data Surat Lamaran, CV AMAN!
-                if(confirm("Yakin mau hapus data Surat Lamaran? (Data CV tidak akan hilang)")) {
+                if(confirm("Yakin mau hapus data surat lamaran? (Data CV tidak akan hilang)")) {
                     Object.keys(localStorage).forEach(key => {
                         if(key.startsWith('surat-')) localStorage.removeItem(key);
                     });
@@ -136,8 +135,6 @@ class SuratBuilder {
             const r = canvas.getBoundingClientRect();
             const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
             const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
-            
-            // REVISI: Tinta ditebelin (lineWidth = 4) biar di canvas HD kelihatan nyata
             ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.strokeStyle = '#0f172a';
             ctx.lineTo(x*(canvas.width/r.width), y*(canvas.height/r.height)); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x*(canvas.width/r.width), y*(canvas.height/r.height));
         };
@@ -164,8 +161,14 @@ class SuratBuilder {
         const p = document.getElementById('surat-paper');
         if(!p) return;
         
+        // REVISI: TANGGAL OTOMATIS CERDAS (Nariki Nama Kota dari CV)
+        let autoCity = "Jakarta";
+        const savedAddr = localStorage.getItem('cv-address');
+        if (savedAddr) {
+            autoCity = savedAddr.split(',')[0].trim(); // Nyedot kata pertama sebelum koma, misal "Bekasi, Jawa Barat" -> "Bekasi"
+        }
         const today = new Date();
-        const autoDate = "Jakarta, " + today.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+        const autoDate = autoCity + ", " + today.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
 
         const n = document.getElementById('surat-name').value || "NAMA ANDA";
         const date = document.getElementById('surat-date').value || autoDate;
@@ -201,7 +204,7 @@ class SuratBuilder {
                 ${diTempatHtml}
             </div>
             <div class="text-justify mb-16 space-y-2">${contHtml}</div>
-            <div class="w-48 ml-auto text-center break-inside-avoid">
+            <div class="w-48 ml-auto text-center page-break-inside-avoid">
                 <p class="mb-2">Hormat saya,</p>
                 <div class="h-16 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
                 <p class="font-bold border-t-[1.5px] border-accent mt-1 pt-1 uppercase">${n}</p>
