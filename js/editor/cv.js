@@ -114,28 +114,27 @@ class CVBuilder {
                 const titleEl = document.getElementById('cv-title');
                 const titleVal = titleEl.value.trim();
                 
-                if(!titleVal) {
-                    alert("⚠️ GAGAL MEMBUAT PROFIL: Anda belum mengisi 'Profesi / Gelar'.\n\nSilakan isi terlebih dahulu (misal: Tenaga Teknis Kefarmasian atau Akuntan) agar AI bisa menyusun kalimat yang 100% spesifik!");
-                    titleEl.focus();
-                    titleEl.classList.add('ring-2', 'ring-red-500');
-                    setTimeout(() => titleEl.classList.remove('ring-2', 'ring-red-500'), 2000);
-                    return;
-                }
-
                 const c = document.getElementById('cv-profile');
-                if(c.value.trim() !== "" && !c.value.includes("Seorang " + titleVal) && !c.value.includes("Individu yang")) {
+                if(c.value.trim() !== "" && !c.value.includes("Seorang ") && !c.value.includes("Lulusan baru") && !c.value.includes("Individu yang") && !c.value.includes("Profesional berpengalaman")) {
                     if(!confirm("Anda sudah mengetik profil secara manual. Yakin ingin menimpanya dengan teks otomatis dari sistem?")) return;
                 }
 
                 const expMode = document.getElementById('cv-sel-exp').value;
                 let profText = "";
 
+                // REVISI AI: Kalau gelar kosong, dia pake kalimat general. Kalau ada gelar, dia pake kalimat spesifik.
                 if(expMode === 'fresh') {
-                    profText = `Seorang ${titleVal} yang baru lulus dengan motivasi tinggi dan fondasi akademik yang kuat. Memiliki kemampuan adaptasi yang cepat, kemauan belajar yang tangguh, serta kesiapan penuh untuk memberikan dedikasi dan berkontribusi secara nyata dalam lingkungan operasional yang dinamis.`;
+                    profText = titleVal 
+                        ? `Seorang ${titleVal} yang baru lulus dengan motivasi tinggi dan fondasi akademik yang kuat. Memiliki kemampuan adaptasi yang cepat, kemauan belajar yang tangguh, serta kesiapan penuh untuk memberikan dedikasi dan berkontribusi secara nyata dalam lingkungan operasional yang dinamis.`
+                        : `Lulusan baru dengan motivasi tinggi dan fondasi akademik yang kuat. Memiliki kemampuan adaptasi yang cepat, kemauan belajar yang tangguh, serta kesiapan penuh untuk memberikan dedikasi dan berkontribusi secara nyata dalam lingkungan operasional yang dinamis.`;
                 } else if(expMode === 'zero') {
-                    profText = `Individu yang sangat antusias dan berdedikasi tinggi untuk membangun karir profesional sebagai ${titleVal}. Meskipun belum memiliki rekam jejak kerja formal, saya dibekali dengan etos kerja keras, kedisiplinan, dan komitmen kuat untuk belajar serta berkembang bersama tim guna mencapai target instansi.`;
+                    profText = titleVal 
+                        ? `Individu yang berdedikasi tinggi dan sangat antusias untuk membangun karir profesional sebagai ${titleVal}. Memiliki kemampuan beradaptasi dengan cepat, etos kerja keras, dan kedisiplinan tinggi. Proaktif dalam mempelajari hal baru, siap berkolaborasi dalam tim, serta berkomitmen memberikan kontribusi nyata bagi pencapaian target operasional.`
+                        : `Individu yang berdedikasi tinggi dan sangat antusias untuk merintis karir profesional. Memiliki kemampuan beradaptasi dengan cepat, etos kerja keras, dan kedisiplinan tinggi. Proaktif dalam mempelajari hal baru, siap berkolaborasi dalam tim, serta berkomitmen memberikan kontribusi nyata bagi pencapaian target operasional perusahaan.`;
                 } else {
-                    profText = `Seorang ${titleVal} berpengalaman dengan rekam jejak yang terbukti dalam mengeksekusi tanggung jawab pekerjaan secara profesional dan presisi. Berorientasi pada target, mampu bekerja efektif di bawah tekanan operasional, dan memiliki kemampuan kolaborasi tim yang solid untuk mencapai efisiensi maksimal.`;
+                    profText = titleVal 
+                        ? `Seorang ${titleVal} berpengalaman dengan rekam jejak yang terbukti dalam mengeksekusi tanggung jawab pekerjaan secara profesional dan presisi. Berorientasi pada target, mampu bekerja efektif di bawah tekanan operasional, dan memiliki kemampuan kolaborasi tim yang solid untuk mencapai efisiensi maksimal.`
+                        : `Profesional berpengalaman dengan rekam jejak yang terbukti dalam mengeksekusi tanggung jawab pekerjaan secara efektif dan presisi. Berorientasi pada target, mampu bekerja dengan baik di bawah tekanan operasional, dan memiliki kemampuan kolaborasi tim yang solid untuk mencapai efisiensi maksimal.`;
                 }
 
                 c.value = profText;
@@ -164,7 +163,7 @@ class CVBuilder {
                             const MAX_WIDTH = 400; const scaleSize = MAX_WIDTH / img.width;
                             canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
                             const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            const compData = key === 'sig' ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.8); 
+                            const compData = key === 'sig' ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.82); 
                             this.data[key] = compData; 
                             try { localStorage.setItem(key === 'sig' ? 'cv-sig' : 'cv-photo', compData); } catch(err) {}
                             if(key === 'sig') document.getElementById('modal-sig').classList.add('hidden');
@@ -317,7 +316,6 @@ class CVBuilder {
 
         const ttlHtml = ttl ? `<p><i class="fas fa-calendar-alt w-4 text-accent text-center"></i> ${ttl}</p>` : '';
         const phHtml = ph ? `<p><i class="fas fa-phone w-4 text-accent text-center"></i> ${ph}</p>` : '';
-        // REVISI FATAL: break-all biar link GitHub panjang lu gak nabrak kertas!
         const portUrl = port ? (port.startsWith('http') ? port : 'https://' + port) : '#';
         const portHtml = port ? `<p class="break-all"><i class="fas fa-link w-4 text-accent text-center"></i> <a href="${portUrl}" target="_blank" style="text-decoration:none; color:inherit;">${port}</a></p>` : '';
         const eHtml = e ? `<p class="break-all"><i class="fas fa-envelope w-4 text-accent text-center"></i> <a href="mailto:${e}" style="text-decoration:none; color:inherit;">${e}</a></p>` : '';

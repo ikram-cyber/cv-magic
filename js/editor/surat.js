@@ -113,20 +113,14 @@ class SuratBuilder {
                 const titleEl = document.getElementById('surat-title');
                 const titleVal = titleEl.value.trim();
                 
-                if(!titleVal) {
-                    alert("⚠️ GAGAL MEMBUAT SURAT: Kolom 'Posisi yang Dilamar' masih kosong.\n\nMohon isi terlebih dahulu agar surat Anda tidak terdapat kurung siku yang memalukan!");
-                    titleEl.focus();
-                    titleEl.classList.add('ring-2', 'ring-red-500');
-                    setTimeout(() => titleEl.classList.remove('ring-2', 'ring-red-500'), 2000);
-                    return;
-                }
-
                 const c = document.getElementById('surat-content');
                 if(c.value.trim() !== "" && !c.value.includes("Dengan hormat,")) {
                     if(!confirm("Anda sudah mengetik isi surat secara manual. Yakin ingin menimpanya dengan teks otomatis?")) return;
                 }
 
-                const t = titleVal;
+                // REVISI AI SURAT: Kalau posisi dikosongin, AI pake kata ganti "posisi yang tersedia"
+                const t = titleVal ? `posisi ${titleVal}` : "posisi yang tersedia";
+                
                 const n = document.getElementById('surat-name').value || localStorage.getItem('cv-name') || "NAMA LENGKAP SAYA";
                 const ttl = localStorage.getItem('cv-ttl') || "Kota, DD Bulan YYYY";
                 const ph = localStorage.getItem('cv-phone') || "Nomor HP/WA";
@@ -163,7 +157,7 @@ class SuratBuilder {
                 if(expMode === 'fresh') {
                     expText = `Sebagai fresh graduate yang energik dan memiliki fondasi akademik yang kuat, saya siap terjun langsung ke dunia kerja. Saya terbiasa beradaptasi dengan cepat, memiliki integritas, dan berkomitmen penuh untuk berkontribusi maksimal pada operasional ${targetCompany}.`;
                 } else if(expMode === 'zero') {
-                    expText = `Meskipun saat ini saya belum memiliki pengalaman kerja formal, saya adalah individu pekerja keras yang pantang menyerah dan memiliki kemauan kuat untuk mempelajari hal-hal baru. Saya siap dilatih, disiplin, dan memiliki motivasi tinggi untuk memberikan kinerja terbaik bagi ${targetCompany}.`;
+                    expText = `Sebagai individu yang memiliki antusiasme tinggi dan kemauan kuat untuk terus belajar, saya siap memberikan dedikasi penuh di dunia kerja. Saya terbiasa beradaptasi dengan cepat, disiplin, dan pantang menyerah. Saya sangat termotivasi untuk membuktikan komitmen dan kinerja terbaik saya guna mendukung kelancaran operasional ${targetCompany}.`;
                 } else {
                     expText = `Berbekal pengalaman kerja yang relevan sebelumnya, saya terbukti mampu menangani tanggung jawab secara profesional, terbiasa bekerja dengan target, dan mampu berkolaborasi secara solid dalam tim. Saya yakin kompetensi dan rekam jejak saya dapat memberikan nilai tambah nyata bagi kelancaran operasional ${targetCompany}.`;
                 }
@@ -172,7 +166,7 @@ class SuratBuilder {
                 document.getElementById('surat-lamp').value = "1 (satu) Berkas";
                 document.getElementById('surat-hrd').value = hrdText;
                 
-                c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan pekerjaan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di ${targetCompany}. Adapun data diri singkat saya adalah sebagai berikut:\n\nNama : ${n}\nTempat, Tgl Lahir : ${ttl}\nNo. HP/WA : ${ph}\nEmail : ${e}\n\n${expText}\n\nSebagai bahan pertimbangan, saya melampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
+                c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan pekerjaan yang tersedia, saya bermaksud mengajukan diri untuk melamar ${t} di ${targetCompany}. Adapun data diri singkat saya adalah sebagai berikut:\n\nNama : ${n}\nTempat, Tgl Lahir : ${ttl}\nNo. HP/WA : ${ph}\nEmail : ${e}\n\n${expText}\n\nSebagai bahan pertimbangan, saya melampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
                 
                 ['surat-hal', 'surat-lamp', 'surat-hrd', 'surat-content'].forEach(id => { document.getElementById(id).dispatchEvent(new Event('input')); });
             };
@@ -288,8 +282,6 @@ class SuratBuilder {
         const myPhone = localStorage.getItem('cv-phone') || "";
         const myEmail = localStorage.getItem('cv-email') || "";
         const myPort = localStorage.getItem('cv-port') || "";
-        
-        // REVISI FATAL: Tarik Alamat Domisili ke Kop Surat biar HRD tahu lu tinggal di mana!
         const myAddr = localStorage.getItem('cv-address') || "";
 
         let senderHeaderHtml = `<div class="mb-8 border-b-2 border-slate-300 pb-3">
