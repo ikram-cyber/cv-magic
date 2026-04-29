@@ -41,9 +41,12 @@ class SuratBuilder {
         const btnReset = document.getElementById('btn-reset');
         if(btnReset) {
             btnReset.onclick = () => {
-                if(confirm("Yakin mau hapus data surat lamaran?")) {
-                    ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content'].forEach(id => localStorage.removeItem(id));
-                    localStorage.removeItem('surat-sig'); location.reload();
+                // REVISI: Smart Reset, cuma ngapus data Surat Lamaran, CV AMAN!
+                if(confirm("Yakin mau hapus data Surat Lamaran? (Data CV tidak akan hilang)")) {
+                    Object.keys(localStorage).forEach(key => {
+                        if(key.startsWith('surat-')) localStorage.removeItem(key);
+                    });
+                    location.reload();
                 }
             };
         }
@@ -54,7 +57,6 @@ class SuratBuilder {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
             
-            // REVISI: Nama File Cerdas Ngikutin Nama Pelamar
             let userName = document.getElementById('surat-name').value || 'Pelamar';
             userName = userName.replace(/[^a-zA-Z0-9]/g, '_');
             let fileName = `Surat_Lamaran_${userName}.pdf`;
@@ -90,7 +92,6 @@ class SuratBuilder {
     }
 
     bindInputs() {
-        // Tambahan surat-address
         ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
@@ -123,15 +124,21 @@ class SuratBuilder {
         let draw = false;
 
         document.getElementById('btn-open-sig').onclick = () => document.getElementById('modal-sig').classList.remove('hidden');
-        document.getElementById('btn-clear-sig').onclick = () => { ctx.clearRect(0,0,canvas.width,canvas.height); this.data.sig = null; localStorage.removeItem('surat-sig'); this.renderPaper(); };
-        document.getElementById('btn-save-sig').onclick = () => { this.data.sig = canvas.toDataURL(); localStorage.setItem('surat-sig', this.data.sig); document.getElementById('modal-sig').classList.add('hidden'); this.renderPaper(); };
+        document.getElementById('btn-clear-sig').onclick = () => { 
+            ctx.clearRect(0,0,canvas.width,canvas.height); this.data.sig = null; localStorage.removeItem('surat-sig'); this.renderPaper(); 
+        };
+        document.getElementById('btn-save-sig').onclick = () => {
+            this.data.sig = canvas.toDataURL(); localStorage.setItem('surat-sig', this.data.sig); document.getElementById('modal-sig').classList.add('hidden'); this.renderPaper(); 
+        };
 
         const drawLine = (e) => {
             if(!draw) return; e.preventDefault();
             const r = canvas.getBoundingClientRect();
             const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
             const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
-            ctx.lineWidth = 2; ctx.strokeStyle = '#000';
+            
+            // REVISI: Tinta ditebelin (lineWidth = 4) biar di canvas HD kelihatan nyata
+            ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.strokeStyle = '#0f172a';
             ctx.lineTo(x*(canvas.width/r.width), y*(canvas.height/r.height)); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x*(canvas.width/r.width), y*(canvas.height/r.height));
         };
 

@@ -42,8 +42,12 @@ class CVBuilder {
         const btnReset = document.getElementById('btn-reset');
         if(btnReset) {
             btnReset.onclick = () => {
-                if(confirm("Yakin mau hapus semua data CV?")) {
-                    localStorage.clear(); location.reload();
+                // REVISI: Smart Reset, cuma ngapus data CV, Surat Lamaran AMAN!
+                if(confirm("Yakin mau hapus data CV? (Data Surat Lamaran tidak akan hilang)")) {
+                    Object.keys(localStorage).forEach(key => {
+                        if(key.startsWith('cv-')) localStorage.removeItem(key);
+                    });
+                    location.reload();
                 }
             };
         }
@@ -132,7 +136,9 @@ class CVBuilder {
             const r = canvas.getBoundingClientRect();
             const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
             const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
-            ctx.lineWidth = 2; ctx.strokeStyle = '#000';
+            
+            // REVISI: Tinta ditebelin (lineWidth = 4) biar di canvas HD kelihatan nyata
+            ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.strokeStyle = '#0f172a';
             ctx.lineTo(x*(canvas.width/r.width), y*(canvas.height/r.height)); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x*(canvas.width/r.width), y*(canvas.height/r.height));
         };
         canvas.onmousedown = (e) => { draw = true; drawLine(e); }; canvas.onmousemove = drawLine; canvas.onmouseup = () => { draw = false; ctx.beginPath(); };
@@ -212,8 +218,6 @@ class CVBuilder {
         const eHtml = e ? `<p><i class="fas fa-envelope w-4 text-accent"></i> ${e}</p>` : '';
         const aHtml = a ? `<p class="col-span-2 mt-1"><i class="fas fa-map-marker-alt w-4 text-accent"></i> ${a}</p>` : '';
 
-        // REVISI: Sistem True ATS-Friendly!
-        // Kalau gak ada foto, kotak hilang total. Teks merajai full-width.
         const photoBoxHtml = this.data.photo 
             ? `<div class="w-[30mm] h-[40mm] bg-slate-100 border-2 border-accent rounded overflow-hidden flex justify-center items-center shrink-0">
                   <img src="${this.data.photo}" class="w-full h-full object-cover object-top">
