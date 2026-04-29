@@ -54,9 +54,8 @@ class CVBuilder {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
             
-            // REVISI: Nama File Cerdas Ngikutin Nama Pelamar
             let userName = document.getElementById('cv-name').value || 'Profesional';
-            userName = userName.replace(/[^a-zA-Z0-9]/g, '_'); // Hapus karakter aneh biar aman di HP
+            userName = userName.replace(/[^a-zA-Z0-9]/g, '_');
             let fileName = `CV_${userName}.pdf`;
 
             try {
@@ -143,7 +142,6 @@ class CVBuilder {
     renderLists() {
         const elExp = document.getElementById('cv-exp-list'); elExp.innerHTML = '';
         this.data.exps.forEach((x,i) => {
-            // REVISI: w-16 diganti jadi w-28 biar ngetik tahun lebih lega
             elExp.innerHTML += `
             <div class="bg-slate-800 border border-slate-700 p-3 rounded-lg flex items-center gap-3">
                 <div class="flex-1 space-y-2">
@@ -159,7 +157,6 @@ class CVBuilder {
         
         const elEdu = document.getElementById('cv-edu-list'); elEdu.innerHTML = '';
         this.data.edus.forEach((x,i) => {
-            // REVISI: w-16 diganti jadi w-28
             elEdu.innerHTML += `
             <div class="bg-slate-800 border border-slate-700 p-3 rounded-lg flex items-center gap-3">
                 <div class="flex-1 space-y-2">
@@ -202,6 +199,7 @@ class CVBuilder {
         const e = document.getElementById('cv-email').value;
         const a = document.getElementById('cv-address').value;
         const prof = document.getElementById('cv-profile').value;
+        
         const skillsVal = document.getElementById('cv-skills') ? document.getElementById('cv-skills').value : '';
         const certVal = document.getElementById('cv-cert') ? document.getElementById('cv-cert').value : '';
 
@@ -214,16 +212,22 @@ class CVBuilder {
         const eHtml = e ? `<p><i class="fas fa-envelope w-4 text-accent"></i> ${e}</p>` : '';
         const aHtml = a ? `<p class="col-span-2 mt-1"><i class="fas fa-map-marker-alt w-4 text-accent"></i> ${a}</p>` : '';
 
+        // REVISI: Sistem True ATS-Friendly!
+        // Kalau gak ada foto, kotak hilang total. Teks merajai full-width.
+        const photoBoxHtml = this.data.photo 
+            ? `<div class="w-[30mm] h-[40mm] bg-slate-100 border-2 border-accent rounded overflow-hidden flex justify-center items-center shrink-0">
+                  <img src="${this.data.photo}" class="w-full h-full object-cover object-top">
+               </div>` 
+            : ``; 
+
         const profHtml = prof ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Profil Profesional</h3><p class="text-[10px] leading-relaxed text-justify">${prof}</p></div>` : '';
         const skillsHtml = skills ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Keahlian (Skills)</h3><p class="text-[10px] font-bold text-accent leading-relaxed">${skills}</p></div>` : '';
         const certHtml = cert ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Lisensi & Sertifikasi</h3><p class="text-[10px] leading-relaxed text-slate-800">${cert}</p></div>` : '';
 
-        p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-800`;
+        p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-800 relative`;
         p.innerHTML = `
-            <div class="flex gap-5 border-b-[3px] border-accent pb-4 mb-4">
-                <div class="w-[30mm] h-[40mm] bg-slate-100 border-2 border-accent rounded overflow-hidden flex justify-center items-center shrink-0">
-                    ${this.data.photo ? `<img src="${this.data.photo}" class="w-full h-full object-cover object-top">` : '<i class="fas fa-user text-3xl text-slate-300"></i>'}
-                </div>
+            <div class="flex gap-5 border-b-[3px] border-accent pb-4 mb-4 items-center">
+                ${photoBoxHtml}
                 <div class="flex-1">
                     <h1 class="text-3xl font-black uppercase leading-none text-accent">${n}</h1>
                     <h2 class="text-[11px] font-bold uppercase tracking-[0.2em] mt-1 mb-3 text-slate-600">${t}</h2>
@@ -239,10 +243,13 @@ class CVBuilder {
                 ${this.data.exps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pengalaman Kerja</h3><div class="space-y-2">${this.data.exps.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
                 ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
             </div>
-            <div class="absolute bottom-10 right-10 text-center w-32 page-break-inside-avoid">
-                <p class="text-[10px] font-bold mb-1">Hormat Saya,</p>
-                <div class="h-14 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
-                <p class="text-[10px] font-black border-t-[1.5px] border-accent uppercase pt-1 mt-1">${n}</p>
+            
+            <div class="mt-12 flex justify-end w-full page-break-inside-avoid">
+                <div class="text-center w-32">
+                    <p class="text-[10px] font-bold mb-1">Hormat Saya,</p>
+                    <div class="h-14 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
+                    <p class="text-[10px] font-black border-t-[1.5px] border-accent uppercase pt-1 mt-1">${n}</p>
+                </div>
             </div>
         `;
     }
