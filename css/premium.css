@@ -36,3 +36,10 @@ body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f1f5f9; }
     margin: 0 !important;
     width: 210mm !important;
 }
+
+/* ANTI-SHADOW BUG: Hilangkan efek 3D saat diexport ke PDF biar kertas bersih dari garis kotor */
+.html2canvas-container .a4-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    background-color: #ffffff !important;
+}

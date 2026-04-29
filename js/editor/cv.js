@@ -98,7 +98,6 @@ class CVBuilder {
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
         });
 
-        // REVISI: Mesin Pembuat Profil Otomatis
         const btnGenProf = document.getElementById('btn-gen-profile');
         if(btnGenProf) {
             btnGenProf.onclick = () => {
@@ -301,6 +300,10 @@ class CVBuilder {
         const skillsHtml = skills ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Keahlian (Skills)</h3><p class="text-[10px] font-bold text-accent leading-relaxed">${skills}</p></div>` : '';
         const certHtml = cert ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Lisensi & Sertifikasi</h3><p class="text-[10px] leading-relaxed text-slate-800">${cert}</p></div>` : '';
 
+        // REVISI SMART FILTER: Ngebuang array kosong biar gak kecetak blok putih
+        const validExps = this.data.exps.filter(x => x.role.trim() !== '' || x.comp.trim() !== '' || x.year.trim() !== '');
+        const validEdus = this.data.edus.filter(x => x.school.trim() !== '' || x.degree.trim() !== '' || x.year.trim() !== '');
+
         p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-800 relative`;
         p.innerHTML = `
             <div class="flex gap-5 border-b-[3px] border-accent pb-4 mb-4 items-center">
@@ -317,8 +320,8 @@ class CVBuilder {
                 ${profHtml}
                 ${skillsHtml}
                 ${certHtml}
-                ${this.data.exps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pengalaman Kerja</h3><div class="space-y-2">${this.data.exps.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
-                ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
+                ${validExps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pengalaman Kerja</h3><div class="space-y-2">${validExps.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
+                ${validEdus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Pendidikan</h3><div class="space-y-2">${validEdus.map(x=>`<div class="flex justify-between break-inside-avoid mb-2"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-600">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
             </div>
             
             <div class="mt-12 flex justify-end w-full page-break-inside-avoid">
