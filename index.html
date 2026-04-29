@@ -50,9 +50,10 @@
             </div>
 
             <div class="flex gap-4">
-                <div class="flex-1 bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center relative overflow-hidden">
+                <div class="flex-1 bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center relative overflow-hidden group">
                     <i class="fas fa-camera text-sky-500 mb-1"></i><p class="text-[10px] font-bold">PAS FOTO</p>
-                    <input type="file" id="cv-photo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                    <input type="file" id="cv-photo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10">
+                    <button id="btn-remove-photo" class="absolute top-1 right-1 bg-red-600 text-white text-[10px] w-6 h-6 rounded-full z-20 hidden shadow-lg hover:bg-red-500" title="Hapus Foto"><i class="fas fa-times"></i></button>
                 </div>
                 <div class="flex-1 bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center cursor-pointer" id="btn-open-sig">
                     <i class="fas fa-pen-nib text-sky-500 mb-1"></i><p class="text-[10px] font-bold">TANDA TANGAN</p>
@@ -71,11 +72,14 @@
                 </div>
                 <input type="text" id="cv-address" placeholder="Alamat Domisili" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
                 <textarea id="cv-profile" placeholder="Profil Profesional Singkat..." class="w-full h-24 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll"></textarea>
+                
                 <div class="pt-3 border-t border-slate-700">
                     <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Keahlian / Skills</h3>
-                    <input type="text" id="cv-skills" placeholder="Contoh: Python, Pelayanan Farmasi, Ms. Excel..." class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
-                    <h3 class="text-sky-500 text-[10px] font-black uppercase mt-3 mb-2">Lisensi & Sertifikasi</h3>
-                    <textarea id="cv-cert" placeholder="Contoh: STRTTK Aktif, Sertifikat Pelatihan..." class="w-full h-16 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500 resize-none custom-scroll"></textarea>
+                    <textarea id="cv-skills" placeholder="- Python\n- Pine Script Trading\n- Layanan Kefarmasian" class="w-full h-20 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500 resize-none custom-scroll"></textarea>
+                </div>
+                <div class="pt-2">
+                    <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Lisensi & Sertifikasi</h3>
+                    <textarea id="cv-cert" placeholder="- STRTTK Aktif\n- Sertifikat Food Safety" class="w-full h-16 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500 resize-none custom-scroll"></textarea>
                 </div>
             </div>
 

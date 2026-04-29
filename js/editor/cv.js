@@ -48,7 +48,6 @@ class CVBuilder {
             };
         }
 
-        // BUG FIX: ANTI CRASH & DOUBLE CLICK
         document.getElementById('btn-export-cv').onclick = async () => {
             const btn = document.getElementById('btn-export-cv'); 
             if(btn.disabled) return;
@@ -95,25 +94,35 @@ class CVBuilder {
     }
 
     bindMedia() {
+        // Logika Upload Foto
         document.getElementById('cv-photo').onchange = (e) => {
             const f = e.target.files[0];
             if(f) { const r = new FileReader(); r.onload = (ev) => { this.data.photo = ev.target.result; localStorage.setItem('cv-photo', ev.target.result); this.renderPaper(); }; r.readAsDataURL(f); }
         };
 
+        // REVISI: Logika Hapus Foto Individual
+        const btnRemPhoto = document.getElementById('btn-remove-photo');
+        if(btnRemPhoto) {
+            btnRemPhoto.onclick = (e) => {
+                e.stopPropagation(); // Biar gak trigger file upload
+                this.data.photo = null;
+                localStorage.removeItem('cv-photo');
+                document.getElementById('cv-photo').value = '';
+                this.renderPaper();
+            };
+        }
+
+        // Tanda Tangan
         const canvas = document.getElementById('cv-sig-pad');
         if(!canvas) return;
         const ctx = canvas.getContext('2d');
         let draw = false;
 
         document.getElementById('btn-open-sig').onclick = () => document.getElementById('modal-sig').classList.remove('hidden');
-        
         document.getElementById('btn-clear-sig').onclick = () => { 
             ctx.clearRect(0,0,canvas.width,canvas.height); 
-            this.data.sig = null; 
-            localStorage.removeItem('cv-sig'); 
-            this.renderPaper(); 
+            this.data.sig = null; localStorage.removeItem('cv-sig'); this.renderPaper(); 
         };
-
         document.getElementById('btn-save-sig').onclick = () => {
             this.data.sig = canvas.toDataURL(); localStorage.setItem('cv-sig', this.data.sig);
             document.getElementById('modal-sig').classList.add('hidden'); this.renderPaper();
@@ -127,7 +136,6 @@ class CVBuilder {
             ctx.lineWidth = 2; ctx.strokeStyle = '#000';
             ctx.lineTo(x*(canvas.width/r.width), y*(canvas.height/r.height)); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x*(canvas.width/r.width), y*(canvas.height/r.height));
         };
-
         canvas.onmousedown = (e) => { draw = true; drawLine(e); }; canvas.onmousemove = drawLine; canvas.onmouseup = () => { draw = false; ctx.beginPath(); };
         canvas.ontouchstart = (e) => { draw = true; drawLine(e); }; canvas.ontouchmove = drawLine; canvas.ontouchend = () => { draw = false; ctx.beginPath(); };
     }
@@ -183,6 +191,10 @@ class CVBuilder {
     renderPaper() {
         const p = document.getElementById('cv-paper');
         if(!p) return;
+
+        // Munculin tombol Hapus Foto cuma kalau ada fotonya
+        const btnRemPhoto = document.getElementById('btn-remove-photo');
+        if(btnRemPhoto) btnRemPhoto.classList.toggle('hidden', !this.data.photo);
         
         const n = document.getElementById('cv-name').value || "NAMA LENGKAP";
         const t = document.getElementById('cv-title').value || "PROFESI / POSISI";
@@ -194,8 +206,12 @@ class CVBuilder {
         const a = document.getElementById('cv-address').value;
         
         const prof = document.getElementById('cv-profile').value;
-        const skills = document.getElementById('cv-skills') ? document.getElementById('cv-skills').value : '';
-        const cert = document.getElementById('cv-cert') ? document.getElementById('cv-cert').value : '';
+        
+        // REVISI: SKILLS & CERT JADI TEXTAREA YANG NERIMA NEWLINE (<br>)
+        const skillsVal = document.getElementById('cv-skills') ? document.getElementById('cv-skills').value : '';
+        const certVal = document.getElementById('cv-cert') ? document.getElementById('cv-cert').value : '';
+        const skills = skillsVal ? skillsVal.replace(/\n/g, '<br>') : '';
+        const cert = certVal ? certVal.replace(/\n/g, '<br>') : '';
 
         const ttlHtml = ttl ? `<p><i class="fas fa-calendar-alt w-4 text-accent"></i> ${ttl}</p>` : '';
         const phHtml = ph ? `<p><i class="fas fa-phone w-4 text-accent"></i> ${ph}</p>` : '';
@@ -204,8 +220,8 @@ class CVBuilder {
         const aHtml = a ? `<p class="col-span-2 mt-1"><i class="fas fa-map-marker-alt w-4 text-accent"></i> ${a}</p>` : '';
 
         const profHtml = prof ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Profil Profesional</h3><p class="text-[10px] leading-relaxed text-justify">${prof}</p></div>` : '';
-        const skillsHtml = skills ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Keahlian (Skills)</h3><p class="text-[10px] font-bold text-accent">${skills}</p></div>` : '';
-        const certHtml = cert ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Lisensi & Sertifikasi</h3><p class="text-[10px] leading-relaxed text-slate-800">${cert.replace(/\n/g, '<br>')}</p></div>` : '';
+        const skillsHtml = skills ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Keahlian (Skills)</h3><p class="text-[10px] font-bold text-accent leading-relaxed">${skills}</p></div>` : '';
+        const certHtml = cert ? `<div class="break-inside-avoid"><h3 class="text-xs font-black uppercase border-b-2 border-slate-300 mb-1 text-slate-900">Lisensi & Sertifikasi</h3><p class="text-[10px] leading-relaxed text-slate-800">${cert}</p></div>` : '';
 
         p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-800`;
         p.innerHTML = `
