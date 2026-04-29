@@ -54,8 +54,7 @@ class CVBuilder {
         document.getElementById('btn-export-cv').onclick = async () => {
             const btn = document.getElementById('btn-export-cv'); 
             if(btn.disabled) return;
-
-            // REVISI FATAL: Auto-Switch Tab ke Preview kalau di HP biar PDF gak BLANK
+            
             const pPan = document.getElementById('panel-preview');
             const pBtn = document.getElementById('tab-prev');
             if (pPan.classList.contains('hidden') && pBtn) {
@@ -65,8 +64,8 @@ class CVBuilder {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
             
-            // Kasih napas 300ms biar animasi buka tab kelar
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await new Promise(resolve => setTimeout(resolve, 150));
+            await document.fonts.ready;
             
             let userName = document.getElementById('cv-name').value || 'Profesional';
             userName = userName.replace(/[^a-zA-Z0-9]/g, '_');
@@ -74,10 +73,9 @@ class CVBuilder {
 
             try {
                 await html2pdf().set({
-                    margin: [5, 0, 5, 0], // Kasih jarak aman 5mm atas bawah biar multi-page gak nabrak
+                    margin: [5, 0, 5, 0], 
                     filename: fileName, 
                     image: { type: 'jpeg', quality: 0.82 }, 
-                    // REVISI FATAL: scrollY: 0 biar kepala CV gak terpotong pas di-scroll ke bawah
                     html2canvas: { scale: 3, useCORS: true, scrollY: 0 }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                     pagebreak: { mode: ['css', 'legacy'] },
@@ -113,22 +111,36 @@ class CVBuilder {
         const btnGenProf = document.getElementById('btn-gen-profile');
         if(btnGenProf) {
             btnGenProf.onclick = () => {
-                const titleVal = document.getElementById('cv-title').value;
-                const title = titleVal ? titleVal : "profesional";
+                // REVISI FATAL: VALIDASI 100% ANTI-BEGO
+                const titleEl = document.getElementById('cv-title');
+                const titleVal = titleEl.value.trim();
+                
+                if(!titleVal) {
+                    alert("⚠️ GAGAL MEMBUAT PROFIL: Anda belum mengisi 'Profesi / Gelar'.\n\nSilakan isi terlebih dahulu (misal: Tenaga Teknis Kefarmasian atau Akuntan) agar AI bisa menyusun kalimat yang 100% spesifik!");
+                    titleEl.focus();
+                    titleEl.classList.add('ring-2', 'ring-red-500');
+                    setTimeout(() => titleEl.classList.remove('ring-2', 'ring-red-500'), 2000);
+                    return;
+                }
+
+                const c = document.getElementById('cv-profile');
+                if(c.value.trim() !== "" && !c.value.includes("Seorang " + titleVal) && !c.value.includes("Individu yang")) {
+                    if(!confirm("Anda sudah mengetik profil secara manual. Yakin ingin menimpanya dengan teks otomatis dari sistem?")) return;
+                }
+
                 const expMode = document.getElementById('cv-sel-exp').value;
                 let profText = "";
 
                 if(expMode === 'fresh') {
-                    profText = `Seorang ${title} yang baru lulus dengan motivasi tinggi dan fondasi akademik yang kuat. Memiliki kemampuan adaptasi yang cepat, kemauan belajar yang tinggi, dan siap memberikan dedikasi penuh serta berkontribusi positif dalam lingkungan kerja yang dinamis.`;
+                    profText = `Seorang ${titleVal} yang baru lulus dengan motivasi tinggi dan fondasi akademik yang kuat. Memiliki kemampuan adaptasi yang cepat, kemauan belajar yang tangguh, serta kesiapan penuh untuk memberikan dedikasi dan berkontribusi secara nyata dalam lingkungan operasional yang dinamis.`;
                 } else if(expMode === 'zero') {
-                    profText = `Individu yang sangat antusias dan berdedikasi tinggi untuk membangun karir sebagai ${title}. Meskipun belum memiliki pengalaman kerja formal, saya dibekali dengan etos kerja yang kuat, disiplin, dan kesiapan untuk belajar serta berkembang bersama tim guna mencapai target perusahaan.`;
+                    profText = `Individu yang sangat antusias dan berdedikasi tinggi untuk membangun karir profesional sebagai ${titleVal}. Meskipun belum memiliki rekam jejak kerja formal, saya dibekali dengan etos kerja keras, kedisiplinan, dan komitmen kuat untuk belajar serta berkembang bersama tim guna mencapai target instansi.`;
                 } else {
-                    profText = `Seorang ${title} berpengalaman dengan rekam jejak yang terbukti dalam menyelesaikan tanggung jawab pekerjaan secara profesional. Berorientasi pada detail, mampu bekerja efektif di bawah tekanan, dan memiliki kemampuan kolaborasi tim yang solid untuk mencapai target operasional dengan optimal.`;
+                    profText = `Seorang ${titleVal} berpengalaman dengan rekam jejak yang terbukti dalam mengeksekusi tanggung jawab pekerjaan secara profesional dan presisi. Berorientasi pada target, mampu bekerja efektif di bawah tekanan operasional, dan memiliki kemampuan kolaborasi tim yang solid untuk mencapai efisiensi maksimal.`;
                 }
 
-                const profInput = document.getElementById('cv-profile');
-                profInput.value = profText;
-                profInput.dispatchEvent(new Event('input'));
+                c.value = profText;
+                c.dispatchEvent(new Event('input'));
             };
         }
 
@@ -139,90 +151,48 @@ class CVBuilder {
     }
 
     bindMedia() {
-        document.getElementById('cv-photo').onchange = (e) => {
-            const f = e.target.files[0];
-            if(f) { 
-                const r = new FileReader(); 
-                r.onload = (ev) => { 
-                    const img = new Image();
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 400; 
-                        const scaleSize = MAX_WIDTH / img.width;
-                        canvas.width = MAX_WIDTH;
-                        canvas.height = img.height * scaleSize;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        const compressedData = canvas.toDataURL('image/jpeg', 0.8); 
-                        
-                        this.data.photo = compressedData; 
-                        try { localStorage.setItem('cv-photo', compressedData); } catch(err) {}
-                        this.renderPaper(); 
-                    };
-                    img.src = ev.target.result;
-                }; 
-                r.readAsDataURL(f); 
-            }
-        };
-
-        const btnRemPhoto = document.getElementById('btn-remove-photo');
-        if(btnRemPhoto) {
-            btnRemPhoto.onclick = (e) => {
-                e.stopPropagation();
-                this.data.photo = null; localStorage.removeItem('cv-photo');
-                document.getElementById('cv-photo').value = ''; this.renderPaper();
-            };
-        }
-
-        const sigUpload = document.getElementById('cv-sig-upload');
-        if(sigUpload) {
-            sigUpload.onchange = (e) => {
+        // [Fungsi Media Tidak Berubah - Sudah Sempurna]
+        const bindUpload = (id, key) => {
+            const el = document.getElementById(id);
+            if(!el) return;
+            el.onchange = (e) => {
                 const f = e.target.files[0];
-                if(f) {
-                    const r = new FileReader();
-                    r.onload = (ev) => {
+                if(f) { 
+                    const r = new FileReader(); 
+                    r.onload = (ev) => { 
                         const img = new Image();
                         img.onload = () => {
                             const canvas = document.createElement('canvas');
-                            const MAX_WIDTH = 400; 
-                            const scaleSize = MAX_WIDTH / img.width;
-                            canvas.width = MAX_WIDTH;
-                            canvas.height = img.height * scaleSize;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            const compData = canvas.toDataURL('image/png'); 
-                            
-                            this.data.sig = compData;
-                            try { localStorage.setItem('cv-sig', compData); } catch(err) {}
-                            document.getElementById('modal-sig').classList.add('hidden');
-                            this.renderPaper();
+                            const MAX_WIDTH = 400; const scaleSize = MAX_WIDTH / img.width;
+                            canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
+                            const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            const compData = key === 'sig' ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.8); 
+                            this.data[key] = compData; 
+                            try { localStorage.setItem(key === 'sig' ? 'cv-sig' : 'cv-photo', compData); } catch(err) {}
+                            if(key === 'sig') document.getElementById('modal-sig').classList.add('hidden');
+                            this.renderPaper(); 
                         };
                         img.src = ev.target.result;
-                    };
-                    r.readAsDataURL(f);
+                    }; 
+                    r.readAsDataURL(f); 
                 }
             };
-        }
+        };
+        bindUpload('cv-photo', 'photo'); bindUpload('cv-sig-upload', 'sig');
+
+        const btnRemPhoto = document.getElementById('btn-remove-photo');
+        if(btnRemPhoto) btnRemPhoto.onclick = (e) => { e.stopPropagation(); this.data.photo = null; localStorage.removeItem('cv-photo'); document.getElementById('cv-photo').value = ''; this.renderPaper(); };
 
         const canvas = document.getElementById('cv-sig-pad');
         if(!canvas) return;
-        const ctx = canvas.getContext('2d');
-        let draw = false;
-
+        const ctx = canvas.getContext('2d'); let draw = false;
         document.getElementById('btn-open-sig').onclick = () => document.getElementById('modal-sig').classList.remove('hidden');
-        document.getElementById('btn-clear-sig').onclick = () => { 
-            ctx.clearRect(0,0,canvas.width,canvas.height); this.data.sig = null; localStorage.removeItem('cv-sig'); this.renderPaper(); 
-        };
-        document.getElementById('btn-save-sig').onclick = () => {
-            this.data.sig = canvas.toDataURL(); localStorage.setItem('cv-sig', this.data.sig);
-            document.getElementById('modal-sig').classList.add('hidden'); this.renderPaper();
-        };
+        document.getElementById('btn-clear-sig').onclick = () => { ctx.clearRect(0,0,canvas.width,canvas.height); this.data.sig = null; localStorage.removeItem('cv-sig'); this.renderPaper(); };
+        document.getElementById('btn-save-sig').onclick = () => { this.data.sig = canvas.toDataURL(); localStorage.setItem('cv-sig', this.data.sig); document.getElementById('modal-sig').classList.add('hidden'); this.renderPaper(); };
 
         const drawLine = (e) => {
             if(!draw) return; e.preventDefault();
-            const r = canvas.getBoundingClientRect();
-            const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
-            const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+            const r = canvas.getBoundingClientRect(); const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left; const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
             ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.strokeStyle = '#0f172a';
             ctx.lineTo(x*(canvas.width/r.width), y*(canvas.height/r.height)); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x*(canvas.width/r.width), y*(canvas.height/r.height));
         };
@@ -239,39 +209,26 @@ class CVBuilder {
     moveD(list, i, dir) {
         const arr = this.data[list];
         if (i + dir < 0 || i + dir >= arr.length) return;
-        const temp = arr[i];
-        arr[i] = arr[i + dir];
-        arr[i + dir] = temp;
-        this.saveLists(); 
-        this.renderLists();
-        this.renderPaper();
+        const temp = arr[i]; arr[i] = arr[i + dir]; arr[i + dir] = temp;
+        this.saveLists(); this.renderLists(); this.renderPaper();
     }
 
-    upD(list, i, key, val) { 
-        this.data[list][i][key] = val; 
-        this.saveLists(); 
-        this.renderPaper(); 
-    }
-    
-    delD(list, i) { 
-        this.data[list].splice(i, 1); 
-        this.saveLists(); 
-        this.renderLists(); 
-        this.renderPaper(); 
-    }
+    upD(list, i, key, val) { this.data[list][i][key] = val; this.saveLists(); this.renderPaper(); }
+    delD(list, i) { this.data[list].splice(i, 1); this.saveLists(); this.renderLists(); this.renderPaper(); }
 
     renderLists() {
+        // REVISI KETERANGAN: Placeholdernya diperjelas 100%
         const elExp = document.getElementById('cv-exp-list'); elExp.innerHTML = '';
         this.data.exps.forEach((x,i) => {
             elExp.innerHTML += `
             <div class="bg-slate-800 border border-slate-700 p-3 rounded-lg flex items-start gap-3">
                 <div class="flex-1 space-y-2">
-                    <input class="w-full bg-transparent text-xs outline-none border-b border-slate-700 pb-1 focus:border-sky-500 font-bold" placeholder="Posisi / Jabatan" value="${x.role||''}" oninput="appCV.upD('exps',${i},'role',this.value)">
+                    <input class="w-full bg-transparent text-xs outline-none border-b border-slate-700 pb-1 focus:border-sky-500 font-bold" placeholder="Posisi / Jabatan (ex: Asisten Apoteker)" value="${x.role||''}" oninput="appCV.upD('exps',${i},'role',this.value)">
                     <div class="flex gap-2">
-                        <input class="flex-1 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Perusahaan" value="${x.comp||''}" oninput="appCV.upD('exps',${i},'comp',this.value)">
-                        <input class="w-28 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Bulan Tahun" value="${x.year||''}" oninput="appCV.upD('exps',${i},'year',this.value)">
+                        <input class="flex-1 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Instansi / Perusahaan" value="${x.comp||''}" oninput="appCV.upD('exps',${i},'comp',this.value)">
+                        <input class="w-32 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Periode (ex: Jan 2023 - Skrg)" value="${x.year||''}" oninput="appCV.upD('exps',${i},'year',this.value)">
                     </div>
-                    <textarea class="w-full bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500 resize-none custom-scroll h-10 mt-1" placeholder="Deskripsi Tugas/Pencapaian (Opsional, bisa di-Enter)..." oninput="appCV.upD('exps',${i},'desc',this.value)">${x.desc||''}</textarea>
+                    <textarea class="w-full bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500 resize-none custom-scroll h-12 mt-1" placeholder="Deskripsi Tugas & Pencapaian (Gunakan '-' atau peluru untuk rincian)..." oninput="appCV.upD('exps',${i},'desc',this.value)">${x.desc||''}</textarea>
                 </div>
                 <div class="flex flex-col gap-1 mt-1 items-center">
                     ${i > 0 ? `<button onclick="appCV.moveD('exps', ${i}, -1)" class="text-slate-400 hover:text-sky-400 bg-slate-700 p-1 px-2 rounded transition"><i class="fas fa-chevron-up text-[10px]"></i></button>` : ''}
@@ -286,11 +243,11 @@ class CVBuilder {
             elEdu.innerHTML += `
             <div class="bg-slate-800 border border-slate-700 p-3 rounded-lg flex items-start gap-3">
                 <div class="flex-1 space-y-2">
-                    <input class="w-full bg-transparent text-xs outline-none border-b border-slate-700 pb-1 focus:border-sky-500 font-bold" placeholder="Sekolah / Kampus" value="${x.school||''}" oninput="appCV.upD('edus',${i},'school',this.value)">
+                    <input class="w-full bg-transparent text-xs outline-none border-b border-slate-700 pb-1 focus:border-sky-500 font-bold" placeholder="Nama Sekolah / Universitas" value="${x.school||''}" oninput="appCV.upD('edus',${i},'school',this.value)">
                     <div class="flex gap-2">
-                        <input class="flex-1 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Jurusan" value="${x.degree||''}" oninput="appCV.upD('edus',${i},'degree',this.value)">
+                        <input class="flex-1 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Jurusan / Program Studi" value="${x.degree||''}" oninput="appCV.upD('edus',${i},'degree',this.value)">
                         <input class="w-16 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="IPK / Nilai" value="${x.score||''}" oninput="appCV.upD('edus',${i},'score',this.value)">
-                        <input class="w-24 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Bulan Tahun" value="${x.year||''}" oninput="appCV.upD('edus',${i},'year',this.value)">
+                        <input class="w-28 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Tahun Lulus" value="${x.year||''}" oninput="appCV.upD('edus',${i},'year',this.value)">
                     </div>
                 </div>
                 <div class="flex flex-col gap-1 mt-1 items-center">
@@ -310,10 +267,10 @@ class CVBuilder {
                     <div class="flex-1 space-y-2">
                         <input class="w-full bg-transparent text-xs outline-none border-b border-slate-700 pb-1 focus:border-sky-500 font-bold" placeholder="Nama Proyek / Posisi Organisasi" value="${x.name||''}" oninput="appCV.upD('prjs',${i},'name',this.value)">
                         <div class="flex gap-2">
-                            <input class="flex-1 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Penyelenggara / Institusi" value="${x.inst||''}" oninput="appCV.upD('prjs',${i},'inst',this.value)">
-                            <input class="w-28 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Bulan Tahun" value="${x.year||''}" oninput="appCV.upD('prjs',${i},'year',this.value)">
+                            <input class="flex-1 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500" placeholder="Penyelenggara / Klien" value="${x.inst||''}" oninput="appCV.upD('prjs',${i},'inst',this.value)">
+                            <input class="w-24 bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 text-center focus:border-sky-500" placeholder="Tahun" value="${x.year||''}" oninput="appCV.upD('prjs',${i},'year',this.value)">
                         </div>
-                        <textarea class="w-full bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500 resize-none custom-scroll h-10 mt-1" placeholder="Deskripsi/Pencapaian Proyek (Opsional)..." oninput="appCV.upD('prjs',${i},'desc',this.value)">${x.desc||''}</textarea>
+                        <textarea class="w-full bg-transparent text-[10px] outline-none border-b border-slate-700 pb-1 focus:border-sky-500 resize-none custom-scroll h-10 mt-1" placeholder="Rincian / Teknologi yang digunakan..." oninput="appCV.upD('prjs',${i},'desc',this.value)">${x.desc||''}</textarea>
                     </div>
                     <div class="flex flex-col gap-1 mt-1 items-center">
                         ${i > 0 ? `<button onclick="appCV.moveD('prjs', ${i}, -1)" class="text-slate-400 hover:text-sky-400 bg-slate-700 p-1 px-2 rounded transition"><i class="fas fa-chevron-up text-[10px]"></i></button>` : ''}

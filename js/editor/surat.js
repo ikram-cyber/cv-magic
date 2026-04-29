@@ -64,7 +64,6 @@ class SuratBuilder {
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
             
             await new Promise(resolve => setTimeout(resolve, 150));
-            // REVISI FATAL: Tunggu Ikon FontAwesome siap biar gak cacat
             await document.fonts.ready;
 
             let userName = document.getElementById('surat-name').value || 'Pelamar';
@@ -111,16 +110,28 @@ class SuratBuilder {
         const btnTemp = document.getElementById('btn-template');
         if(btnTemp) {
             btnTemp.onclick = () => {
+                // REVISI FATAL: VALIDASI ANTI SURAT KOSONG (KURUNG SIKU)
+                const titleEl = document.getElementById('surat-title');
+                const titleVal = titleEl.value.trim();
+                
+                if(!titleVal) {
+                    alert("⚠️ GAGAL MEMBUAT SURAT: Kolom 'Posisi yang Dilamar' masih kosong.\n\nMohon isi terlebih dahulu agar surat Anda tidak terdapat kurung siku yang memalukan!");
+                    titleEl.focus();
+                    titleEl.classList.add('ring-2', 'ring-red-500');
+                    setTimeout(() => titleEl.classList.remove('ring-2', 'ring-red-500'), 2000);
+                    return;
+                }
+
                 const c = document.getElementById('surat-content');
                 if(c.value.trim() !== "" && !c.value.includes("Dengan hormat,")) {
                     if(!confirm("Anda sudah mengetik isi surat secara manual. Yakin ingin menimpanya dengan teks otomatis?")) return;
                 }
 
-                const t = document.getElementById('surat-title').value || "[Posisi yang Dilamar]";
-                const n = document.getElementById('surat-name').value || localStorage.getItem('cv-name') || "[Nama Lengkap]";
-                const ttl = localStorage.getItem('cv-ttl') || "[Tempat, Tanggal Lahir]";
-                const ph = localStorage.getItem('cv-phone') || "[No WhatsApp]";
-                const e = localStorage.getItem('cv-email') || "[Email]";
+                const t = titleVal;
+                const n = document.getElementById('surat-name').value || localStorage.getItem('cv-name') || "NAMA LENGKAP SAYA";
+                const ttl = localStorage.getItem('cv-ttl') || "Kota, DD Bulan YYYY";
+                const ph = localStorage.getItem('cv-phone') || "Nomor HP/WA";
+                const e = localStorage.getItem('cv-email') || "Alamat Email";
                 
                 const cName = document.getElementById('surat-comp').value || "";
 
@@ -232,7 +243,6 @@ class SuratBuilder {
             if(el) { el.value = localStorage.getItem('cv-name'); localStorage.setItem('surat-name', el.value); }
         }
 
-        // REVISI CERDAS: Kalau di Surat belum ada TTD, narik paksa TTD dari CV!
         if(!localStorage.getItem('surat-sig') && localStorage.getItem('cv-sig')) {
             this.data.sig = localStorage.getItem('cv-sig');
             localStorage.setItem('surat-sig', this.data.sig);
