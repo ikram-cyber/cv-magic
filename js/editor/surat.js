@@ -54,7 +54,6 @@ class SuratBuilder {
             const btn = document.getElementById('btn-export-surat');
             if(btn.disabled) return;
             
-            // REVISI FATAL: Auto-Switch Tab ke Preview biar PDF Surat gak BLANK di HP
             const pPan = document.getElementById('panel-preview');
             const pBtn = document.getElementById('tab-prev');
             if (pPan.classList.contains('hidden') && pBtn) {
@@ -64,7 +63,9 @@ class SuratBuilder {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
             
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await new Promise(resolve => setTimeout(resolve, 150));
+            // REVISI FATAL: Tunggu Ikon FontAwesome siap biar gak cacat
+            await document.fonts.ready;
 
             let userName = document.getElementById('surat-name').value || 'Pelamar';
             userName = userName.replace(/[^a-zA-Z0-9]/g, '_');
@@ -72,10 +73,9 @@ class SuratBuilder {
 
             try {
                 await html2pdf().set({
-                    margin: [5, 0, 5, 0], // Margin aman atas-bawah
+                    margin: [5, 0, 5, 0], 
                     filename: fileName, 
                     image: { type: 'jpeg', quality: 0.82 }, 
-                    // REVISI FATAL: scrollY: 0 biar kop surat gak kepotong di HP
                     html2canvas: { scale: 3, useCORS: true, scrollY: 0 }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                     pagebreak: { mode: ['css', 'legacy'] },
@@ -230,6 +230,12 @@ class SuratBuilder {
         if(!localStorage.getItem('surat-name') && localStorage.getItem('cv-name')) {
             const el = document.getElementById('surat-name');
             if(el) { el.value = localStorage.getItem('cv-name'); localStorage.setItem('surat-name', el.value); }
+        }
+
+        // REVISI CERDAS: Kalau di Surat belum ada TTD, narik paksa TTD dari CV!
+        if(!localStorage.getItem('surat-sig') && localStorage.getItem('cv-sig')) {
+            this.data.sig = localStorage.getItem('cv-sig');
+            localStorage.setItem('surat-sig', this.data.sig);
         }
 
         ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-address','surat-content'].forEach(id => {
