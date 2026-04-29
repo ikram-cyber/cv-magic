@@ -42,7 +42,7 @@ class SuratBuilder {
         if(btnReset) {
             btnReset.onclick = () => {
                 if(confirm("Yakin mau hapus data surat lamaran?")) {
-                    ['surat-name','surat-title','surat-date','surat-hrd','surat-comp','surat-content'].forEach(id => localStorage.removeItem(id));
+                    ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-content'].forEach(id => localStorage.removeItem(id));
                     localStorage.removeItem('surat-sig');
                     location.reload();
                 }
@@ -78,7 +78,7 @@ class SuratBuilder {
     }
 
     bindInputs() {
-        ['surat-name','surat-title','surat-date','surat-hrd','surat-comp','surat-content'].forEach(id => {
+        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-content'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
         });
@@ -87,9 +87,15 @@ class SuratBuilder {
         if(btnTemp) {
             btnTemp.onclick = () => {
                 const t = document.getElementById('surat-title').value || "[Posisi]";
+                document.getElementById('surat-hal').value = "Lamaran Pekerjaan";
+                document.getElementById('surat-lamp').value = "1 (satu) Berkas";
+                
                 const c = document.getElementById('surat-content');
                 c.value = `Dengan hormat,\n\nBerdasarkan informasi lowongan yang tersedia, saya bermaksud mengajukan diri untuk melamar posisi ${t} di perusahaan yang Bapak/Ibu pimpin.\n\nSaya memiliki kualifikasi yang relevan, berdedikasi tinggi, siap bekerja keras, dan mampu berkolaborasi dengan baik dalam tim. Sebagai bahan pertimbangan, saya lampirkan Curriculum Vitae (CV) beserta dokumen pendukung lainnya pada lampiran terpisah.\n\nBesar harapan saya untuk dapat mengikuti tahapan seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.`;
-                c.dispatchEvent(new Event('input'));
+                
+                ['surat-hal', 'surat-lamp', 'surat-content'].forEach(id => {
+                    document.getElementById(id).dispatchEvent(new Event('input'));
+                });
             };
         }
     }
@@ -128,7 +134,7 @@ class SuratBuilder {
     }
 
     loadLocal() {
-        ['surat-name','surat-title','surat-date','surat-hrd','surat-comp','surat-content'].forEach(id => {
+        ['surat-name','surat-title','surat-hal','surat-lamp','surat-date','surat-hrd','surat-comp','surat-content'].forEach(id => {
             if(localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
         });
         if(localStorage.getItem('surat-sig')) this.data.sig = localStorage.getItem('surat-sig');
@@ -145,11 +151,19 @@ class SuratBuilder {
 
         const n = document.getElementById('surat-name').value || "NAMA ANDA";
         const date = document.getElementById('surat-date').value || autoDate;
+        
+        const hal = document.getElementById('surat-hal').value;
+        const lamp = document.getElementById('surat-lamp').value;
         const hrd = document.getElementById('surat-hrd').value;
         const comp = document.getElementById('surat-comp').value;
         
         const contentVal = document.getElementById('surat-content').value;
         const contHtml = contentVal ? contentVal.replace(/\n/g, '<br>') : '';
+
+        // Block Hal & Lampiran
+        const lampHtml = lamp ? `<tr><td class="pr-2 align-top">Lampiran</td><td class="pr-2 align-top">:</td><td>${lamp}</td></tr>` : '';
+        const halHtml = hal ? `<tr><td class="pr-2 align-top">Hal</td><td class="pr-2 align-top">:</td><td><b>${hal}</b></td></tr>` : '';
+        const headerTable = (lamp || hal) ? `<table class="text-[11pt] mb-8">${lampHtml}${halHtml}</table>` : '';
 
         const hrdHtml = hrd ? `<p>${hrd}</p>` : '';
         const compHtml = comp ? `<p class="text-accent">${comp}</p>` : '';
@@ -157,8 +171,11 @@ class SuratBuilder {
 
         p.className = `a4-sheet p-[20mm] ${this.data.font} ${this.data.theme} text-[11pt] leading-relaxed text-slate-900 bg-white`;
         p.innerHTML = `
-            <div class="text-right mb-10">${date}</div>
-            <div class="font-bold mb-10 leading-tight">
+            <div class="text-right mb-8">${date}</div>
+            
+            ${headerTable}
+
+            <div class="font-bold mb-8 leading-tight">
                 ${hrdHtml}
                 ${compHtml}
                 ${diTempatHtml}
