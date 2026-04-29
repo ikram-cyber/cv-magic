@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DocuMagic Pro - crafted by Ikram Cyber</title>
+    <title>CV-Magic Pro | Ikram Cyber</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -11,122 +11,95 @@
 </head>
 <body class="bg-[#0f172a] text-slate-200 h-screen w-screen overflow-hidden font-sans">
 
-    <header class="bg-[#1e293b] border-b border-white/5 flex justify-around items-center h-14 shrink-0 z-50">
-        <button id="tab-editor" class="flex-1 h-full font-bold text-sky-400 border-b-2 border-sky-400 flex items-center justify-center gap-2 transition-all">
-            <i class="fas fa-feather-alt"></i> EDITOR
+    <header class="bg-[#1e293b] border-b border-white/5 flex h-14 shrink-0 z-50">
+        <button id="tab-editor" class="flex-1 font-bold text-sky-400 border-b-2 border-sky-400 flex items-center justify-center gap-2">
+            <i class="fas fa-edit"></i> EDITOR
         </button>
-        <button id="tab-preview" class="flex-1 h-full font-bold text-slate-400 flex items-center justify-center gap-2 transition-all">
+        <button id="tab-preview" class="flex-1 font-bold text-slate-400 flex items-center justify-center gap-2">
             <i class="fas fa-eye"></i> PREVIEW
         </button>
     </header>
 
-    <nav class="bg-[#1e293b]/50 p-2 flex justify-center gap-2 h-14 shrink-0">
+    <nav class="bg-[#1e293b]/50 p-2 flex justify-center h-14 shrink-0">
         <div class="bg-slate-800 rounded-full p-1 flex w-full max-w-md border border-white/5">
-            <button id="sub-cv" class="flex-1 rounded-full py-1 text-xs font-bold bg-sky-500 text-white transition-all">
-                <i class="fas fa-file-alt"></i> CV
-            </button>
-            <button id="sub-surat" class="flex-1 rounded-full py-1 text-xs font-bold text-slate-400 transition-all">
-                <i class="fas fa-envelope"></i> SURAT
-            </button>
-            <button id="sub-lang" class="flex-1 rounded-full py-1 text-[10px] font-bold text-slate-400 transition-all uppercase">
-                <i class="fas fa-language text-sm"></i> ID/EN
-            </button>
+            <button id="sub-cv" class="flex-1 rounded-full py-1 text-xs font-bold bg-sky-500 text-white">CV</button>
+            <button id="sub-surat" class="flex-1 rounded-full py-1 text-xs font-bold text-slate-400">SURAT</button>
         </div>
     </nav>
 
-    <main class="flex-1 overflow-hidden relative h-[calc(100vh-112px)]">
+    <main class="h-[calc(100vh-112px)] relative overflow-hidden">
         
         <section id="panel-editor" class="h-full overflow-y-auto p-4 space-y-6 pb-24 custom-scroll">
             
             <div class="grid grid-cols-2 gap-4">
-                <div class="bg-slate-800/50 p-4 rounded-xl border border-dashed border-slate-600 flex flex-col items-center justify-center gap-2 text-center relative group">
-                    <i class="fas fa-camera text-sky-500"></i>
-                    <span class="text-[10px] font-bold uppercase tracking-wider">Pas Foto</span>
-                    <button class="bg-slate-700 hover:bg-slate-600 px-4 py-1.5 rounded text-[10px] font-bold">PILIH FOTO</button>
+                <div class="bg-slate-800/50 p-4 rounded-xl border border-dashed border-slate-600 text-center relative">
+                    <i class="fas fa-camera text-sky-500 mb-1"></i>
+                    <p class="text-[10px] font-bold uppercase">Foto 3x4</p>
                     <input type="file" id="in-photo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
                 </div>
-                <div class="bg-slate-800/50 p-4 rounded-xl border border-dashed border-slate-600 flex flex-col items-center justify-center gap-2 text-center relative">
-                    <i class="fas fa-signature text-sky-500"></i>
-                    <span class="text-[10px] font-bold uppercase tracking-wider">Tanda Tangan</span>
-                    <button id="open-sig" class="bg-sky-500/20 text-sky-400 px-4 py-1.5 rounded text-[10px] font-bold border border-sky-500/30">Gambar TTD</button>
+                <div class="bg-slate-800/50 p-4 rounded-xl border border-dashed border-slate-600 text-center" id="open-sig">
+                    <i class="fas fa-signature text-sky-500 mb-1"></i>
+                    <p class="text-[10px] font-bold uppercase">Tanda Tangan</p>
                 </div>
             </div>
 
-            <div class="space-y-4">
-                <h3 class="text-sky-500 text-[10px] font-black uppercase tracking-[0.2em]">Identitas Inti</h3>
-                <div class="space-y-2">
-                    <input type="text" id="in-name" placeholder="Nama Lengkap" class="w-full bg-slate-800/80 border border-slate-700 rounded-lg p-3 text-sm outline-none focus:border-sky-500 transition">
-                    <input type="text" id="in-ttl" placeholder="Tempat, Tanggal Lahir" class="w-full bg-slate-800/80 border border-slate-700 rounded-lg p-3 text-sm outline-none focus:border-sky-500 transition">
-                    <input type="text" id="in-title" placeholder="Posisi / Profesi" class="w-full bg-slate-800/80 border border-slate-700 rounded-lg p-3 text-sm outline-none focus:border-sky-500 transition">
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="in-email" placeholder="Email" class="bg-slate-800/80 border border-slate-700 rounded-lg p-3 text-sm outline-none">
-                        <input type="text" id="in-phone" placeholder="No. HP" class="bg-slate-800/80 border border-slate-700 rounded-lg p-3 text-sm outline-none">
-                    </div>
-                    <input type="text" id="in-address" placeholder="Alamat Lengkap" class="w-full bg-slate-800/80 border border-slate-700 rounded-lg p-3 text-sm outline-none">
-                    <input type="text" id="in-portfolio" placeholder="Link Portofolio (Biar Muncul QR Code)" class="w-full bg-slate-800/80 border border-slate-700 rounded-lg p-3 text-sm outline-none">
+            <div class="space-y-3">
+                <h3 class="text-sky-500 text-[10px] font-black uppercase tracking-widest">Identitas Dasar</h3>
+                <input type="text" id="in-name" placeholder="Nama Lengkap" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none">
+                <input type="text" id="in-title" placeholder="Profesi / Posisi" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="in-email" placeholder="Email" class="bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none">
+                    <input type="text" id="in-phone" placeholder="No. HP" class="bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none">
                 </div>
+                <input type="text" id="in-address" placeholder="Alamat Domisili" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none">
             </div>
 
             <div class="space-y-4">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-sky-500 text-[10px] font-black uppercase tracking-[0.2em]">Profil Profesional</h3>
-                    <button id="btn-ai-write" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded font-bold flex items-center gap-1"><i class="fas fa-pen-nib"></i> AI WRITE</button>
+                    <h3 class="text-sky-500 text-[10px] font-black uppercase tracking-widest">Pengalaman</h3>
+                    <button id="add-exp" class="text-[10px] font-bold text-sky-400 bg-sky-500/10 px-3 py-1 rounded-lg border border-sky-500/30">+ TAMBAH</button>
                 </div>
-                <select id="in-profile-mode" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none">
-                    <option value="mandiri">Mode: Jeda Karier / Mandiri</option>
-                    <option value="fresh">Mode: Fresh Graduate</option>
-                    <option value="pro">Mode: Berpengalaman</option>
-                </select>
-                <textarea id="in-profile-text" class="w-full h-32 bg-slate-800/80 border border-slate-700 rounded-lg p-3 text-sm outline-none resize-none" placeholder="Tulis deskripsi atau gunakan AI..."></textarea>
+                <div id="exp-list" class="space-y-3"></div>
             </div>
 
-            <div class="space-y-4">
+            <div class="space-y-3">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-sky-500 text-[10px] font-black uppercase tracking-[0.2em]">Pengalaman</h3>
-                    <button id="add-exp" class="bg-sky-500/20 text-sky-400 text-[10px] px-3 py-1 rounded font-bold border border-sky-500/30 flex items-center gap-1">+ TAMBAH</button>
+                    <h3 class="text-sky-500 text-[10px] font-black uppercase tracking-widest">Tentang Saya</h3>
+                    <button id="btn-auto-write" class="text-[10px] font-bold bg-emerald-600 text-white px-3 py-1 rounded-lg">AUTO-WRITE</button>
                 </div>
-                <div id="exp-list" class="space-y-3">
-                    </div>
+                <textarea id="in-profile" class="w-full h-32 bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none resize-none"></textarea>
             </div>
 
-            <div class="bg-slate-800/40 p-4 rounded-xl border border-white/5 space-y-4">
-                <h3 class="text-sky-500 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2"><i class="fas fa-palette"></i> Studio Desain</h3>
-                <div class="grid grid-cols-3 gap-1">
-                    <button class="font-btn bg-slate-700 text-[9px] font-bold py-2 rounded border border-white/5 active" data-font="font-sans">SANS</button>
-                    <button class="font-btn bg-slate-700 text-[9px] font-bold py-2 rounded border border-white/5" data-font="font-serif">SERIF</button>
-                    <button class="font-btn bg-slate-700 text-[9px] font-bold py-2 rounded border border-white/5" data-font="font-mono">MONO</button>
-                </div>
-                <div class="grid grid-cols-2 gap-1">
-                    <button class="style-btn bg-slate-700 text-[9px] font-bold py-2 rounded border border-sky-500 active" data-style="classic">CLASSIC</button>
-                    <button class="style-btn bg-slate-700 text-[9px] font-bold py-2 rounded border border-white/5" data-style="pro">PRO</button>
-                    <button class="style-btn bg-slate-700 text-[9px] font-bold py-2 rounded border border-white/5" data-style="ats">ATS</button>
-                    <button class="style-btn bg-slate-700 text-[9px] font-bold py-2 rounded border border-white/5" data-style="tech">TECH</button>
+            <div class="bg-slate-800/80 p-4 rounded-xl border border-white/5 space-y-4">
+                <h3 class="text-sky-500 text-[10px] font-black uppercase tracking-widest">Studio Desain</h3>
+                <div class="grid grid-cols-3 gap-2">
+                    <button class="font-btn bg-slate-700 text-[10px] py-2 rounded font-bold border border-sky-500" data-font="font-sans">SANS</button>
+                    <button class="font-btn bg-slate-700 text-[10px] py-2 rounded font-bold" data-font="font-serif">SERIF</button>
+                    <button class="font-btn bg-slate-700 text-[10px] py-2 rounded font-bold" data-font="font-mono">MONO</button>
                 </div>
             </div>
+
         </section>
 
         <section id="panel-preview" class="hidden h-full overflow-y-auto bg-slate-950 p-4 flex justify-center custom-scroll">
             <div id="capture-area" class="origin-top shadow-2xl">
-                <div class="a4-sheet bg-white p-[15mm] text-slate-900 font-sans shadow-lg relative" id="preview-content">
-                    </div>
+                <div id="preview-content" class="a4-sheet bg-white p-[15mm] text-slate-900 font-sans relative"></div>
             </div>
         </section>
 
         <div class="fixed bottom-0 left-0 w-full p-4 bg-gradient-to-t from-[#0f172a] to-transparent z-40">
-            <button id="btn-export" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-black py-4 rounded-xl shadow-[0_10px_20px_rgba(14,165,233,0.3)] flex justify-center items-center gap-3 transition-transform active:scale-95">
-                <i class="fas fa-print text-xl"></i> CETAK DOKUMEN
+            <button id="btn-export" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-black py-4 rounded-xl shadow-xl flex justify-center items-center gap-2 transition-transform active:scale-95">
+                <i class="fas fa-print"></i> CETAK PDF
             </button>
         </div>
-
     </main>
 
-    <div id="modal-sig" class="fixed inset-0 bg-black/80 z-[60] hidden flex items-center justify-center p-6">
-        <div class="bg-slate-800 w-full max-w-sm rounded-2xl p-4 space-y-4 border border-white/10">
-            <h4 class="text-xs font-bold uppercase tracking-widest text-sky-400">Tanda Tangan Digital</h4>
-            <canvas id="sig-pad" class="w-full bg-white rounded-xl aspect-video cursor-crosshair"></canvas>
+    <div id="modal-sig" class="fixed inset-0 bg-black/90 z-[60] hidden flex items-center justify-center p-6">
+        <div class="bg-slate-800 w-full max-w-sm rounded-2xl p-4 space-y-4">
+            <canvas id="sig-pad" class="w-full bg-white rounded-xl aspect-video"></canvas>
             <div class="flex gap-2">
-                <button id="clear-sig" class="flex-1 bg-red-500/20 text-red-400 py-2 rounded-lg font-bold text-xs">HAPUS</button>
-                <button id="save-sig" class="flex-1 bg-sky-500 text-white py-2 rounded-lg font-bold text-xs">SIMPAN & TUTUP</button>
+                <button id="clear-sig" class="flex-1 bg-red-600 py-2 rounded-lg font-bold">HAPUS</button>
+                <button id="save-sig" class="flex-1 bg-sky-500 py-2 rounded-lg font-bold">SIMPAN</button>
             </div>
         </div>
     </div>

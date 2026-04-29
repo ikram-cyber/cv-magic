@@ -1,45 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700&family=Space+Mono&display=swap');
 
-/* FONTS */
 .font-sans { font-family: 'Inter', sans-serif; }
 .font-serif { font-family: 'Merriweather', serif; }
 .font-mono { font-family: 'Space Mono', monospace; }
 
-/* KERTAS A4 FISIK */
 .a4-sheet {
     width: 210mm;
     min-height: 297mm;
     margin: 0 auto;
     position: relative;
-    overflow: hidden;
+    background: white;
 }
 
-/* SCROLLBAR GAYA DARK */
 .custom-scroll::-webkit-scrollbar { width: 4px; }
-.custom-scroll::-webkit-scrollbar-track { background: transparent; }
-.custom-scroll::-webkit-scrollbar-thumb { background: rgba(14, 165, 233, 0.2); border-radius: 10px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 10px; }
 
-/* ANIMASI TRANSISI TABS */
-section { transition: opacity 0.2s ease-in-out; }
-
-/* STYLING ITEM PENGALAMAN */
-.exp-item {
-    background: rgba(15, 23, 42, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 12px;
-    border-radius: 12px;
-}
-
-/* PRINTING RULES */
-@media print {
-    body * { visibility: hidden; }
-    #capture-area, #capture-area * { visibility: visible; }
-    #capture-area { position: absolute; left: 0; top: 0; transform: none !important; box-shadow: none !important; width: 100%; }
+.exp-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 10px;
+    border-radius: 10px;
 }
 
 @media (max-width: 768px) {
     #capture-area {
-        transform: scale(0.4);
+        transform: scale(0.42);
         transform-origin: top center;
     }
 }
