@@ -22,11 +22,35 @@
     </div>
 
     <main class="flex-1 flex overflow-hidden relative">
-        
         <section id="panel-editor" class="w-full md:w-[450px] h-full overflow-y-auto p-5 pb-24 border-r border-slate-800 custom-scroll space-y-6">
             
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-black text-white">EDITOR CV</h2>
+                <button id="btn-reset" class="text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded border border-red-500/20"><i class="fas fa-trash"></i> RESET DATA</button>
+            </div>
+
+            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-4">
+                <div>
+                    <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Warna Aksen</h3>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button class="cv-theme w-full h-8 rounded bg-sky-600 border-2 border-transparent" data-theme="theme-sky"></button>
+                        <button class="cv-theme w-full h-8 rounded bg-emerald-600 border-2 border-transparent" data-theme="theme-emerald"></button>
+                        <button class="cv-theme w-full h-8 rounded bg-red-600 border-2 border-transparent" data-theme="theme-crimson"></button>
+                        <button class="cv-theme w-full h-8 rounded bg-purple-600 border-2 border-transparent" data-theme="theme-royal"></button>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Gaya Tulisan</h3>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent" data-font="font-sans">SANS</button>
+                        <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent" data-font="font-serif">SERIF</button>
+                        <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent" data-font="font-mono">MONO</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="flex gap-4">
-                <div class="flex-1 bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center relative">
+                <div class="flex-1 bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center relative overflow-hidden">
                     <i class="fas fa-camera text-sky-500 mb-1"></i><p class="text-[10px] font-bold">PAS FOTO</p>
                     <input type="file" id="cv-photo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
                 </div>
@@ -40,11 +64,13 @@
                 <input type="text" id="cv-name" placeholder="Nama Lengkap" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
                 <input type="text" id="cv-title" placeholder="Profesi / Gelar" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
                 <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="cv-ttl" placeholder="Tempat, Tgl Lahir" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
+                    <input type="text" id="cv-port" placeholder="Link Portofolio" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
                     <input type="text" id="cv-phone" placeholder="No WhatsApp" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
                     <input type="text" id="cv-email" placeholder="Email" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
                 </div>
-                <input type="text" id="cv-address" placeholder="Alamat Singkat" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
-                <textarea id="cv-profile" placeholder="Profil Singkat..." class="w-full h-24 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none"></textarea>
+                <input type="text" id="cv-address" placeholder="Alamat Domisili" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
+                <textarea id="cv-profile" placeholder="Profil Profesional Singkat..." class="w-full h-24 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll"></textarea>
             </div>
 
             <div class="space-y-3">
@@ -62,28 +88,11 @@
                 </div>
                 <div id="cv-edu-list" class="space-y-2"></div>
             </div>
-
-            <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
-                <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Warna Aksen</h3>
-                <div class="grid grid-cols-4 gap-2 mb-4">
-                    <button class="cv-theme w-full h-6 rounded bg-sky-600 border-2 border-white ring-2 ring-sky-500" data-theme="theme-sky"></button>
-                    <button class="cv-theme w-full h-6 rounded bg-emerald-600 border-2 border-transparent" data-theme="theme-emerald"></button>
-                    <button class="cv-theme w-full h-6 rounded bg-red-600 border-2 border-transparent" data-theme="theme-crimson"></button>
-                    <button class="cv-theme w-full h-6 rounded bg-purple-600 border-2 border-transparent" data-theme="theme-royal"></button>
-                </div>
-
-                <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Gaya Tulisan</h3>
-                <div class="grid grid-cols-3 gap-2">
-                    <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-sky-500" data-font="font-sans">SANS</button>
-                    <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold" data-font="font-serif">SERIF</button>
-                    <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold" data-font="font-mono">MONO</button>
-                </div>
-            </div>
         </section>
 
         <section id="panel-preview" class="hidden md:flex flex-1 h-full overflow-y-auto bg-slate-950 p-4 justify-center custom-scroll pb-24">
             <div id="capture-area" class="origin-top shadow-2xl">
-                <div id="cv-paper" class="a4-sheet p-[15mm] font-sans"></div>
+                <div id="cv-paper" class="a4-sheet p-[15mm]"></div>
             </div>
         </section>
 
@@ -94,6 +103,7 @@
 
     <div id="modal-sig" class="fixed inset-0 bg-black/90 z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-slate-800 w-full max-w-sm rounded-2xl p-4 space-y-4">
+            <h3 class="text-sky-400 font-bold text-center text-xs tracking-widest">TANDA TANGAN</h3>
             <canvas id="cv-sig-pad" class="w-full bg-white rounded-xl aspect-video touch-none cursor-crosshair"></canvas>
             <div class="flex gap-2">
                 <button id="btn-clear-sig" class="flex-1 bg-red-600 py-3 rounded-lg font-bold text-xs">HAPUS</button>

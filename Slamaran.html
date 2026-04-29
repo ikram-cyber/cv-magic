@@ -22,17 +22,40 @@
     </div>
 
     <main class="flex-1 flex overflow-hidden relative">
-        
         <section id="panel-editor" class="w-full md:w-[450px] h-full overflow-y-auto p-5 pb-24 border-r border-slate-800 custom-scroll space-y-6">
             
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-black text-white">EDITOR SURAT</h2>
+                <button id="btn-reset" class="text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded border border-red-500/20"><i class="fas fa-trash"></i> RESET DATA</button>
+            </div>
+
+            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-4">
+                <div>
+                    <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Warna Aksen</h3>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button class="surat-theme w-full h-8 rounded bg-sky-600 border-2 border-transparent" data-theme="theme-sky"></button>
+                        <button class="surat-theme w-full h-8 rounded bg-emerald-600 border-2 border-transparent" data-theme="theme-emerald"></button>
+                        <button class="surat-theme w-full h-8 rounded bg-red-600 border-2 border-transparent" data-theme="theme-crimson"></button>
+                        <button class="surat-theme w-full h-8 rounded bg-purple-600 border-2 border-transparent" data-theme="theme-royal"></button>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Gaya Tulisan</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="surat-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent" data-font="font-sans">SANS (Modern)</button>
+                        <button class="surat-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent" data-font="font-serif">SERIF (Formal)</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center cursor-pointer" id="btn-open-sig">
                 <i class="fas fa-pen-nib text-sky-500 mb-1"></i><p class="text-[10px] font-bold">GAMBAR TANDA TANGAN</p>
             </div>
 
             <div class="space-y-3">
                 <h3 class="text-sky-500 text-[10px] font-black uppercase">Detail Surat</h3>
-                <input type="text" id="surat-name" placeholder="Nama Anda" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
-                <input type="text" id="surat-title" placeholder="Posisi yang dilamar" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
+                <input type="text" id="surat-name" placeholder="Nama Anda" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
+                <input type="text" id="surat-title" placeholder="Posisi yang dilamar" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
                 <div class="grid grid-cols-2 gap-2">
                     <input type="text" id="surat-date" placeholder="Kota, Tanggal" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
                     <input type="text" id="surat-hrd" placeholder="Yth. HRD / Pimpinan" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
@@ -45,17 +68,8 @@
                     <h3 class="text-sky-500 text-[10px] font-black uppercase">Isi Surat</h3>
                     <button id="btn-template" class="text-[10px] bg-emerald-600 px-3 py-1 rounded font-bold text-white">TEMPLATE OTOMATIS</button>
                 </div>
-                <textarea id="surat-content" placeholder="Ketik isi surat lamaran di sini..." class="w-full h-64 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none"></textarea>
+                <textarea id="surat-content" placeholder="Ketik isi surat lamaran di sini..." class="w-full h-64 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll"></textarea>
             </div>
-            
-            <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
-                <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Gaya Tulisan</h3>
-                <div class="grid grid-cols-2 gap-2">
-                    <button class="surat-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-sky-500" data-font="font-sans">SANS (Modern)</button>
-                    <button class="surat-font bg-slate-700 text-[10px] py-2 rounded font-bold" data-font="font-serif">SERIF (Formal)</button>
-                </div>
-            </div>
-
         </section>
 
         <section id="panel-preview" class="hidden md:flex flex-1 h-full overflow-y-auto bg-slate-950 p-4 justify-center custom-scroll pb-24">
@@ -71,6 +85,7 @@
 
     <div id="modal-sig" class="fixed inset-0 bg-black/90 z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-slate-800 w-full max-w-sm rounded-2xl p-4 space-y-4">
+            <h3 class="text-sky-400 font-bold text-center text-xs tracking-widest">TANDA TANGAN</h3>
             <canvas id="surat-sig-pad" class="w-full bg-white rounded-xl aspect-video touch-none cursor-crosshair"></canvas>
             <div class="flex gap-2">
                 <button id="btn-clear-sig" class="flex-1 bg-red-600 py-3 rounded-lg font-bold text-xs">HAPUS</button>

@@ -5,12 +5,13 @@ class CVBuilder {
     }
 
     init() {
+        this.loadLocal(); // Load dulu biar tema langsung teraplikasi
         this.bindTabs();
         this.bindInputs();
         this.bindMedia();
-        this.loadLocal();
         this.renderLists();
         this.renderPaper();
+        this.updateDesignUI();
     }
 
     bindTabs() {
@@ -30,45 +31,47 @@ class CVBuilder {
             };
         }
 
-        // FONT SAKLAR
         document.querySelectorAll('.cv-font').forEach(b => {
-            b.onclick = () => {
-                document.querySelectorAll('.cv-font').forEach(x => x.classList.remove('border-sky-500'));
-                b.classList.add('border-sky-500'); this.data.font = b.dataset.font; this.renderPaper();
-            };
+            b.onclick = () => { this.data.font = b.dataset.font; localStorage.setItem('cv-font', this.data.font); this.updateDesignUI(); this.renderPaper(); };
         });
 
-        // THEME SAKLAR
         document.querySelectorAll('.cv-theme').forEach(b => {
-            b.onclick = () => {
-                document.querySelectorAll('.cv-theme').forEach(x => { x.classList.remove('border-white', 'ring-2', 'ring-sky-500'); x.classList.add('border-transparent'); });
-                b.classList.remove('border-transparent'); b.classList.add('border-white', 'ring-2', 'ring-sky-500');
-                this.data.theme = b.dataset.theme; this.renderPaper();
-            };
+            b.onclick = () => { this.data.theme = b.dataset.theme; localStorage.setItem('cv-theme', this.data.theme); this.updateDesignUI(); this.renderPaper(); };
         });
 
-        // TOMBOL RESET
         const btnReset = document.getElementById('btn-reset');
         if(btnReset) {
             btnReset.onclick = () => {
                 if(confirm("Yakin mau hapus semua data CV?")) {
-                    ['cv-name','cv-title','cv-phone','cv-email','cv-address','cv-profile'].forEach(id => localStorage.removeItem(id));
-                    localStorage.removeItem('cv-photo'); localStorage.removeItem('cv-sig');
-                    location.reload();
+                    localStorage.clear(); location.reload();
                 }
             };
         }
 
         document.getElementById('btn-export-cv').onclick = async () => {
             const btn = document.getElementById('btn-export-cv'); btn.innerHTML = 'MEMPROSES...';
-            await html2pdf().set({margin: 0, filename: 'CV_Profesional.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }}).from(document.getElementById('cv-paper')).save();
+            // RESOLUSI PDF DITAIKKAN (scale: 3) BIAR HD/TAJAM
+            await html2pdf().set({margin: 0, filename: 'CV_Profesional.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }}).from(document.getElementById('cv-paper')).save();
             btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL';
             setTimeout(() => btn.innerHTML = '<i class="fas fa-print text-xl"></i> DOWNLOAD PDF CV', 2000);
         };
     }
 
+    updateDesignUI() {
+        document.querySelectorAll('.cv-font').forEach(x => {
+            x.classList.toggle('border-sky-500', x.dataset.font === this.data.font);
+            x.classList.toggle('border-transparent', x.dataset.font !== this.data.font);
+        });
+        document.querySelectorAll('.cv-theme').forEach(x => {
+            x.classList.toggle('border-white', x.dataset.theme === this.data.theme);
+            x.classList.toggle('ring-2', x.dataset.theme === this.data.theme);
+            x.classList.toggle('ring-sky-500', x.dataset.theme === this.data.theme);
+            x.classList.toggle('border-transparent', x.dataset.theme !== this.data.theme);
+        });
+    }
+
     bindInputs() {
-        ['cv-name','cv-title','cv-phone','cv-email','cv-address','cv-profile'].forEach(id => {
+        ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.oninput = () => { localStorage.setItem(id, el.value); this.renderPaper(); };
         });
@@ -144,11 +147,13 @@ class CVBuilder {
     delD(list, i) { this.data[list].splice(i, 1); this.renderLists(); this.renderPaper(); }
 
     loadLocal() {
-        ['cv-name','cv-title','cv-phone','cv-email','cv-address','cv-profile'].forEach(id => {
+        ['cv-name','cv-title','cv-ttl','cv-port','cv-phone','cv-email','cv-address','cv-profile'].forEach(id => {
             if(localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
         });
         if(localStorage.getItem('cv-photo')) this.data.photo = localStorage.getItem('cv-photo');
         if(localStorage.getItem('cv-sig')) this.data.sig = localStorage.getItem('cv-sig');
+        if(localStorage.getItem('cv-font')) this.data.font = localStorage.getItem('cv-font');
+        if(localStorage.getItem('cv-theme')) this.data.theme = localStorage.getItem('cv-theme');
     }
 
     renderPaper() {
@@ -156,10 +161,11 @@ class CVBuilder {
         if(!p) return;
         const d = {
             n: document.getElementById('cv-name').value || "NAMA LENGKAP", t: document.getElementById('cv-title').value || "PROFESI / POSISI",
-            p: document.getElementById('cv-phone').value || "08xx-xxxx", e: document.getElementById('cv-email').value || "email@anda.com",
-            a: document.getElementById('cv-address').value || "Alamat Anda", prof: document.getElementById('cv-profile').value || "Profil singkat Anda"
+            ttl: document.getElementById('cv-ttl').value || "Kota, Tanggal Lahir", port: document.getElementById('cv-port').value || "linkedin.com/in/anda",
+            ph: document.getElementById('cv-phone').value || "08xx-xxxx", e: document.getElementById('cv-email').value || "email@anda.com",
+            a: document.getElementById('cv-address').value || "Alamat Anda", prof: document.getElementById('cv-profile').value || "Profil singkat Anda..."
         };
-        // Terapkan Tema dan Font
+        
         p.className = `a4-sheet p-[15mm] ${this.data.font} ${this.data.theme} bg-white text-slate-900`;
         p.innerHTML = `
             <div class="flex gap-5 border-b-[3px] border-accent pb-4 mb-4">
@@ -169,24 +175,26 @@ class CVBuilder {
                 <div class="flex-1">
                     <h1 class="text-3xl font-black uppercase leading-none text-accent">${d.n}</h1>
                     <h2 class="text-[11px] font-bold uppercase tracking-[0.2em] mt-1 mb-3 text-slate-500">${d.t}</h2>
-                    <div class="text-[10px] space-y-1 font-bold text-slate-600">
-                        <p><i class="fas fa-phone w-4 text-accent"></i> ${d.p}</p>
+                    <div class="grid grid-cols-2 gap-y-1 text-[9px] font-bold text-slate-600">
+                        <p><i class="fas fa-calendar-alt w-4 text-accent"></i> ${d.ttl}</p>
+                        <p><i class="fas fa-phone w-4 text-accent"></i> ${d.ph}</p>
+                        <p><i class="fas fa-link w-4 text-accent"></i> ${d.port}</p>
                         <p><i class="fas fa-envelope w-4 text-accent"></i> ${d.e}</p>
-                        <p><i class="fas fa-map-marker-alt w-4 text-accent"></i> ${d.a}</p>
+                        <p class="col-span-2"><i class="fas fa-map-marker-alt w-4 text-accent"></i> ${d.a}</p>
                     </div>
                 </div>
             </div>
             <div class="space-y-4">
-                <div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1">Profil Profesional</h3><p class="text-[10px] leading-relaxed text-justify">${d.prof}</p></div>
+                <div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1 text-slate-800">Profil Profesional</h3><p class="text-[10px] leading-relaxed text-justify">${d.prof}</p></div>
                 
-                ${this.data.exps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1">Pengalaman Kerja</h3><div class="space-y-2">${this.data.exps.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-500">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
+                ${this.data.exps.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1 text-slate-800">Pengalaman Kerja</h3><div class="space-y-2">${this.data.exps.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.role||'Posisi'}</p><p class="text-[10px] font-bold">${x.comp||'Perusahaan'}</p></div><div class="text-[10px] font-bold text-slate-500">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
                 
-                ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-500">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
+                ${this.data.edus.length > 0 ? `<div><h3 class="text-xs font-black uppercase border-b-2 border-slate-200 mb-1 text-slate-800">Pendidikan</h3><div class="space-y-2">${this.data.edus.map(x=>`<div class="flex justify-between"><div class="flex-1"><p class="text-[11px] font-bold text-accent">${x.school||'Sekolah/Kampus'}</p><p class="text-[10px] font-bold">${x.degree||'Jurusan'}</p></div><div class="text-[10px] font-bold text-slate-500">${x.year||'Tahun'}</div></div>`).join('')}</div></div>` : ''}
             </div>
             <div class="absolute bottom-10 right-10 text-center w-32">
                 <p class="text-[10px] font-bold mb-1">Hormat Saya,</p>
                 <div class="h-14 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
-                <p class="text-[10px] font-black border-t-2 border-accent uppercase pt-1 mt-1">${d.n}</p>
+                <p class="text-[10px] font-black border-t-[1.5px] border-accent uppercase pt-1 mt-1">${d.n}</p>
             </div>
         `;
     }

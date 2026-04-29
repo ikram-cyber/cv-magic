@@ -1,15 +1,16 @@
 class SuratBuilder {
     constructor() {
-        this.data = { font: 'font-sans', sig: null };
+        this.data = { font: 'font-sans', theme: 'theme-sky', sig: null };
         this.init();
     }
 
     init() {
+        this.loadLocal();
         this.bindTabs();
         this.bindInputs();
         this.bindMedia();
-        this.loadLocal();
         this.renderPaper();
+        this.updateDesignUI();
     }
 
     bindTabs() {
@@ -30,18 +31,44 @@ class SuratBuilder {
         }
 
         document.querySelectorAll('.surat-font').forEach(b => {
-            b.onclick = () => {
-                document.querySelectorAll('.surat-font').forEach(x => x.classList.remove('border-sky-500'));
-                b.classList.add('border-sky-500'); this.data.font = b.dataset.font; this.renderPaper();
-            };
+            b.onclick = () => { this.data.font = b.dataset.font; localStorage.setItem('surat-font', this.data.font); this.updateDesignUI(); this.renderPaper(); };
         });
+
+        document.querySelectorAll('.surat-theme').forEach(b => {
+            b.onclick = () => { this.data.theme = b.dataset.theme; localStorage.setItem('surat-theme', this.data.theme); this.updateDesignUI(); this.renderPaper(); };
+        });
+
+        const btnReset = document.getElementById('btn-reset');
+        if(btnReset) {
+            btnReset.onclick = () => {
+                if(confirm("Yakin mau hapus data surat lamaran?")) {
+                    ['surat-name','surat-title','surat-date','surat-hrd','surat-comp','surat-content'].forEach(id => localStorage.removeItem(id));
+                    localStorage.removeItem('surat-sig');
+                    location.reload();
+                }
+            };
+        }
 
         document.getElementById('btn-export-surat').onclick = async () => {
             const btn = document.getElementById('btn-export-surat'); btn.innerHTML = 'MEMPROSES...';
-            await html2pdf().set({margin: 0, filename: 'Surat_Lamaran.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }}).from(document.getElementById('surat-paper')).save();
+            // RESOLUSI TINGGI UNTUK SURAT
+            await html2pdf().set({margin: 0, filename: 'Surat_Lamaran.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }}).from(document.getElementById('surat-paper')).save();
             btn.innerHTML = '<i class="fas fa-check"></i> BERHASIL';
             setTimeout(() => btn.innerHTML = '<i class="fas fa-file-pdf text-xl"></i> DOWNLOAD PDF SURAT', 2000);
         };
+    }
+
+    updateDesignUI() {
+        document.querySelectorAll('.surat-font').forEach(x => {
+            x.classList.toggle('border-sky-500', x.dataset.font === this.data.font);
+            x.classList.toggle('border-transparent', x.dataset.font !== this.data.font);
+        });
+        document.querySelectorAll('.surat-theme').forEach(x => {
+            x.classList.toggle('border-white', x.dataset.theme === this.data.theme);
+            x.classList.toggle('ring-2', x.dataset.theme === this.data.theme);
+            x.classList.toggle('ring-sky-500', x.dataset.theme === this.data.theme);
+            x.classList.toggle('border-transparent', x.dataset.theme !== this.data.theme);
+        });
     }
 
     bindInputs() {
@@ -92,6 +119,8 @@ class SuratBuilder {
             if(localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
         });
         if(localStorage.getItem('surat-sig')) this.data.sig = localStorage.getItem('surat-sig');
+        if(localStorage.getItem('surat-font')) this.data.font = localStorage.getItem('surat-font');
+        if(localStorage.getItem('surat-theme')) this.data.theme = localStorage.getItem('surat-theme');
     }
 
     renderPaper() {
@@ -100,17 +129,17 @@ class SuratBuilder {
         const d = {
             n: document.getElementById('surat-name').value || "NAMA ANDA", date: document.getElementById('surat-date').value || "Jakarta, 29 April 2026",
             hrd: document.getElementById('surat-hrd').value || "Yth. Pimpinan HRD", comp: document.getElementById('surat-comp').value || "Nama Perusahaan",
-            cont: (document.getElementById('surat-content').value || "Ketik isi surat di panel kiri...").replace(/\n/g, '<br><br>') // Double br for clear paragraphs
+            cont: (document.getElementById('surat-content').value || "Ketik isi surat di panel kiri...").replace(/\n/g, '<br><br>')
         };
-        p.className = `a4-sheet p-[20mm] ${this.data.font} text-[11pt] leading-relaxed text-slate-900 bg-white`;
+        p.className = `a4-sheet p-[20mm] ${this.data.font} ${this.data.theme} text-[11pt] leading-relaxed text-slate-900 bg-white`;
         p.innerHTML = `
             <div class="text-right mb-10">${d.date}</div>
-            <div class="font-bold mb-10 leading-tight"><p>${d.hrd}</p><p>${d.comp}</p><p>Di Tempat</p></div>
+            <div class="font-bold mb-10 leading-tight"><p>${d.hrd}</p><p class="text-accent">${d.comp}</p><p>Di Tempat</p></div>
             <div class="text-justify mb-16 space-y-2">${d.cont}</div>
             <div class="w-48 ml-auto text-center">
                 <p class="mb-2">Hormat saya,</p>
                 <div class="h-16 flex items-center justify-center">${this.data.sig ? `<img src="${this.data.sig}" class="max-h-full">` : ''}</div>
-                <p class="font-bold border-t border-slate-900 mt-1 pt-1 uppercase">${d.n}</p>
+                <p class="font-bold border-t-[1.5px] border-accent mt-1 pt-1 uppercase">${d.n}</p>
             </div>
         `;
     }
