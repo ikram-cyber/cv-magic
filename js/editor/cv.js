@@ -111,7 +111,6 @@ class CVBuilder {
         const btnGenProf = document.getElementById('btn-gen-profile');
         if(btnGenProf) {
             btnGenProf.onclick = () => {
-                // REVISI FATAL: VALIDASI 100% ANTI-BEGO
                 const titleEl = document.getElementById('cv-title');
                 const titleVal = titleEl.value.trim();
                 
@@ -151,7 +150,6 @@ class CVBuilder {
     }
 
     bindMedia() {
-        // [Fungsi Media Tidak Berubah - Sudah Sempurna]
         const bindUpload = (id, key) => {
             const el = document.getElementById(id);
             if(!el) return;
@@ -217,7 +215,6 @@ class CVBuilder {
     delD(list, i) { this.data[list].splice(i, 1); this.saveLists(); this.renderLists(); this.renderPaper(); }
 
     renderLists() {
-        // REVISI KETERANGAN: Placeholdernya diperjelas 100%
         const elExp = document.getElementById('cv-exp-list'); elExp.innerHTML = '';
         this.data.exps.forEach((x,i) => {
             elExp.innerHTML += `
@@ -320,9 +317,10 @@ class CVBuilder {
 
         const ttlHtml = ttl ? `<p><i class="fas fa-calendar-alt w-4 text-accent text-center"></i> ${ttl}</p>` : '';
         const phHtml = ph ? `<p><i class="fas fa-phone w-4 text-accent text-center"></i> ${ph}</p>` : '';
+        // REVISI FATAL: break-all biar link GitHub panjang lu gak nabrak kertas!
         const portUrl = port ? (port.startsWith('http') ? port : 'https://' + port) : '#';
-        const portHtml = port ? `<p><i class="fas fa-link w-4 text-accent text-center"></i> <a href="${portUrl}" target="_blank" style="text-decoration:none; color:inherit;">${port}</a></p>` : '';
-        const eHtml = e ? `<p><i class="fas fa-envelope w-4 text-accent text-center"></i> <a href="mailto:${e}" style="text-decoration:none; color:inherit;">${e}</a></p>` : '';
+        const portHtml = port ? `<p class="break-all"><i class="fas fa-link w-4 text-accent text-center"></i> <a href="${portUrl}" target="_blank" style="text-decoration:none; color:inherit;">${port}</a></p>` : '';
+        const eHtml = e ? `<p class="break-all"><i class="fas fa-envelope w-4 text-accent text-center"></i> <a href="mailto:${e}" style="text-decoration:none; color:inherit;">${e}</a></p>` : '';
         const aHtml = a ? `<p class="col-span-2 mt-1"><i class="fas fa-map-marker-alt w-4 text-accent text-center"></i> ${a}</p>` : '';
 
         const photoBoxHtml = this.data.photo 

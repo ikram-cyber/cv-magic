@@ -110,7 +110,6 @@ class SuratBuilder {
         const btnTemp = document.getElementById('btn-template');
         if(btnTemp) {
             btnTemp.onclick = () => {
-                // REVISI FATAL: VALIDASI ANTI SURAT KOSONG (KURUNG SIKU)
                 const titleEl = document.getElementById('surat-title');
                 const titleVal = titleEl.value.trim();
                 
@@ -289,13 +288,17 @@ class SuratBuilder {
         const myPhone = localStorage.getItem('cv-phone') || "";
         const myEmail = localStorage.getItem('cv-email') || "";
         const myPort = localStorage.getItem('cv-port') || "";
+        
+        // REVISI FATAL: Tarik Alamat Domisili ke Kop Surat biar HRD tahu lu tinggal di mana!
+        const myAddr = localStorage.getItem('cv-address') || "";
 
         let senderHeaderHtml = `<div class="mb-8 border-b-2 border-slate-300 pb-3">
-            <h1 class="text-2xl font-black text-accent uppercase tracking-wide">${myName}</h1>
-            <div class="text-[9px] font-bold text-slate-600 flex gap-4 mt-2">
-                ${myPhone ? `<span><i class="fas fa-phone text-accent"></i> ${myPhone}</span>` : ''}
-                ${myEmail ? `<span><i class="fas fa-envelope text-accent"></i> ${myEmail}</span>` : ''}
-                ${myPort ? `<span><i class="fas fa-link text-accent"></i> ${myPort}</span>` : ''}
+            <h1 class="text-2xl font-black text-accent uppercase tracking-wide break-words">${myName}</h1>
+            <div class="text-[9px] font-bold text-slate-600 flex flex-wrap gap-x-4 gap-y-1 mt-2">
+                ${myAddr ? `<span class="w-full text-slate-700 mb-1"><i class="fas fa-map-marker-alt text-accent w-3 text-center"></i> ${myAddr}</span>` : ''}
+                ${myPhone ? `<span><i class="fas fa-phone text-accent w-3 text-center"></i> ${myPhone}</span>` : ''}
+                ${myEmail ? `<span class="break-all"><i class="fas fa-envelope text-accent w-3 text-center"></i> ${myEmail}</span>` : ''}
+                ${myPort ? `<span class="break-all"><i class="fas fa-link text-accent w-3 text-center"></i> ${myPort}</span>` : ''}
             </div>
         </div>`;
 
