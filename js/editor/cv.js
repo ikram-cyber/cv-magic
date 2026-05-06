@@ -18,7 +18,157 @@ document.addEventListener('DOMContentLoaded', () => {
         if(el) el.addEventListener('input', renderCV);
     });
 
-    // --- DYNAMIC LIST BUILDERS (Pengalaman, Pendidikan, Proyek) ---
+    // ==========================================
+    // 📸 FITUR PAS FOTO
+    // ==========================================
+    const photoInput = document.getElementById('cv-photo');
+    const btnRemovePhoto = document.getElementById('btn-remove-photo');
+    
+    photoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                cvData.photo = event.target.result;
+                btnRemovePhoto.classList.remove('hidden');
+                
+                // Ubah background container jadi preview foto
+                const container = photoInput.parentElement;
+                container.style.backgroundImage = `url(${cvData.photo})`;
+                container.style.backgroundSize = 'cover';
+                container.style.backgroundPosition = 'center';
+                container.querySelector('i').classList.add('hidden');
+                container.querySelector('p').classList.add('hidden');
+                
+                renderCV();
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    btnRemovePhoto.addEventListener('click', (e) => {
+        e.stopPropagation(); // Biar gak ngetrigger input file
+        cvData.photo = '';
+        photoInput.value = '';
+        btnRemovePhoto.classList.add('hidden');
+        
+        // Kembalikan tampilan awal
+        const container = photoInput.parentElement;
+        container.style.backgroundImage = 'none';
+        container.querySelector('i').classList.remove('hidden');
+        container.querySelector('p').classList.remove('hidden');
+        
+        renderCV();
+    });
+
+    // ==========================================
+    // ✍️ FITUR TANDA TANGAN (CANVAS & UPLOAD)
+    // ==========================================
+    const modalSig = document.getElementById('modal-sig');
+    const btnOpenSig = document.getElementById('btn-open-sig');
+    const btnSaveSig = document.getElementById('btn-save-sig');
+    const btnClearSig = document.getElementById('btn-clear-sig');
+    const sigUpload = document.getElementById('cv-sig-upload');
+    const canvas = document.getElementById('cv-sig-pad');
+    const ctx = canvas.getContext('2d');
+    
+    let isDrawing = false;
+
+    // Setting pena ttd
+    ctx.strokeStyle = '#0f172a'; // Warna Navy
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        // Hitung skala rasio untuk akurasi coretan
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        return {
+            x: (clientX - rect.left) * scaleX,
+            y: (clientY - rect.top) * scaleY
+        };
+    }
+
+    const startDraw = (e) => {
+        isDrawing = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    };
+
+    const draw = (e) => {
+        if (!isDrawing) return;
+        const pos = getPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+    };
+
+    const endDraw = () => {
+        isDrawing = false;
+        ctx.closePath();
+    };
+
+    // Event Mouse
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseout', endDraw);
+
+    // Event Touch (HP/Tablet)
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e); }, {passive: false});
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, {passive: false});
+    canvas.addEventListener('touchend', endDraw);
+
+    // Buka Modal
+    btnOpenSig.addEventListener('click', () => {
+        modalSig.classList.remove('hidden');
+    });
+
+    // Bersihkan Canvas
+    btnClearSig.addEventListener('click', () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        cvData.signature = '';
+    });
+
+    // Simpan TTD
+    btnSaveSig.addEventListener('click', () => {
+        // Ambil data gambar dari canvas
+        cvData.signature = canvas.toDataURL('image/png');
+        modalSig.classList.add('hidden');
+        
+        // Ubah tombol TTD jadi ada indikator sukses
+        btnOpenSig.classList.add('border-[#d4af37]', 'text-[#d4af37]');
+        btnOpenSig.querySelector('p').innerText = "TTD TERSIMPAN";
+        
+        renderCV();
+    });
+
+    // Upload TTD (Alternatif)
+    sigUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    // Gambar ttd yg diupload ke tengah canvas
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+
+    // ==========================================
+    // DYNAMIC LIST BUILDERS (Pengalaman, dll)
+    // ==========================================
     function createListInput(containerId, listArray, placeholders) {
         const container = document.getElementById(containerId);
         const id = Date.now();
@@ -51,17 +201,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if(type === 'cv-exp-list') cvData.experiences = cvData.experiences.filter(x => x.id !== id);
         if(type === 'cv-edu-list') cvData.educations = cvData.educations.filter(x => x.id !== id);
         if(type === 'cv-prj-list') cvData.projects = cvData.projects.filter(x => x.id !== id);
-        document.getElementById(type).innerHTML = ''; // Re-render inputs
+        document.getElementById(type).innerHTML = ''; 
         
         let arr = type === 'cv-exp-list' ? cvData.experiences : type === 'cv-edu-list' ? cvData.educations : cvData.projects;
-        let tempArr = [...arr]; // Copy
-        arr.length = 0; // Clear
-        tempArr.forEach(item => { // Rebuild
+        let tempArr = [...arr]; 
+        arr.length = 0; 
+        tempArr.forEach(item => { 
             const place = type === 'cv-exp-list' ? ['Perusahaan', 'Posisi', 'Tahun', 'Deskripsi Kerja'] : 
                           type === 'cv-edu-list' ? ['Nama Sekolah/Kampus', 'Jurusan/Gelar', 'Tahun', 'Deskripsi/Nilai'] : 
                           ['Nama Proyek', 'Peran', 'Tahun', 'Deskripsi Proyek'];
             createListInput(type, arr, place);
-            // set values back (simplified for terminal script)
         });
         renderCV();
     };
@@ -82,11 +231,10 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCV();
     };
 
-    // --- RENDER ENGINE (The Magic) ---
+    // --- RENDER ENGINE ---
     function renderCV() {
         const getVal = (id) => document.getElementById(`cv-${id}`) ? document.getElementById(`cv-${id}`).value : '';
         
-        // Format lists
         const formatUl = (text) => {
             if(!text) return '';
             return `<ul class="list-disc pl-4 space-y-1">` + text.split('\n').filter(t=>t.trim()).map(t => `<li>${t}</li>`).join('') + `</ul>`;
@@ -119,10 +267,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 .b-gold { border-color: #d4af37; }
             </style>
             <div class="cv-content">
-                <div class="bg-navy text-white px-10 py-10 relative overflow-hidden">
+                <div class="bg-navy text-white px-10 py-10 relative overflow-hidden flex gap-8 items-center">
                     <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-bl-full"></div>
-                    <div class="flex justify-between items-center z-10 relative">
-                        <div class="flex-1">
+                    
+                    ${cvData.photo ? `
+                    <div class="z-10 relative shrink-0">
+                        <img src="${cvData.photo}" class="w-[100px] h-[130px] object-cover border-[3px] border-[#d4af37] shadow-lg rounded">
+                    </div>` : ''}
+
+                    <div class="flex flex-1 justify-between items-center z-10 relative">
+                        <div>
                             <h1 class="f-serif text-5xl font-bold tracking-wide uppercase mb-2">${getVal('name') || 'NAMA LENGKAP'}</h1>
                             <h2 class="t-gold font-bold tracking-widest uppercase text-sm">${getVal('title') || 'PROFESI / GELAR'}</h2>
                         </div>
@@ -136,7 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
 
                 <div class="flex-grow grid grid-cols-12">
-                    
                     <div class="col-span-4 bg-slate-50 p-8 border-r border-gray-200 flex flex-col gap-6">
                         ${getVal('profile') ? `
                         <div>
@@ -159,30 +312,42 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>` : ''}
                     </div>
 
-                    <div class="col-span-8 p-8 flex flex-col gap-8">
-                        ${cvData.experiences.length > 0 ? `
-                        <div>
-                            <h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center">
-                                <i class="fas fa-briefcase t-gold mr-3"></i> Pengalaman Kerja
-                            </h3>
-                            ${renderItems(cvData.experiences)}
-                        </div>` : ''}
+                    <div class="col-span-8 p-8 flex flex-col justify-between">
+                        <div class="flex flex-col gap-8">
+                            ${cvData.experiences.length > 0 ? `
+                            <div>
+                                <h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center">
+                                    <i class="fas fa-briefcase t-gold mr-3"></i> Pengalaman Kerja
+                                </h3>
+                                ${renderItems(cvData.experiences)}
+                            </div>` : ''}
 
-                        ${cvData.educations.length > 0 ? `
-                        <div>
-                            <h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center">
-                                <i class="fas fa-graduation-cap t-gold mr-3"></i> Pendidikan
-                            </h3>
-                            ${renderItems(cvData.educations)}
-                        </div>` : ''}
+                            ${cvData.educations.length > 0 ? `
+                            <div>
+                                <h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center">
+                                    <i class="fas fa-graduation-cap t-gold mr-3"></i> Pendidikan
+                                </h3>
+                                ${renderItems(cvData.educations)}
+                            </div>` : ''}
 
-                        ${cvData.projects.length > 0 ? `
-                        <div>
-                            <h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center">
-                                <i class="fas fa-project-diagram t-gold mr-3"></i> Proyek & Portofolio
-                            </h3>
-                            ${renderItems(cvData.projects)}
-                        </div>` : ''}
+                            ${cvData.projects.length > 0 ? `
+                            <div>
+                                <h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center">
+                                    <i class="fas fa-project-diagram t-gold mr-3"></i> Proyek & Portofolio
+                                </h3>
+                                ${renderItems(cvData.projects)}
+                            </div>` : ''}
+                        </div>
+
+                        <div class="mt-12 pt-4 border-t border-gray-200 flex justify-end">
+                            <div class="text-center">
+                                <p class="text-[11px] text-gray-600 mb-2">Hormat saya,</p>
+                                ${cvData.signature ? `
+                                <img src="${cvData.signature}" class="h-16 mx-auto mb-1" style="mix-blend-mode: multiply;">
+                                ` : '<div class="h-16"></div>'}
+                                <p class="text-xs t-navy font-bold border-b border-[#0f172a] inline-block pb-1 px-4">${getVal('name') || 'Nama Lengkap'}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
