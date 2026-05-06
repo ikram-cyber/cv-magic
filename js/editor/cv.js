@@ -11,9 +11,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const paper = document.getElementById('cv-paper');
     const inputs = ['name', 'title', 'ttl', 'port', 'phone', 'email', 'address', 'profile', 'skills', 'cert'];
     
+    // --- UI ACTIVE STATES (INDIKATOR TOMBOL) ---
+    const updateActiveUI = () => {
+        // Update border tombol Tema
+        document.querySelectorAll('.cv-theme').forEach(btn => {
+            btn.classList.remove('border-white', 'border-2', 'shadow-[0_0_10px_rgba(255,255,255,0.5)]');
+            if (btn.dataset.theme === cvConfig.theme) {
+                btn.classList.add('border-white', 'border-2', 'shadow-[0_0_10px_rgba(255,255,255,0.5)]');
+            }
+        });
+        // Update warna tombol Font
+        document.querySelectorAll('.cv-font').forEach(btn => {
+            btn.classList.remove('bg-[#d4af37]', 'text-black', 'border-[#d4af37]');
+            btn.classList.add('bg-[#1e293b]', 'text-slate-300', 'border-transparent');
+            if (btn.dataset.font === cvConfig.font) {
+                btn.classList.remove('bg-[#1e293b]', 'text-slate-300', 'border-transparent');
+                btn.classList.add('bg-[#d4af37]', 'text-black', 'border-[#d4af37]');
+            }
+        });
+    };
+
     // --- LOCAL STORAGE ENGINE ---
     const saveToLocal = () => {
-        // Ambil value terbaru dari input teks sebelum save
         inputs.forEach(id => {
             const el = document.getElementById(`cv-${id}`);
             if(el) cvData[id] = el.value;
@@ -28,13 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
             cvData = parsed.cvData;
             cvConfig = parsed.cvConfig;
 
-            // Isi kembali input teks
             inputs.forEach(id => {
                 const el = document.getElementById(`cv-${id}`);
                 if(el && cvData[id]) el.value = cvData[id];
             });
 
-            // Tampilkan foto jika ada
             if (cvData.photo) {
                 const container = document.getElementById('cv-photo').parentElement;
                 container.style.backgroundImage = `url(${cvData.photo})`;
@@ -45,14 +62,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('btn-remove-photo').classList.remove('hidden');
             }
 
-            // Rebuild List Dinamis
+            if (cvData.signature) {
+                const btnOpenSig = document.getElementById('btn-open-sig');
+                btnOpenSig.classList.add('border-[#d4af37]', 'text-[#d4af37]');
+                btnOpenSig.querySelector('p').innerText = "TTD TERSIMPAN";
+            }
+
             cvData.experiences.forEach(item => rebuildList('cv-exp-list', 'cvData.experiences', item));
             cvData.educations.forEach(item => rebuildList('cv-edu-list', 'cvData.educations', item));
             cvData.projects.forEach(item => rebuildList('cv-prj-list', 'cvData.projects', item));
         }
+        updateActiveUI(); // Nyalain indikator sesuai data yg ditarik
     };
 
-    // --- HELPER UNTUK REBUILD LIST ---
     function rebuildList(containerId, arrayPath, data) {
         const container = document.getElementById(containerId);
         const div = document.createElement('div');
@@ -78,11 +100,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if(el) el.addEventListener('input', () => { renderCV(); saveToLocal(); });
     });
 
+    // Event Klik Tema & Font
     document.querySelectorAll('.cv-theme').forEach(btn => {
-        btn.addEventListener('click', (e) => { cvConfig.theme = e.target.dataset.theme; renderCV(); saveToLocal(); });
+        btn.addEventListener('click', (e) => { 
+            cvConfig.theme = e.target.dataset.theme; 
+            updateActiveUI(); renderCV(); saveToLocal(); 
+        });
     });
     document.querySelectorAll('.cv-font').forEach(btn => {
-        btn.addEventListener('click', (e) => { cvConfig.font = e.target.dataset.font; renderCV(); saveToLocal(); });
+        btn.addEventListener('click', (e) => { 
+            cvConfig.font = e.target.dataset.font; 
+            updateActiveUI(); renderCV(); saveToLocal(); 
+        });
     });
 
     // Pas Foto
@@ -105,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Reset Foto
     document.getElementById('btn-remove-photo').onclick = (e) => {
         cvData.photo = ''; photoInput.value = '';
         e.target.closest('button').classList.add('hidden');
@@ -141,8 +169,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-save-sig').onclick = () => {
         cvData.signature = canvas.toDataURL('image/png');
         document.getElementById('modal-sig').classList.add('hidden');
+        const btnOpenSig = document.getElementById('btn-open-sig');
+        btnOpenSig.classList.add('border-[#d4af37]', 'text-[#d4af37]');
+        btnOpenSig.querySelector('p').innerText = "TTD TERSIMPAN";
         renderCV(); saveToLocal();
     };
+
+    document.getElementById('cv-sig-upload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
     // Dynamic Lists
     window.updateListData = (type, id, key, value) => {
@@ -166,15 +210,52 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-add-edu').onclick = () => { const d = {id:Date.now(),title:'',subtitle:'',date:'',desc:''}; cvData.educations.push(d); rebuildList('cv-edu-list','',d); renderCV(); saveToLocal(); };
     document.getElementById('btn-add-prj').onclick = () => { const d = {id:Date.now(),title:'',subtitle:'',date:'',desc:''}; cvData.projects.push(d); rebuildList('cv-prj-list','',d); renderCV(); saveToLocal(); };
 
-    // Reset All Data
     document.getElementById('btn-reset').onclick = () => {
         if(confirm('Hapus semua data CV?')) { localStorage.removeItem('cv_magic_storage'); location.reload(); }
     };
+
+    document.getElementById('btn-gen-profile').onclick = () => {
+        const exp = document.getElementById('cv-sel-exp').value;
+        let text = exp === 'pro' ? "Profesional berpengalaman dengan rekam jejak yang solid dalam memimpin proyek, mengoptimalkan proses operasional, dan memberikan solusi strategis. Terbiasa bekerja di lingkungan serba cepat, memadukan keahlian teknis dengan kemampuan analitis untuk mencapai target perusahaan secara konsisten." : exp === 'fresh' ? "Lulusan baru yang sangat termotivasi, disiplin, dan memiliki semangat belajar tinggi. Memiliki fondasi akademis yang kuat dan siap untuk mengaplikasikan ilmu dalam lingkungan kerja profesional." : "Individu yang berdedikasi tinggi, tekun, dan siap bekerja keras. Memiliki kemampuan komunikasi yang baik, jujur, serta kemauan kuat untuk mempelajari keterampilan baru.";
+        document.getElementById('cv-profile').value = text;
+        renderCV(); saveToLocal();
+    };
+
+    // --- BUG FIX: MOBILE TAB NAVIGATION ---
+    const tabEdit = document.getElementById('tab-edit');
+    const tabPrev = document.getElementById('tab-prev');
+    const pnlEdit = document.getElementById('panel-editor');
+    const pnlPrev = document.getElementById('panel-preview');
+
+    if(tabEdit && tabPrev){
+        tabEdit.addEventListener('click', () => {
+            pnlEdit.classList.remove('hidden'); pnlEdit.classList.add('w-full');
+            pnlPrev.classList.add('hidden'); pnlPrev.classList.remove('flex', 'w-full');
+            
+            tabEdit.classList.replace('bg-[#0f172a]', 'bg-[#1e293b]');
+            tabPrev.classList.replace('bg-[#1e293b]', 'bg-[#0f172a]');
+            tabEdit.classList.add('border-[#d4af37]/50', 'text-[#d4af37]');
+            tabPrev.classList.remove('border-[#d4af37]/50', 'text-[#d4af37]');
+            tabPrev.classList.add('text-slate-400', 'border-transparent');
+        });
+
+        tabPrev.addEventListener('click', () => {
+            pnlPrev.classList.remove('hidden'); pnlPrev.classList.add('flex', 'w-full');
+            pnlEdit.classList.add('hidden'); pnlEdit.classList.remove('w-full');
+            
+            tabPrev.classList.replace('bg-[#0f172a]', 'bg-[#1e293b]');
+            tabEdit.classList.replace('bg-[#1e293b]', 'bg-[#0f172a]');
+            tabPrev.classList.add('border-[#d4af37]/50', 'text-[#d4af37]');
+            tabEdit.classList.remove('border-[#d4af37]/50', 'text-[#d4af37]');
+            tabEdit.classList.add('text-slate-400', 'border-transparent');
+        });
+    }
 
     // --- RENDER ENGINE ---
     function renderCV() {
         let cMain = '#0f172a', cAcc = '#d4af37';
         if(cvConfig.theme === 'theme-emerald') { cMain = '#064e3b'; cAcc = '#10b981'; }
+        if(cvConfig.theme === 'theme-dark') { cMain = '#0f172a'; cAcc = '#38bdf8'; }
         if(cvConfig.theme === 'theme-gold') { cMain = '#3f3316'; cAcc = '#d4af37'; }
 
         const fMain = cvConfig.font === 'font-serif' ? "'Playfair Display', serif" : cvConfig.font === 'font-mono' ? "monospace" : "'Montserrat', sans-serif";
@@ -215,12 +296,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="flex-grow grid grid-cols-12">
                     <div class="col-span-4 bg-slate-50 p-8 border-r border-gray-200 flex flex-col gap-6">
                         ${cvData.profile ? `<div><h3 class="f-serif t-navy text-lg font-bold border-b-2 b-gold pb-2 mb-3 uppercase">Profil</h3><p class="text-[11px] text-gray-600 leading-relaxed text-justify">${cvData.profile}</p></div>` : ''}
-                        <div class="space-y-2 text-[11px] text-gray-700 font-medium">
-                            ${cvData.ttl ? `<p class="flex items-start"><i class="fas fa-calendar-alt w-5 mt-0.5 t-gold"></i> <span>${cvData.ttl}</span></p>` : ''}
-                            ${cvData.phone ? `<p class="flex items-center"><i class="fab fa-whatsapp w-5 t-gold"></i> <span>${cvData.phone}</span></p>` : ''}
-                            ${cvData.email ? `<p class="flex items-center"><i class="fas fa-envelope w-5 t-gold"></i> <span class="break-all">${cvData.email}</span></p>` : ''}
-                            ${cvData.port ? `<p class="flex items-center"><i class="fas fa-globe w-5 t-gold"></i> <span class="break-all">${cvData.port}</span></p>` : ''}
-                            ${cvData.address ? `<p class="flex items-start"><i class="fas fa-map-marker-alt w-5 mt-0.5 t-gold"></i> <span>${cvData.address}</span></p>` : ''}
+                        <div class="pt-1">
+                            <div class="space-y-2 text-[11px] text-gray-700 font-medium">
+                                ${cvData.ttl ? `<p class="flex items-start"><i class="fas fa-calendar-alt w-5 mt-0.5 t-gold"></i> <span>${cvData.ttl}</span></p>` : ''}
+                                ${cvData.phone ? `<p class="flex items-center"><i class="fab fa-whatsapp w-5 t-gold"></i> <span>${cvData.phone}</span></p>` : ''}
+                                ${cvData.email ? `<p class="flex items-center"><i class="fas fa-envelope w-5 t-gold"></i> <span class="break-all">${cvData.email}</span></p>` : ''}
+                                ${cvData.port ? `<p class="flex items-center"><i class="fas fa-globe w-5 t-gold"></i> <span class="break-all">${cvData.port}</span></p>` : ''}
+                                ${cvData.address ? `<p class="flex items-start"><i class="fas fa-map-marker-alt w-5 mt-0.5 t-gold"></i> <span>${cvData.address}</span></p>` : ''}
+                            </div>
                         </div>
                         ${cvData.cert ? `<div><h3 class="f-serif t-navy text-lg font-bold border-b-2 b-gold pb-2 mb-3 uppercase">Lisensi / Sertifikasi</h3><div class="bg-white p-3 border border-gray-200 rounded shadow-sm border-l-4 bl-gold"><div class="text-[11px] text-gray-700 font-medium">${cvData.cert.split('\n').join('<br>')}</div></div></div>` : ''}
                         ${cvData.skills ? `<div><h3 class="f-serif t-navy text-lg font-bold border-b-2 b-gold pb-2 mb-3 uppercase">Kompetensi</h3>${formatTags(cvData.skills)}</div>` : ''}
@@ -248,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         html2pdf().set(opt).from(paper).save();
     };
 
-    // Load and Render
+    // Initialize
     loadFromLocal();
     renderCV();
 });
