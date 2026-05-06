@@ -11,11 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return el ? el.value : '';
     };
 
-    // SEMBUNYIKAN TOMBOL TTD DI EDITOR
+    // HAPUS TOTAL TOMBOL DAN MODAL TTD DARI EDITOR
     const btnOpenSig = document.getElementById('btn-open-sig');
-    if (btnOpenSig) btnOpenSig.remove(); 
+    if (btnOpenSig) btnOpenSig.remove();
     const modalSig = document.getElementById('modal-sig');
-    if (modalSig) modalSig.remove(); 
+    if (modalSig) modalSig.remove();
 
     // --- INJEKSI UI TOGGLE QR ---
     const injectQRUI = () => {
@@ -51,20 +51,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (saved) {
             const parsed = JSON.parse(saved);
             
+            // PAKSA HAPUS DATA TTD LAMA DARI MEMORI BROWSER JIKA MASIH NYANGKUT
             if (parsed.cvData && parsed.cvData.signature) {
                 delete parsed.cvData.signature;
             }
 
             cvData = parsed.cvData || cvData;
             cvConfig = parsed.cvConfig || cvConfig;
-
             if(parsed.textData) {
                 inputs.forEach(id => {
                     const el = document.getElementById(`cv-${id}`);
                     if(el && parsed.textData[id]) el.value = parsed.textData[id];
                 });
             }
-
             if (cvData.photo) {
                 const container = document.getElementById('cv-photo').parentElement;
                 container.style.backgroundImage = `url(${cvData.photo})`;
@@ -177,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btn-reset').onclick = () => { if(confirm('Hapus semua data?')) { localStorage.removeItem('cv_magic_storage'); location.reload(); } };
 
-    // --- AUTO PROFILE GENERATOR (UNTUK MASYARAKAT UMUM) ---
+    // --- AUTO PROFILE GENERATOR ---
     document.getElementById('btn-gen-profile').onclick = () => {
         const exp = document.getElementById('cv-sel-exp').value;
         let text = '';
@@ -270,10 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}&color=${qrColor}&bgcolor=ffffff" crossorigin="anonymous" class="w-14 h-14 border border-gray-300 p-1 bg-white rounded shadow-sm">
                                     <div><p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mb-0.5">Verifikasi Profil</p><p class="text-[9px] t-navy font-bold">${qrData.replace(/^https?:\/\//, '')}</p></div>
                                 </div>` : ''}
-                            </div>
-                            <div class="text-center w-40">
-                                <p class="text-[11px] text-gray-600 mb-6">Hormat saya,</p>
-                                <p class="text-xs t-navy font-bold border-b border-[#0f172a] inline-block pb-1 px-4">${getVal('name') || 'Nama Lengkap'}</p>
                             </div>
                         </div>
                     </div>
