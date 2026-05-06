@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 cvData.photo = event.target.result;
                 btnRemovePhoto.classList.remove('hidden');
                 
-                // Ubah background container jadi preview foto
                 const container = photoInput.parentElement;
                 container.style.backgroundImage = `url(${cvData.photo})`;
                 container.style.backgroundSize = 'cover';
@@ -47,12 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnRemovePhoto.addEventListener('click', (e) => {
-        e.stopPropagation(); // Biar gak ngetrigger input file
+        e.stopPropagation(); 
         cvData.photo = '';
         photoInput.value = '';
         btnRemovePhoto.classList.add('hidden');
         
-        // Kembalikan tampilan awal
         const container = photoInput.parentElement;
         container.style.backgroundImage = 'none';
         container.querySelector('i').classList.remove('hidden');
@@ -74,8 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let isDrawing = false;
 
-    // Setting pena ttd
-    ctx.strokeStyle = '#0f172a'; // Warna Navy
+    ctx.strokeStyle = '#0f172a';
     ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -84,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const rect = canvas.getBoundingClientRect();
         const clientX = e.clientX || (e.touches && e.touches[0].clientX);
         const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-        // Hitung skala rasio untuk akurasi coretan
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
         return {
@@ -112,42 +108,29 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.closePath();
     };
 
-    // Event Mouse
     canvas.addEventListener('mousedown', startDraw);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', endDraw);
     canvas.addEventListener('mouseout', endDraw);
-
-    // Event Touch (HP/Tablet)
     canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e); }, {passive: false});
     canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, {passive: false});
     canvas.addEventListener('touchend', endDraw);
 
-    // Buka Modal
-    btnOpenSig.addEventListener('click', () => {
-        modalSig.classList.remove('hidden');
-    });
+    btnOpenSig.addEventListener('click', () => modalSig.classList.remove('hidden'));
 
-    // Bersihkan Canvas
     btnClearSig.addEventListener('click', () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         cvData.signature = '';
     });
 
-    // Simpan TTD
     btnSaveSig.addEventListener('click', () => {
-        // Ambil data gambar dari canvas
         cvData.signature = canvas.toDataURL('image/png');
         modalSig.classList.add('hidden');
-        
-        // Ubah tombol TTD jadi ada indikator sukses
         btnOpenSig.classList.add('border-[#d4af37]', 'text-[#d4af37]');
         btnOpenSig.querySelector('p').innerText = "TTD TERSIMPAN";
-        
         renderCV();
     });
 
-    // Upload TTD (Alternatif)
     sigUpload.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
@@ -156,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const img = new Image();
                 img.onload = () => {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    // Gambar ttd yg diupload ke tengah canvas
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 };
                 img.src = event.target.result;
@@ -219,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-add-edu').onclick = () => createListInput('cv-edu-list', cvData.educations, ['Sekolah/Kampus', 'Jurusan', 'Tahun', 'Keterangan']);
     document.getElementById('btn-add-prj').onclick = () => createListInput('cv-prj-list', cvData.projects, ['Nama Proyek', 'Peran', 'Tahun', 'Deskripsi']);
 
-    // --- AUTO PROFILE GENERATOR ---
     document.getElementById('btn-gen-profile').onclick = () => {
         const exp = document.getElementById('cv-sel-exp').value;
         let text = '';
@@ -275,16 +256,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <img src="${cvData.photo}" class="w-[100px] h-[130px] object-cover border-[3px] border-[#d4af37] shadow-lg rounded">
                     </div>` : ''}
 
-                    <div class="flex flex-1 justify-between items-center z-10 relative">
+                    <div class="flex flex-1 items-center z-10 relative">
                         <div>
                             <h1 class="f-serif text-5xl font-bold tracking-wide uppercase mb-2">${getVal('name') || 'NAMA LENGKAP'}</h1>
                             <h2 class="t-gold font-bold tracking-widest uppercase text-sm">${getVal('title') || 'PROFESI / GELAR'}</h2>
-                        </div>
-                        <div class="text-right space-y-1.5 border-l border-white/20 pl-4">
-                            ${getVal('port') ? `<p class="text-xs text-gray-300"><i class="fas fa-globe t-gold w-5"></i> ${getVal('port')}</p>` : ''}
-                            ${getVal('email') ? `<p class="text-xs text-gray-300"><i class="fas fa-envelope t-gold w-5"></i> ${getVal('email')}</p>` : ''}
-                            ${getVal('phone') ? `<p class="text-xs text-gray-300"><i class="fab fa-whatsapp t-gold w-5"></i> ${getVal('phone')}</p>` : ''}
-                            ${getVal('address') ? `<p class="text-xs text-gray-300"><i class="fas fa-map-marker-alt t-gold w-5"></i> ${getVal('address')}</p>` : ''}
                         </div>
                     </div>
                 </div>
@@ -296,6 +271,17 @@ document.addEventListener('DOMContentLoaded', () => {
                             <h3 class="f-serif t-navy text-lg font-bold border-b-2 b-gold pb-2 mb-3 uppercase">Profil</h3>
                             <p class="text-[11px] text-gray-600 leading-relaxed text-justify">${getVal('profile')}</p>
                         </div>` : ''}
+
+                        <div>
+                            <h3 class="f-serif t-navy text-lg font-bold border-b-2 b-gold pb-2 mb-3 uppercase">Biodata & Kontak</h3>
+                            <div class="space-y-2 text-[11px] text-gray-700 font-medium">
+                                ${getVal('ttl') ? `<p class="flex items-start"><i class="fas fa-calendar-alt w-5 mt-0.5 t-gold"></i> <span>${getVal('ttl')}</span></p>` : ''}
+                                ${getVal('phone') ? `<p class="flex items-center"><i class="fab fa-whatsapp w-5 t-gold"></i> <span>${getVal('phone')}</span></p>` : ''}
+                                ${getVal('email') ? `<p class="flex items-center"><i class="fas fa-envelope w-5 t-gold"></i> <span class="break-all">${getVal('email')}</span></p>` : ''}
+                                ${getVal('port') ? `<p class="flex items-center"><i class="fas fa-globe w-5 t-gold"></i> <span class="break-all">${getVal('port')}</span></p>` : ''}
+                                ${getVal('address') ? `<p class="flex items-start"><i class="fas fa-map-marker-alt w-5 mt-0.5 t-gold"></i> <span>${getVal('address')}</span></p>` : ''}
+                            </div>
+                        </div>
 
                         ${getVal('cert') ? `
                         <div>
@@ -355,7 +341,6 @@ document.addEventListener('DOMContentLoaded', () => {
         paper.innerHTML = htmlTemplate;
     }
 
-    // --- EXPORT PDF (html2pdf) ---
     document.getElementById('btn-export-cv').addEventListener('click', () => {
         const element = document.getElementById('cv-paper');
         const opt = {
@@ -368,7 +353,6 @@ document.addEventListener('DOMContentLoaded', () => {
         html2pdf().set(opt).from(element).save();
     });
 
-    // TABS MOBILE LOGIC
     const tabEdit = document.getElementById('tab-edit');
     const tabPrev = document.getElementById('tab-prev');
     const pnlEdit = document.getElementById('panel-editor');
@@ -395,6 +379,5 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Initial render
     renderCV();
 });
