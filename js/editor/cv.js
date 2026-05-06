@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- STATE MANAGER ---
     let cvData = { photo: '', signature: '', experiences: [], educations: [], projects: [] };
-    let cvConfig = { theme: 'theme-navy', font: 'font-sans' };
+    let cvConfig = { theme: 'theme-navy', font: 'font-sans', showQR: true }; // QR Auto Nyala
 
     const paper = document.getElementById('cv-paper');
     const inputs = ['name', 'title', 'ttl', 'port', 'phone', 'email', 'address', 'profile', 'skills', 'cert'];
@@ -10,6 +10,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const el = document.getElementById(`cv-${id}`);
         return el ? el.value : '';
     };
+
+    // --- INJEKSI TOMBOL TOGGLE QR KE DALAM EDITOR UI ---
+    const configPanel = document.querySelector('.cv-theme').parentElement.parentElement.parentElement;
+    if (configPanel) {
+        const qrDiv = document.createElement('div');
+        qrDiv.className = 'mt-4 pt-4 border-t border-slate-700 flex justify-between items-center';
+        qrDiv.innerHTML = `
+            <span class="text-[#d4af37] text-[10px] font-black uppercase tracking-widest"><i class="fas fa-qrcode mr-2"></i> QR VERIFIKASI</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="toggle-qr" class="sr-only peer" ${cvConfig.showQR ? 'checked' : ''}>
+              <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#d4af37]"></div>
+            </label>
+        `;
+        configPanel.appendChild(qrDiv);
+        
+        document.getElementById('toggle-qr').addEventListener('change', (e) => {
+            cvConfig.showQR = e.target.checked;
+            renderCV(); saveToLocal();
+        });
+    }
 
     // --- LOCAL STORAGE ENGINE ---
     const saveToLocal = () => {
@@ -23,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (saved) {
             const parsed = JSON.parse(saved);
             cvData = parsed.cvData;
-            cvConfig = parsed.cvConfig;
+            if(parsed.cvConfig) cvConfig = parsed.cvConfig;
             const textData = parsed.textData;
 
             if(textData) {
@@ -52,6 +72,11 @@ document.addEventListener('DOMContentLoaded', () => {
             cvData.educations.forEach(item => rebuildList('cv-edu-list', item));
             cvData.projects.forEach(item => rebuildList('cv-prj-list', item));
         }
+        
+        // Sync Toggle QR dgn data tersimpan
+        const toggleQr = document.getElementById('toggle-qr');
+        if(toggleQr) toggleQr.checked = cvConfig.showQR;
+        
         updateActiveUI();
     };
 
@@ -74,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(div);
     }
 
-    // --- UI ACTIVE STATES ---
     const updateActiveUI = () => {
         document.querySelectorAll('.cv-theme').forEach(btn => {
             btn.classList.remove('border-white', 'border-2', 'shadow-[0_0_10px_rgba(255,255,255,0.5)]');
@@ -90,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- LISTENERS ---
     inputs.forEach(id => {
         const el = document.getElementById(`cv-${id}`);
         if(el) el.addEventListener('input', () => { renderCV(); saveToLocal(); });
@@ -103,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', (e) => { cvConfig.font = e.target.dataset.font; updateActiveUI(); renderCV(); saveToLocal(); });
     });
 
-    // Foto
     const photoInput = document.getElementById('cv-photo');
     photoInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
@@ -133,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCV(); saveToLocal();
     };
 
-    // Tanda Tangan
     const canvas = document.getElementById('cv-sig-pad');
     const ctx = canvas.getContext('2d');
     let isDrawing = false;
@@ -164,7 +185,19 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCV(); saveToLocal();
     };
 
-    // List Dinamis
+    document.getElementById('cv-sig-upload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
     window.updateListData = (type, id, key, value) => {
         let arr = type === 'cv-exp-list' ? cvData.experiences : type === 'cv-edu-list' ? cvData.educations : cvData.projects;
         let item = arr.find(x => x.id === id);
@@ -188,26 +221,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btn-reset').onclick = () => { if(confirm('Hapus semua data?')) { localStorage.removeItem('cv_magic_storage'); location.reload(); } };
 
-    // --- AUTO PROFILE GENERATOR (RESTORED TO FULL VERSION) ---
     document.getElementById('btn-gen-profile').onclick = () => {
         const exp = document.getElementById('cv-sel-exp').value;
         let text = '';
-        if(exp === 'pro') text = "Profesional berpengalaman dengan rekam jejak yang solid dalam memimpin proyek, mengoptimalkan proses operasional, dan memberikan solusi strategis. Terbiasa bekerja di lingkungan serba cepat, memadukan keahlian teknis dengan kemampuan analitis untuk mencapai target perusahaan secara konsisten.";
-        if(exp === 'fresh') text = "Lulusan baru yang sangat termotivasi, disiplin, dan memiliki semangat belajar tinggi. Memiliki fondasi akademis yang kuat dan siap untuk mengaplikasikan ilmu dalam lingkungan kerja profesional, serta mampu beradaptasi cepat dalam tim untuk memberikan kontribusi positif.";
-        if(exp === 'zero') text = "Individu yang berdedikasi tinggi, tekun, dan siap bekerja keras. Memiliki kemampuan komunikasi yang baik, jujur, serta kemauan kuat untuk mempelajari keterampilan baru demi mendukung kelancaran operasional dan kesuksesan tim.";
+        if(exp === 'pro') text = "Profesional dengan rekam jejak komprehensif dalam memadukan standarisasi operasional dan efisiensi teknologi. Terbukti mampu mengelola ekosistem data yang kompleks, merancang solusi digital inovatif, dan mengeksekusi operasional dengan tingkat akurasi tinggi. Terbiasa memecahkan masalah analitis untuk mendorong pencapaian target strategis perusahaan secara konsisten dan skalabel.";
+        else if(exp === 'fresh') text = "Lulusan diploma berdedikasi tinggi dengan fondasi kompetensi klinis yang solid dan penguasaan regulasi yang ketat. Memiliki ketelitian tingkat lanjut, kemampuan analisis data yang tajam, serta terbiasa bekerja di bawah tekanan untuk memastikan akurasi prosedur dan kualitas output di setiap lini operasional.";
+        else text = "Individu adaptif dan berorientasi pada detail dengan kapasitas luar biasa dalam menganalisis dan mempelajari sistem teknis baru. Memiliki logika pemecahan masalah yang kuat dan terbiasa bekerja secara lintas fungsi guna memastikan stabilitas infrastruktur operasional serta mendukung produktivitas perusahaan.";
         
         document.getElementById('cv-profile').value = text;
         renderCV(); saveToLocal();
     };
 
-    // --- TABS ---
     const tabEdit = document.getElementById('tab-edit'), tabPrev = document.getElementById('tab-prev'), pnlEdit = document.getElementById('panel-editor'), pnlPrev = document.getElementById('panel-preview');
     if(tabEdit && tabPrev){
-        tabEdit.onclick = () => { pnlEdit.classList.remove('hidden'); pnlEdit.classList.add('w-full'); pnlPrev.classList.add('hidden'); pnlPrev.classList.remove('flex'); tabEdit.classList.replace('bg-[#0f172a]', 'bg-[#1e293b]'); tabPrev.classList.replace('bg-[#1e293b]', 'bg-[#0f172a]'); tabEdit.classList.add('border-[#d4af37]/50', 'text-[#d4af37]'); tabPrev.classList.remove('border-[#d4af37]/50', 'text-[#d4af37]'); tabPrev.classList.add('text-slate-400', 'border-transparent'); };
-        tabPrev.onclick = () => { pnlPrev.classList.remove('hidden'); pnlPrev.classList.add('flex', 'w-full'); pnlEdit.classList.add('hidden'); pnlEdit.classList.remove('w-full'); tabPrev.classList.replace('bg-[#0f172a]', 'bg-[#1e293b]'); tabEdit.classList.replace('bg-[#1e293b]', 'bg-[#0f172a]'); tabPrev.classList.add('border-[#d4af37]/50', 'text-[#d4af37]'); tabEdit.classList.remove('border-[#d4af37]/50', 'text-[#d4af37]'); tabEdit.classList.add('text-slate-400', 'border-transparent'); };
+        tabEdit.addEventListener('click', () => {
+            pnlEdit.classList.remove('hidden'); pnlEdit.classList.add('w-full'); pnlPrev.classList.add('hidden'); pnlPrev.classList.remove('flex', 'w-full');
+            tabEdit.classList.replace('bg-[#0f172a]', 'bg-[#1e293b]'); tabPrev.classList.replace('bg-[#1e293b]', 'bg-[#0f172a]');
+            tabEdit.classList.add('border-[#d4af37]/50', 'text-[#d4af37]'); tabPrev.classList.remove('border-[#d4af37]/50', 'text-[#d4af37]'); tabPrev.classList.add('text-slate-400', 'border-transparent');
+        });
+        tabPrev.addEventListener('click', () => {
+            pnlPrev.classList.remove('hidden'); pnlPrev.classList.add('flex', 'w-full'); pnlEdit.classList.add('hidden'); pnlEdit.classList.remove('w-full');
+            tabPrev.classList.replace('bg-[#0f172a]', 'bg-[#1e293b]'); tabEdit.classList.replace('bg-[#1e293b]', 'bg-[#0f172a]');
+            tabPrev.classList.add('border-[#d4af37]/50', 'text-[#d4af37]'); tabEdit.classList.remove('border-[#d4af37]/50', 'text-[#d4af37]'); tabEdit.classList.add('text-slate-400', 'border-transparent');
+        });
     }
 
-    // --- RENDER ENGINE ---
     function renderCV() {
         let cMain = '#0f172a', cAcc = '#d4af37';
         if(cvConfig.theme === 'theme-emerald') { cMain = '#064e3b'; cAcc = '#10b981'; }
@@ -230,6 +268,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="text-xs text-gray-600 leading-relaxed">${formatUl(i.desc)}</div>
             </div>`).join('');
 
+        // LOGIKA QR CODE
+        let qrData = getVal('port') || 'https://ikram-cyber.web.id';
+        let qrColor = cMain.replace('#', '');
+        let qrHtml = '';
+        
+        if (cvConfig.showQR) {
+            qrHtml = `
+            <div class="flex items-center gap-3 animate-fade-in">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}&color=${qrColor}&bgcolor=ffffff" crossorigin="anonymous" class="w-14 h-14 border border-gray-300 p-1 bg-white rounded-lg shadow-sm">
+                <div>
+                    <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mb-0.5">Verifikasi Profil</p>
+                    <p class="text-[9px] t-navy font-bold">${qrData.replace(/^https?:\/\//, '')}</p>
+                </div>
+            </div>`;
+        }
+
         paper.innerHTML = `
             <style>
                 .cv-content { font-family: ${fMain}; background: white; width: 100%; min-height: 297mm; display: flex; flex-direction: column; }
@@ -237,6 +291,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 .t-navy { color: ${cMain}; } .bg-navy { background-color: ${cMain}; }
                 .t-gold { color: ${cAcc}; } .bg-gold { background-color: ${cAcc}; }
                 .b-gold { border-color: ${cAcc}; } .bl-gold { border-left-color: ${cAcc}; }
+                .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+                @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
             </style>
             <div class="cv-content">
                 <div class="bg-navy text-white px-10 py-10 relative overflow-hidden flex gap-8 items-center">
@@ -270,13 +326,21 @@ document.addEventListener('DOMContentLoaded', () => {
                             ${cvData.educations.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-graduation-cap t-gold mr-3"></i> Pendidikan</h3>${renderItems(cvData.educations)}</div>` : ''}
                             ${cvData.projects.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-project-diagram t-gold mr-3"></i> Proyek</h3>${renderItems(cvData.projects)}</div>` : ''}
                         </div>
-                        <div class="mt-12 pt-4 border-t border-gray-200 flex justify-end">
-                            <div class="text-center">
+                        
+                        <div class="mt-12 pt-4 border-t border-gray-200 flex justify-between items-end">
+                            <div class="text-left">
+                                ${qrHtml}
+                            </div>
+
+                            <div class="text-center w-32">
+                                ${cvData.signature ? `
                                 <p class="text-[11px] text-gray-600 mb-2">Hormat saya,</p>
-                                ${cvData.signature ? `<img src="${cvData.signature}" class="h-16 mx-auto mb-1" style="mix-blend-mode: multiply;">` : '<div class="h-16"></div>'}
+                                <img src="${cvData.signature}" class="h-16 mx-auto mb-1" style="mix-blend-mode: multiply;">
                                 <p class="text-xs t-navy font-bold border-b border-[#0f172a] inline-block pb-1 px-4">${getVal('name') || 'Nama Lengkap'}</p>
+                                ` : '<div></div>'}
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>`;
