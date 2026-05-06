@@ -11,9 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return el ? el.value : '';
     };
 
-    // SEMBUNYIKAN TOMBOL TTD DI EDITOR (BIAR CLEAN)
+    // SEMBUNYIKAN TOMBOL TTD DI EDITOR
     const btnOpenSig = document.getElementById('btn-open-sig');
-    if (btnOpenSig) btnOpenSig.style.display = 'none';
+    if (btnOpenSig) btnOpenSig.remove(); 
+    const modalSig = document.getElementById('modal-sig');
+    if (modalSig) modalSig.remove(); 
 
     // --- INJEKSI UI TOGGLE QR ---
     const injectQRUI = () => {
@@ -48,14 +50,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const saved = localStorage.getItem('cv_magic_storage');
         if (saved) {
             const parsed = JSON.parse(saved);
+            
+            if (parsed.cvData && parsed.cvData.signature) {
+                delete parsed.cvData.signature;
+            }
+
             cvData = parsed.cvData || cvData;
             cvConfig = parsed.cvConfig || cvConfig;
+
             if(parsed.textData) {
                 inputs.forEach(id => {
                     const el = document.getElementById(`cv-${id}`);
                     if(el && parsed.textData[id]) el.value = parsed.textData[id];
                 });
             }
+
             if (cvData.photo) {
                 const container = document.getElementById('cv-photo').parentElement;
                 container.style.backgroundImage = `url(${cvData.photo})`;
@@ -65,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('btn-remove-photo').classList.remove('hidden');
             }
             
-            // Hapus List lama sebelum rebuild biar gak dobel
             document.getElementById('cv-exp-list').innerHTML = '';
             document.getElementById('cv-edu-list').innerHTML = '';
             document.getElementById('cv-prj-list').innerHTML = '';
@@ -82,7 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById(containerId);
         const div = document.createElement('div');
         div.className = 'bg-slate-900 p-3 rounded border border-slate-700 relative group space-y-2 mb-2';
-        const placeholders = containerId === 'cv-exp-list' ? ['Perusahaan', 'Posisi', 'Tahun'] : ['Sekolah', 'Jurusan', 'Tahun'];
+        const placeholders = containerId === 'cv-exp-list' ? ['Perusahaan/Tempat Kerja', 'Posisi', 'Tahun'] : 
+                             containerId === 'cv-edu-list' ? ['Sekolah/Kampus', 'Jurusan', 'Tahun'] : ['Nama Kegiatan/Proyek', 'Peran', 'Tahun'];
         div.innerHTML = `
             <button class="absolute top-2 right-2 text-red-500 hidden group-hover:block" onclick="removeListItem('${containerId}', ${data.id})"><i class="fas fa-trash"></i></button>
             <input type="text" value="${data.title}" placeholder="${placeholders[0]}" class="w-full bg-slate-800 text-white text-xs p-2 rounded border border-slate-700 outline-none focus:border-[#d4af37]" oninput="updateListData('${containerId}', ${data.id}, 'title', this.value)">
@@ -90,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <input type="text" value="${data.subtitle}" placeholder="${placeholders[1]}" class="flex-1 bg-slate-800 text-white text-xs p-2 rounded border border-slate-700" oninput="updateListData('${containerId}', ${data.id}, 'subtitle', this.value)">
                 <input type="text" value="${data.date}" placeholder="${placeholders[2]}" class="w-24 bg-slate-800 text-white text-xs p-2 rounded border border-slate-700" oninput="updateListData('${containerId}', ${data.id}, 'date', this.value)">
             </div>
-            <textarea placeholder="Deskripsi..." class="w-full bg-slate-800 text-white text-xs p-2 rounded h-16 outline-none custom-scroll" oninput="updateListData('${containerId}', ${data.id}, 'desc', this.value)">${data.desc}</textarea>
+            <textarea placeholder="Ceritakan tugas/kegiatan Anda..." class="w-full bg-slate-800 text-white text-xs p-2 rounded h-16 outline-none custom-scroll" oninput="updateListData('${containerId}', ${data.id}, 'desc', this.value)">${data.desc}</textarea>
         `;
         container.appendChild(div);
     }
@@ -168,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btn-reset').onclick = () => { if(confirm('Hapus semua data?')) { localStorage.removeItem('cv_magic_storage'); location.reload(); } };
 
-    // --- AUTO PROFILE GENERATOR (DIPERBAIKI UNTUK UMUM) ---
+    // --- AUTO PROFILE GENERATOR (UNTUK MASYARAKAT UMUM) ---
     document.getElementById('btn-gen-profile').onclick = () => {
         const exp = document.getElementById('cv-sel-exp').value;
         let text = '';
@@ -252,14 +261,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="flex flex-col gap-8">
                             ${cvData.experiences.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-briefcase t-gold mr-3"></i> Pengalaman</h3>${renderItems(cvData.experiences)}</div>` : ''}
                             ${cvData.educations.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-graduation-cap t-gold mr-3"></i> Pendidikan</h3>${renderItems(cvData.educations)}</div>` : ''}
-                            ${cvData.projects.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-project-diagram t-gold mr-3"></i> Proyek</h3>${renderItems(cvData.projects)}</div>` : ''}
+                            ${cvData.projects.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-project-diagram t-gold mr-3"></i> Kegiatan / Proyek</h3>${renderItems(cvData.projects)}</div>` : ''}
                         </div>
                         <div class="mt-12 pt-4 border-t border-gray-200 flex justify-between items-end">
                             <div class="text-left">
                                 ${cvConfig.showQR ? `
                                 <div class="flex items-center gap-3">
                                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}&color=${qrColor}&bgcolor=ffffff" crossorigin="anonymous" class="w-14 h-14 border border-gray-300 p-1 bg-white rounded shadow-sm">
-                                    <div><p class="text-[8px] text-gray-500 font-bold uppercase mb-0.5">Verifikasi Profil</p><p class="text-[9px] t-navy font-bold">${qrData.replace(/^https?:\/\//, '')}</p></div>
+                                    <div><p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mb-0.5">Verifikasi Profil</p><p class="text-[9px] t-navy font-bold">${qrData.replace(/^https?:\/\//, '')}</p></div>
                                 </div>` : ''}
                             </div>
                             <div class="text-center w-40">
