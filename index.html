@@ -3,147 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV MAGIC - Buat CV</title>
+    <title>CV MAGIC - Executive Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/premium.css">
+    <style>
+        /* CSS INJEKSI UNTUK PREVIEW CV PREMIUM */
+        .a4-canvas {
+            width: 210mm;
+            min-height: 297mm;
+            background-color: #ffffff;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .font-serif-header { font-family: 'Playfair Display', serif; }
+        .text-navy { color: #0f172a; }
+        .bg-navy { background-color: #0f172a; }
+        .text-gold { color: #d4af37; }
+        .bg-gold { background-color: #d4af37; }
+        .border-gold { border-color: #d4af37; }
+        
+        /* Custom Scrollbar untuk Editor */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #0f172a; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 10px; }
+    </style>
 </head>
-<body class="overflow-hidden h-screen w-screen flex flex-col">
-    <nav class="bg-slate-900 flex text-xs font-black tracking-widest z-50 shrink-0">
-        <a href="index.html" class="flex-1 text-center py-4 bg-sky-600 text-white shadow-inner"><i class="fas fa-user-tie"></i> DESAIN CV</a>
-        <a href="Slamaran.html" class="flex-1 text-center py-4 text-slate-500 border-b-2 border-slate-800 hover:text-slate-300"><i class="fas fa-envelope"></i> SURAT LAMARAN</a>
+<body class="overflow-hidden h-screen w-screen flex flex-col bg-[#0b1120]">
+    
+    <nav class="bg-[#0f172a] flex text-xs font-black tracking-widest z-50 shrink-0 border-b border-[#d4af37]/20">
+        <a href="index.html" class="flex-1 text-center py-4 bg-gradient-to-r from-[#b38728] to-[#d4af37] text-black shadow-inner"><i class="fas fa-user-tie"></i> DESAIN CV</a>
+        <a href="Slamaran.html" class="flex-1 text-center py-4 text-slate-400 hover:text-[#d4af37] transition"><i class="fas fa-envelope"></i> SURAT LAMARAN</a>
     </nav>
-    <div class="bg-slate-800 p-2 flex shrink-0 md:hidden z-40">
-        <button id="tab-edit" class="flex-1 py-2 bg-slate-700 text-sky-400 font-bold rounded-lg text-xs border border-slate-600 shadow-md">EDITOR CV</button>
+    
+    <div class="bg-[#0f172a] p-2 flex shrink-0 md:hidden z-40 border-b border-slate-800">
+        <button id="tab-edit" class="flex-1 py-2 bg-[#1e293b] text-[#d4af37] font-bold rounded-lg text-xs border border-[#d4af37]/50 shadow-md">EDITOR CV</button>
         <button id="tab-prev" class="flex-1 py-2 text-slate-400 font-bold text-xs">LIHAT HASIL</button>
     </div>
+    
     <main class="flex-1 flex overflow-hidden relative">
-        <section id="panel-editor" class="w-full md:w-[450px] h-full overflow-y-auto p-5 pb-24 border-r border-slate-800 custom-scroll space-y-6">
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-black text-white">EDITOR CV</h2>
-                <button id="btn-reset" class="text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded border border-red-500/20 hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i> RESET DATA</button>
+        
+        <section id="panel-editor" class="w-full md:w-[450px] h-full overflow-y-auto p-5 pb-24 border-r border-slate-800 custom-scroll space-y-6 bg-[#0b1120]">
+            
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h2 class="text-xl font-black text-white tracking-widest"><i class="fas fa-sliders-h text-[#d4af37] mr-2"></i>EDITOR</h2>
+                <button id="btn-reset" class="text-[10px] bg-red-900/30 text-red-400 px-3 py-1.5 rounded border border-red-500/30 hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash"></i> RESET</button>
             </div>
-            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-4">
+
+            <div class="bg-[#0f172a] p-4 rounded-xl border border-[#d4af37]/20 space-y-4">
                 <div>
-                    <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Warna Aksen</h3>
+                    <h3 class="text-[#d4af37] text-[10px] font-black uppercase mb-2 tracking-widest">Warna Aksen Premium</h3>
                     <div class="grid grid-cols-4 gap-2">
-                        <button class="cv-theme w-full h-8 rounded bg-sky-600 border-2 border-transparent transition-all" data-theme="theme-sky"></button>
-                        <button class="cv-theme w-full h-8 rounded bg-emerald-600 border-2 border-transparent transition-all" data-theme="theme-emerald"></button>
-                        <button class="cv-theme w-full h-8 rounded bg-red-600 border-2 border-transparent transition-all" data-theme="theme-crimson"></button>
-                        <button class="cv-theme w-full h-8 rounded bg-purple-600 border-2 border-transparent transition-all" data-theme="theme-royal"></button>
+                        <button class="cv-theme w-full h-8 rounded bg-[#0f172a] border border-[#d4af37] transition-all" data-theme="theme-navy" title="Navy"></button>
+                        <button class="cv-theme w-full h-8 rounded bg-[#d4af37] border-2 border-transparent transition-all" data-theme="theme-gold" title="Gold"></button>
+                        <button class="cv-theme w-full h-8 rounded bg-slate-800 border-2 border-transparent transition-all" data-theme="theme-dark" title="Dark Slate"></button>
+                        <button class="cv-theme w-full h-8 rounded bg-emerald-700 border-2 border-transparent transition-all" data-theme="theme-emerald" title="Emerald"></button>
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Gaya Tulisan</h3>
+                    <h3 class="text-[#d4af37] text-[10px] font-black uppercase mb-2 tracking-widest">Gaya Tulisan</h3>
                     <div class="grid grid-cols-3 gap-2">
-                        <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent transition-all" data-font="font-sans">SANS</button>
-                        <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent transition-all" data-font="font-serif">SERIF</button>
-                        <button class="cv-font bg-slate-700 text-[10px] py-2 rounded font-bold border border-transparent transition-all" data-font="font-mono">MONO</button>
+                        <button class="cv-font bg-[#1e293b] text-slate-300 text-[10px] py-2 rounded font-bold border border-transparent transition-all" data-font="font-sans">SANS</button>
+                        <button class="cv-font bg-[#1e293b] text-[#d4af37] text-[10px] py-2 rounded font-bold border border-[#d4af37]/50 transition-all" data-font="font-serif">SERIF</button>
+                        <button class="cv-font bg-[#1e293b] text-slate-300 text-[10px] py-2 rounded font-bold border border-transparent transition-all" data-font="font-mono">MONO</button>
                     </div>
                 </div>
             </div>
+
             <div class="flex gap-4">
-                <div class="flex-1 bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center relative overflow-hidden group">
-                    <i class="fas fa-camera text-sky-500 mb-1"></i><p class="text-[10px] font-bold">PAS FOTO</p>
+                <div class="flex-1 bg-[#0f172a] p-3 rounded-xl border border-slate-700 text-center relative overflow-hidden group hover:border-[#d4af37]/50 transition">
+                    <i class="fas fa-camera text-[#d4af37] mb-1 text-lg"></i><p class="text-[10px] font-bold text-slate-300">PAS FOTO</p>
                     <input type="file" id="cv-photo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10">
                     <button id="btn-remove-photo" class="absolute top-1 right-1 bg-red-600 text-white text-[10px] w-6 h-6 rounded-full z-20 hidden shadow-lg hover:bg-red-500 flex items-center justify-center" title="Hapus Foto"><i class="fas fa-times"></i></button>
                 </div>
-                <div class="flex-1 bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center cursor-pointer hover:bg-slate-700 transition" id="btn-open-sig">
-                    <i class="fas fa-pen-nib text-sky-500 mb-1"></i><p class="text-[10px] font-bold">TANDA TANGAN</p>
+                <div class="flex-1 bg-[#0f172a] p-3 rounded-xl border border-slate-700 text-center cursor-pointer hover:border-[#d4af37]/50 transition" id="btn-open-sig">
+                    <i class="fas fa-pen-nib text-[#d4af37] mb-1 text-lg"></i><p class="text-[10px] font-bold text-slate-300">TANDA TANGAN</p>
                 </div>
-            </div>
-            <div class="space-y-3">
-                <h3 class="text-sky-500 text-[10px] font-black uppercase">Data Diri</h3>
-                <input type="text" id="cv-name" placeholder="Nama Lengkap" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
-                <input type="text" id="cv-title" placeholder="Profesi / Gelar (ex: Programmer)" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500">
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="cv-ttl" placeholder="Tempat, Tgl Lahir" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
-                    <input type="text" id="cv-port" placeholder="Link Portofolio" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
-                    <input type="text" id="cv-phone" placeholder="No WhatsApp" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
-                    <input type="text" id="cv-email" placeholder="Email" class="bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
-                </div>
-                <input type="text" id="cv-address" placeholder="Alamat Domisili" class="w-full bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none">
-                <div class="pt-3 border-t border-slate-700 mt-2">
-                    <div class="flex justify-between items-end mb-2">
-                        <h3 class="text-sky-500 text-[10px] font-black uppercase">Profil Profesional</h3>
-                    </div>
-                    <div class="flex gap-2 mb-2">
-                        <select id="cv-sel-exp" class="flex-1 bg-slate-800 p-2 rounded-lg text-[10px] border border-slate-700 outline-none focus:border-sky-500 text-slate-200">
-                            <option value="fresh">Baru Lulus (Fresh Grad)</option>
-                            <option value="zero">Belum Pengalaman</option>
-                            <option value="pro">Berpengalaman</option>
-                        </select>
-                        <button id="btn-gen-profile" class="bg-emerald-600 hover:bg-emerald-500 px-3 rounded-lg font-bold text-white text-[10px] transition"><i class="fas fa-magic"></i> BUAT PROFIL</button>
-                    </div>
-                    <textarea id="cv-profile" placeholder="Ketik manual profil singkat Anda atau gunakan tombol otomatis di atas..." class="w-full h-24 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none resize-none custom-scroll"></textarea>
-                </div>
-                <div class="pt-3 border-t border-slate-700">
-                    <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Keahlian / Skills</h3>
-                    <textarea id="cv-skills" placeholder="- Python\n- Pine Script Trading\n- Layanan Kefarmasian" class="w-full h-20 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500 resize-none custom-scroll"></textarea>
-                </div>
-                <div class="pt-2">
-                    <h3 class="text-sky-500 text-[10px] font-black uppercase mb-2">Lisensi & Sertifikasi</h3>
-                    <textarea id="cv-cert" placeholder="- STRTTK Aktif\n- Sertifikat Food Safety" class="w-full h-16 bg-slate-800 p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-sky-500 resize-none custom-scroll"></textarea>
-                </div>
-            </div>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-sky-500 text-[10px] font-black uppercase">Pengalaman</h3>
-                    <button id="btn-add-exp" class="text-[10px] bg-sky-500/20 text-sky-400 px-3 py-1 rounded font-bold border border-sky-500/30 hover:bg-sky-500 hover:text-white transition">+ TAMBAH</button>
-                </div>
-                <div id="cv-exp-list" class="space-y-2"></div>
-            </div>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-sky-500 text-[10px] font-black uppercase">Pendidikan</h3>
-                    <button id="btn-add-edu" class="text-[10px] bg-sky-500/20 text-sky-400 px-3 py-1 rounded font-bold border border-sky-500/30 hover:bg-sky-500 hover:text-white transition">+ TAMBAH</button>
-                </div>
-                <div id="cv-edu-list" class="space-y-2"></div>
-            </div>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-sky-500 text-[10px] font-black uppercase">Proyek & Organisasi</h3>
-                    <button id="btn-add-prj" class="text-[10px] bg-sky-500/20 text-sky-400 px-3 py-1 rounded font-bold border border-sky-500/30 hover:bg-sky-500 hover:text-white transition">+ TAMBAH</button>
-                </div>
-                <div id="cv-prj-list" class="space-y-2"></div>
             </div>
 
-            <div class="mt-8 pt-6 border-t border-slate-700/50 pb-8 w-full">
-                <button id="btn-export-cv" class="w-full bg-sky-500 hover:bg-sky-400 text-white font-bold py-3.5 rounded-2xl shadow-[0_10px_25px_rgba(14,165,233,0.3)] border border-sky-400/50 flex items-center justify-center gap-3 transition-all active:scale-95">
-                    <i class="fas fa-print text-lg"></i> DOWNLOAD PDF CV
+            <div class="space-y-3 bg-[#0f172a] p-4 rounded-xl border border-slate-800">
+                <h3 class="text-[#d4af37] text-[10px] font-black uppercase tracking-widest mb-1">Data Diri</h3>
+                <input type="text" id="cv-name" placeholder="Nama Lengkap" class="w-full bg-[#1e293b] text-white p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-[#d4af37]">
+                <input type="text" id="cv-title" placeholder="Profesi / Gelar (ex: System Developer)" class="w-full bg-[#1e293b] text-white p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-[#d4af37]">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="cv-ttl" placeholder="Tempat, Tgl Lahir" class="bg-[#1e293b] text-white p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-[#d4af37]">
+                    <input type="text" id="cv-port" placeholder="Link Web/Portofolio" class="bg-[#1e293b] text-white p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-[#d4af37]">
+                    <input type="text" id="cv-phone" placeholder="No WhatsApp" class="bg-[#1e293b] text-white p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-[#d4af37]">
+                    <input type="text" id="cv-email" placeholder="Email" class="bg-[#1e293b] text-white p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-[#d4af37]">
+                </div>
+                <input type="text" id="cv-address" placeholder="Alamat Domisili" class="w-full bg-[#1e293b] text-white p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-[#d4af37]">
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex justify-between items-end mb-1">
+                    <h3 class="text-[#d4af37] text-[10px] font-black uppercase tracking-widest">Profil Profesional</h3>
+                </div>
+                <div class="flex gap-2 mb-2">
+                    <select id="cv-sel-exp" class="flex-1 bg-[#0f172a] p-2 rounded-lg text-[10px] border border-slate-700 outline-none focus:border-[#d4af37] text-slate-300">
+                        <option value="pro">Berpengalaman (Executive)</option>
+                        <option value="fresh">Baru Lulus (Fresh Grad)</option>
+                        <option value="zero">Belum Pengalaman</option>
+                    </select>
+                    <button id="btn-gen-profile" class="bg-[#d4af37] hover:bg-[#b38728] text-black px-3 rounded-lg font-bold text-[10px] transition shadow-[0_0_10px_rgba(212,175,55,0.3)]"><i class="fas fa-magic"></i> AUTO</button>
+                </div>
+                <textarea id="cv-profile" placeholder="Ketik profil eksekutif Anda..." class="w-full h-24 bg-[#0f172a] text-white p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-[#d4af37] resize-none custom-scroll"></textarea>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <h3 class="text-[#d4af37] text-[10px] font-black uppercase tracking-widest mb-2">Keahlian / Skills</h3>
+                    <textarea id="cv-skills" placeholder="- Python & Node.js\n- Layanan Kefarmasian" class="w-full h-20 bg-[#0f172a] text-white p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-[#d4af37] resize-none custom-scroll"></textarea>
+                </div>
+                <div>
+                    <h3 class="text-[#d4af37] text-[10px] font-black uppercase tracking-widest mb-2">Lisensi & Sertifikasi</h3>
+                    <textarea id="cv-cert" placeholder="- STRTTK Aktif" class="w-full h-16 bg-[#0f172a] text-white p-3 rounded-lg text-sm border border-slate-700 outline-none focus:border-[#d4af37] resize-none custom-scroll"></textarea>
+                </div>
+            </div>
+
+            <div class="space-y-6 bg-[#0f172a] p-4 rounded-xl border border-slate-800">
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                        <h3 class="text-[#d4af37] text-[10px] font-black uppercase tracking-widest">Pengalaman</h3>
+                        <button id="btn-add-exp" class="text-[10px] bg-[#d4af37]/10 text-[#d4af37] px-3 py-1 rounded font-bold border border-[#d4af37]/30 hover:bg-[#d4af37] hover:text-black transition">+ TAMBAH</button>
+                    </div>
+                    <div id="cv-exp-list" class="space-y-2"></div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                        <h3 class="text-[#d4af37] text-[10px] font-black uppercase tracking-widest">Pendidikan</h3>
+                        <button id="btn-add-edu" class="text-[10px] bg-[#d4af37]/10 text-[#d4af37] px-3 py-1 rounded font-bold border border-[#d4af37]/30 hover:bg-[#d4af37] hover:text-black transition">+ TAMBAH</button>
+                    </div>
+                    <div id="cv-edu-list" class="space-y-2"></div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                        <h3 class="text-[#d4af37] text-[10px] font-black uppercase tracking-widest">Proyek & Portofolio</h3>
+                        <button id="btn-add-prj" class="text-[10px] bg-[#d4af37]/10 text-[#d4af37] px-3 py-1 rounded font-bold border border-[#d4af37]/30 hover:bg-[#d4af37] hover:text-black transition">+ TAMBAH</button>
+                    </div>
+                    <div id="cv-prj-list" class="space-y-2"></div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-800 pb-8 w-full">
+                <button id="btn-export-cv" class="w-full bg-gradient-to-r from-[#b38728] to-[#d4af37] hover:from-[#d4af37] hover:to-[#fcf6ba] text-black font-black py-4 rounded-xl shadow-[0_10px_20px_rgba(212,175,55,0.2)] border border-[#d4af37] flex items-center justify-center gap-3 transition-all active:scale-95 tracking-widest">
+                    <i class="fas fa-file-pdf text-xl"></i> DOWNLOAD PDF CV
                 </button>
                 <div class="w-full text-center mt-6">
                     <p class="text-[10px] font-bold text-slate-500 tracking-[0.2em] uppercase">
-                        &copy; 2026 <a href="https://ikram-cyber.web.id" target="_blank" class="text-sky-500 hover:text-sky-300 transition-all">IKRAM CYBER</a>
-                    </p>
-                    <p class="text-[8px] text-slate-600 mt-1 uppercase tracking-widest">
-                        Crafted with <i class="fas fa-code text-sky-600"></i> for Career Excellence
+                        &copy; 2026 <a href="https://ikram-cyber.web.id" target="_blank" class="text-[#d4af37] hover:text-white transition-all">IKRAM CYBER SYSTEM</a>
                     </p>
                 </div>
             </div>
         </section>
 
-        <section id="panel-preview" class="hidden md:flex flex-1 h-full overflow-y-auto bg-slate-950 p-4 justify-center custom-scroll pb-24">
-            <div id="capture-area" class="origin-top shadow-2xl">
-                <div id="cv-paper" class="a4-sheet p-[15mm]"></div>
+        <section id="panel-preview" class="hidden md:flex flex-1 h-full overflow-y-auto bg-[#1e293b] p-8 justify-center custom-scroll pb-24 items-start">
+            <div id="capture-area" class="origin-top shadow-2xl transition-all">
+                <div id="cv-paper" class="a4-canvas"></div>
             </div>
         </section>
     </main>
 
     <div id="modal-sig" class="fixed inset-0 bg-black/90 z-[60] hidden flex items-center justify-center p-4">
-        <div class="bg-slate-800 w-full max-w-sm rounded-2xl p-4 space-y-4">
+        <div class="bg-[#0f172a] border border-[#d4af37]/30 w-full max-w-sm rounded-2xl p-4 space-y-4">
             <div class="flex justify-between items-center">
-                <h3 class="text-sky-400 font-bold text-xs tracking-widest">TANDA TANGAN</h3>
-                <label class="text-[10px] bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded cursor-pointer transition text-white font-bold shadow-md">
-                    <i class="fas fa-upload"></i> UPLOAD FOTO
+                <h3 class="text-[#d4af37] font-bold text-xs tracking-widest">TANDA TANGAN</h3>
+                <label class="text-[10px] bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5 rounded cursor-pointer transition text-white font-bold">
+                    <i class="fas fa-upload"></i> UPLOAD
                     <input type="file" id="cv-sig-upload" accept="image/*" class="hidden">
                 </label>
             </div>
             <canvas id="cv-sig-pad" width="800" height="400" class="w-full bg-white rounded-xl aspect-video touch-none cursor-crosshair border border-slate-300"></canvas>
             <div class="flex gap-2">
-                <button id="btn-clear-sig" class="flex-1 bg-red-600 py-3 rounded-lg font-bold text-xs text-white">HAPUS</button>
-                <button id="btn-save-sig" class="flex-1 bg-sky-500 py-3 rounded-lg font-bold text-xs text-white">SIMPAN</button>
+                <button id="btn-clear-sig" class="flex-1 bg-red-900/50 border border-red-500 py-3 rounded-lg font-bold text-xs text-red-400 hover:bg-red-600 hover:text-white transition">HAPUS</button>
+                <button id="btn-save-sig" class="flex-1 bg-[#d4af37] py-3 rounded-lg font-bold text-xs text-black hover:bg-[#b38728] transition">SIMPAN</button>
             </div>
         </div>
     </div>
