@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('btn-remove-photo').classList.remove('hidden');
             }
             
+            // Hapus List lama sebelum rebuild biar gak dobel
             document.getElementById('cv-exp-list').innerHTML = '';
             document.getElementById('cv-edu-list').innerHTML = '';
             document.getElementById('cv-prj-list').innerHTML = '';
@@ -81,8 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById(containerId);
         const div = document.createElement('div');
         div.className = 'bg-slate-900 p-3 rounded border border-slate-700 relative group space-y-2 mb-2';
-        const placeholders = containerId === 'cv-exp-list' ? ['Perusahaan/Tempat Kerja', 'Posisi', 'Tahun'] : 
-                             containerId === 'cv-edu-list' ? ['Sekolah/Kampus', 'Jurusan', 'Tahun'] : ['Nama Kegiatan/Proyek', 'Peran', 'Tahun'];
+        const placeholders = containerId === 'cv-exp-list' ? ['Perusahaan', 'Posisi', 'Tahun'] : ['Sekolah', 'Jurusan', 'Tahun'];
         div.innerHTML = `
             <button class="absolute top-2 right-2 text-red-500 hidden group-hover:block" onclick="removeListItem('${containerId}', ${data.id})"><i class="fas fa-trash"></i></button>
             <input type="text" value="${data.title}" placeholder="${placeholders[0]}" class="w-full bg-slate-800 text-white text-xs p-2 rounded border border-slate-700 outline-none focus:border-[#d4af37]" oninput="updateListData('${containerId}', ${data.id}, 'title', this.value)">
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <input type="text" value="${data.subtitle}" placeholder="${placeholders[1]}" class="flex-1 bg-slate-800 text-white text-xs p-2 rounded border border-slate-700" oninput="updateListData('${containerId}', ${data.id}, 'subtitle', this.value)">
                 <input type="text" value="${data.date}" placeholder="${placeholders[2]}" class="w-24 bg-slate-800 text-white text-xs p-2 rounded border border-slate-700" oninput="updateListData('${containerId}', ${data.id}, 'date', this.value)">
             </div>
-            <textarea placeholder="Ceritakan tugas/kegiatan Anda..." class="w-full bg-slate-800 text-white text-xs p-2 rounded h-16 outline-none custom-scroll" oninput="updateListData('${containerId}', ${data.id}, 'desc', this.value)">${data.desc}</textarea>
+            <textarea placeholder="Deskripsi..." class="w-full bg-slate-800 text-white text-xs p-2 rounded h-16 outline-none custom-scroll" oninput="updateListData('${containerId}', ${data.id}, 'desc', this.value)">${data.desc}</textarea>
         `;
         container.appendChild(div);
     }
@@ -168,17 +168,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btn-reset').onclick = () => { if(confirm('Hapus semua data?')) { localStorage.removeItem('cv_magic_storage'); location.reload(); } };
 
-    // --- AUTO PROFILE GENERATOR (UNTUK UMUM / PUBLIC) ---
+    // --- AUTO PROFILE GENERATOR (DIPERBAIKI UNTUK UMUM) ---
     document.getElementById('btn-gen-profile').onclick = () => {
         const exp = document.getElementById('cv-sel-exp').value;
         let text = '';
         
         if(exp === 'pro') {
-            text = "Profesional dengan rekam jejak yang solid dalam mencapai target dan meningkatkan efisiensi kerja. Memiliki keahlian komunikasi yang baik, kemampuan analisis, serta terbiasa berkolaborasi dalam tim. Siap membawa pengalaman dan strategi yang teruji untuk memberikan dampak positif serta kontribusi maksimal bagi pertumbuhan perusahaan.";
+            text = "Individu profesional dengan pengalaman kerja yang relevan dan terbukti mampu memberikan hasil kerja yang konsisten. Memiliki kemampuan komunikasi yang baik, teliti dalam menyelesaikan tugas, dan terbiasa bekerja sama dalam tim untuk mencapai target perusahaan. Siap memberikan dedikasi serta pengalaman yang saya miliki untuk mendukung kelancaran operasional kerja.";
         } else if(exp === 'fresh') {
-            text = "Lulusan baru yang dinamis, disiplin, dan memiliki motivasi tinggi untuk berkembang. Berbekal fondasi pendidikan yang kuat, kemampuan pemecahan masalah, serta daya adaptasi yang cepat terhadap lingkungan baru. Siap mendedikasikan energi dan ide inovatif untuk mendukung pencapaian visi perusahaan.";
+            text = "Lulusan baru yang disiplin, bermotivasi tinggi, dan siap memasuki dunia kerja profesional. Memiliki dasar pendidikan yang kuat, cepat beradaptasi dengan lingkungan baru, serta selalu antusias untuk mempelajari hal-hal baru. Berkomitmen untuk berkontribusi secara maksimal dan berkembang bersama tim perusahaan.";
         } else {
-            text = "Individu yang tekun, jujur, dan memiliki etos kerja tinggi. Meskipun baru memulai karir, saya memiliki kemauan keras untuk belajar, tanggap terhadap arahan, dan siap bekerja secara kooperatif dalam tim. Berkomitmen penuh untuk memberikan dedikasi terbaik demi mendukung kelancaran operasional tempat kerja.";
+            text = "Pribadi yang tekun, jujur, dan memiliki etos kerja yang kuat. Memiliki motivasi besar untuk terus belajar, sigap dalam menerima instruksi, dan dapat diandalkan untuk menyelesaikan pekerjaan dengan penuh tanggung jawab. Berkomitmen penuh untuk mendukung keberhasilan dan kelancaran operasional perusahaan.";
         }
         
         document.getElementById('cv-profile').value = text;
@@ -252,14 +252,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="flex flex-col gap-8">
                             ${cvData.experiences.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-briefcase t-gold mr-3"></i> Pengalaman</h3>${renderItems(cvData.experiences)}</div>` : ''}
                             ${cvData.educations.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-graduation-cap t-gold mr-3"></i> Pendidikan</h3>${renderItems(cvData.educations)}</div>` : ''}
-                            ${cvData.projects.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-project-diagram t-gold mr-3"></i> Kegiatan / Lainnya</h3>${renderItems(cvData.projects)}</div>` : ''}
+                            ${cvData.projects.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-project-diagram t-gold mr-3"></i> Proyek</h3>${renderItems(cvData.projects)}</div>` : ''}
                         </div>
                         <div class="mt-12 pt-4 border-t border-gray-200 flex justify-between items-end">
                             <div class="text-left">
                                 ${cvConfig.showQR ? `
                                 <div class="flex items-center gap-3">
                                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}&color=${qrColor}&bgcolor=ffffff" crossorigin="anonymous" class="w-14 h-14 border border-gray-300 p-1 bg-white rounded shadow-sm">
-                                    <div><p class="text-[8px] text-gray-500 font-bold uppercase mb-0.5">Pindai / Kunjungi</p><p class="text-[9px] t-navy font-bold">${qrData.replace(/^https?:\/\//, '')}</p></div>
+                                    <div><p class="text-[8px] text-gray-500 font-bold uppercase mb-0.5">Verifikasi Profil</p><p class="text-[9px] t-navy font-bold">${qrData.replace(/^https?:\/\//, '')}</p></div>
                                 </div>` : ''}
                             </div>
                             <div class="text-center w-40">
