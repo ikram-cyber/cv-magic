@@ -272,8 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p class="text-[11px] text-gray-600 leading-relaxed text-justify">${getVal('profile')}</p>
                         </div>` : ''}
 
-                        <div>
-                            <h3 class="f-serif t-navy text-lg font-bold border-b-2 b-gold pb-2 mb-3 uppercase">Biodata & Kontak</h3>
+                        <div class="pt-1">
                             <div class="space-y-2 text-[11px] text-gray-700 font-medium">
                                 ${getVal('ttl') ? `<p class="flex items-start"><i class="fas fa-calendar-alt w-5 mt-0.5 t-gold"></i> <span>${getVal('ttl')}</span></p>` : ''}
                                 ${getVal('phone') ? `<p class="flex items-center"><i class="fab fa-whatsapp w-5 t-gold"></i> <span>${getVal('phone')}</span></p>` : ''}
