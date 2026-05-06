@@ -1,43 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- STATE MANAGER ---
-    let cvData = { 
-        photo: '', signature: '', 
-        name: '', title: '', ttl: '', port: '', phone: '', email: '', address: '', 
-        profile: '', skills: '', cert: '',
-        experiences: [], educations: [], projects: [] 
-    };
+    let cvData = { photo: '', signature: '', experiences: [], educations: [], projects: [] };
     let cvConfig = { theme: 'theme-navy', font: 'font-sans' };
 
     const paper = document.getElementById('cv-paper');
     const inputs = ['name', 'title', 'ttl', 'port', 'phone', 'email', 'address', 'profile', 'skills', 'cert'];
     
-    // --- UI ACTIVE STATES (INDIKATOR TOMBOL) ---
-    const updateActiveUI = () => {
-        // Update border tombol Tema
-        document.querySelectorAll('.cv-theme').forEach(btn => {
-            btn.classList.remove('border-white', 'border-2', 'shadow-[0_0_10px_rgba(255,255,255,0.5)]');
-            if (btn.dataset.theme === cvConfig.theme) {
-                btn.classList.add('border-white', 'border-2', 'shadow-[0_0_10px_rgba(255,255,255,0.5)]');
-            }
-        });
-        // Update warna tombol Font
-        document.querySelectorAll('.cv-font').forEach(btn => {
-            btn.classList.remove('bg-[#d4af37]', 'text-black', 'border-[#d4af37]');
-            btn.classList.add('bg-[#1e293b]', 'text-slate-300', 'border-transparent');
-            if (btn.dataset.font === cvConfig.font) {
-                btn.classList.remove('bg-[#1e293b]', 'text-slate-300', 'border-transparent');
-                btn.classList.add('bg-[#d4af37]', 'text-black', 'border-[#d4af37]');
-            }
-        });
+    const getVal = (id) => {
+        const el = document.getElementById(`cv-${id}`);
+        return el ? el.value : '';
     };
 
     // --- LOCAL STORAGE ENGINE ---
     const saveToLocal = () => {
-        inputs.forEach(id => {
-            const el = document.getElementById(`cv-${id}`);
-            if(el) cvData[id] = el.value;
-        });
-        localStorage.setItem('cv_magic_storage', JSON.stringify({ cvData, cvConfig }));
+        let textData = {};
+        inputs.forEach(id => textData[id] = getVal(id));
+        localStorage.setItem('cv_magic_storage', JSON.stringify({ textData, cvData, cvConfig }));
     };
 
     const loadFromLocal = () => {
@@ -46,17 +24,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const parsed = JSON.parse(saved);
             cvData = parsed.cvData;
             cvConfig = parsed.cvConfig;
+            const textData = parsed.textData;
 
-            inputs.forEach(id => {
-                const el = document.getElementById(`cv-${id}`);
-                if(el && cvData[id]) el.value = cvData[id];
-            });
+            if(textData) {
+                inputs.forEach(id => {
+                    const el = document.getElementById(`cv-${id}`);
+                    if(el && textData[id]) el.value = textData[id];
+                });
+            }
 
             if (cvData.photo) {
                 const container = document.getElementById('cv-photo').parentElement;
                 container.style.backgroundImage = `url(${cvData.photo})`;
                 container.style.backgroundSize = 'cover';
-                container.style.backgroundPosition = 'center';
                 container.querySelector('i').classList.add('hidden');
                 container.querySelector('p').classList.add('hidden');
                 document.getElementById('btn-remove-photo').classList.remove('hidden');
@@ -68,14 +48,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 btnOpenSig.querySelector('p').innerText = "TTD TERSIMPAN";
             }
 
-            cvData.experiences.forEach(item => rebuildList('cv-exp-list', 'cvData.experiences', item));
-            cvData.educations.forEach(item => rebuildList('cv-edu-list', 'cvData.educations', item));
-            cvData.projects.forEach(item => rebuildList('cv-prj-list', 'cvData.projects', item));
+            cvData.experiences.forEach(item => rebuildList('cv-exp-list', item));
+            cvData.educations.forEach(item => rebuildList('cv-edu-list', item));
+            cvData.projects.forEach(item => rebuildList('cv-prj-list', item));
         }
-        updateActiveUI(); // Nyalain indikator sesuai data yg ditarik
+        updateActiveUI();
     };
 
-    function rebuildList(containerId, arrayPath, data) {
+    function rebuildList(containerId, data) {
         const container = document.getElementById(containerId);
         const div = document.createElement('div');
         div.className = 'bg-slate-900 p-3 rounded border border-slate-700 relative group space-y-2';
@@ -94,27 +74,36 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(div);
     }
 
-    // --- EVENT LISTENERS ---
+    // --- UI ACTIVE STATES ---
+    const updateActiveUI = () => {
+        document.querySelectorAll('.cv-theme').forEach(btn => {
+            btn.classList.remove('border-white', 'border-2', 'shadow-[0_0_10px_rgba(255,255,255,0.5)]');
+            if (btn.dataset.theme === cvConfig.theme) btn.classList.add('border-white', 'border-2', 'shadow-[0_0_10px_rgba(255,255,255,0.5)]');
+        });
+        document.querySelectorAll('.cv-font').forEach(btn => {
+            btn.classList.remove('bg-[#d4af37]', 'text-black', 'border-[#d4af37]');
+            btn.classList.add('bg-[#1e293b]', 'text-slate-300', 'border-transparent');
+            if (btn.dataset.font === cvConfig.font) {
+                btn.classList.remove('bg-[#1e293b]', 'text-slate-300', 'border-transparent');
+                btn.classList.add('bg-[#d4af37]', 'text-black', 'border-[#d4af37]');
+            }
+        });
+    };
+
+    // --- LISTENERS ---
     inputs.forEach(id => {
         const el = document.getElementById(`cv-${id}`);
         if(el) el.addEventListener('input', () => { renderCV(); saveToLocal(); });
     });
 
-    // Event Klik Tema & Font
     document.querySelectorAll('.cv-theme').forEach(btn => {
-        btn.addEventListener('click', (e) => { 
-            cvConfig.theme = e.target.dataset.theme; 
-            updateActiveUI(); renderCV(); saveToLocal(); 
-        });
+        btn.addEventListener('click', (e) => { cvConfig.theme = e.target.dataset.theme; updateActiveUI(); renderCV(); saveToLocal(); });
     });
     document.querySelectorAll('.cv-font').forEach(btn => {
-        btn.addEventListener('click', (e) => { 
-            cvConfig.font = e.target.dataset.font; 
-            updateActiveUI(); renderCV(); saveToLocal(); 
-        });
+        btn.addEventListener('click', (e) => { cvConfig.font = e.target.dataset.font; updateActiveUI(); renderCV(); saveToLocal(); });
     });
 
-    // Pas Foto
+    // Foto
     const photoInput = document.getElementById('cv-photo');
     photoInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
@@ -175,20 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCV(); saveToLocal();
     };
 
-    document.getElementById('cv-sig-upload').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = new Image();
-                img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // Dynamic Lists
+    // List Dinamis
     window.updateListData = (type, id, key, value) => {
         let arr = type === 'cv-exp-list' ? cvData.experiences : type === 'cv-edu-list' ? cvData.educations : cvData.projects;
         let item = arr.find(x => x.id === id);
@@ -202,56 +178,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if(type === 'cv-prj-list') cvData.projects = cvData.projects.filter(x => x.id !== id);
         document.getElementById(type).innerHTML = '';
         const arr = type === 'cv-exp-list' ? cvData.experiences : type === 'cv-edu-list' ? cvData.educations : cvData.projects;
-        arr.forEach(item => rebuildList(type, '', item));
+        arr.forEach(item => rebuildList(type, item));
         renderCV(); saveToLocal();
     };
 
-    document.getElementById('btn-add-exp').onclick = () => { const d = {id:Date.now(),title:'',subtitle:'',date:'',desc:''}; cvData.experiences.push(d); rebuildList('cv-exp-list','',d); renderCV(); saveToLocal(); };
-    document.getElementById('btn-add-edu').onclick = () => { const d = {id:Date.now(),title:'',subtitle:'',date:'',desc:''}; cvData.educations.push(d); rebuildList('cv-edu-list','',d); renderCV(); saveToLocal(); };
-    document.getElementById('btn-add-prj').onclick = () => { const d = {id:Date.now(),title:'',subtitle:'',date:'',desc:''}; cvData.projects.push(d); rebuildList('cv-prj-list','',d); renderCV(); saveToLocal(); };
+    document.getElementById('btn-add-exp').onclick = () => { const d = {id:Date.now(),title:'',subtitle:'',date:'',desc:''}; cvData.experiences.push(d); rebuildList('cv-exp-list',d); renderCV(); saveToLocal(); };
+    document.getElementById('btn-add-edu').onclick = () => { const d = {id:Date.now(),title:'',subtitle:'',date:'',desc:''}; cvData.educations.push(d); rebuildList('cv-edu-list',d); renderCV(); saveToLocal(); };
+    document.getElementById('btn-add-prj').onclick = () => { const d = {id:Date.now(),title:'',subtitle:'',date:'',desc:''}; cvData.projects.push(d); rebuildList('cv-prj-list',d); renderCV(); saveToLocal(); };
 
-    document.getElementById('btn-reset').onclick = () => {
-        if(confirm('Hapus semua data CV?')) { localStorage.removeItem('cv_magic_storage'); location.reload(); }
-    };
+    document.getElementById('btn-reset').onclick = () => { if(confirm('Hapus semua data?')) { localStorage.removeItem('cv_magic_storage'); location.reload(); } };
 
     document.getElementById('btn-gen-profile').onclick = () => {
         const exp = document.getElementById('cv-sel-exp').value;
-        let text = exp === 'pro' ? "Profesional berpengalaman dengan rekam jejak yang solid dalam memimpin proyek, mengoptimalkan proses operasional, dan memberikan solusi strategis. Terbiasa bekerja di lingkungan serba cepat, memadukan keahlian teknis dengan kemampuan analitis untuk mencapai target perusahaan secara konsisten." : exp === 'fresh' ? "Lulusan baru yang sangat termotivasi, disiplin, dan memiliki semangat belajar tinggi. Memiliki fondasi akademis yang kuat dan siap untuk mengaplikasikan ilmu dalam lingkungan kerja profesional." : "Individu yang berdedikasi tinggi, tekun, dan siap bekerja keras. Memiliki kemampuan komunikasi yang baik, jujur, serta kemauan kuat untuk mempelajari keterampilan baru.";
+        let text = exp === 'pro' ? "Profesional berpengalaman dengan rekam jejak yang solid." : "Lulusan baru yang sangat termotivasi dan siap bekerja keras.";
         document.getElementById('cv-profile').value = text;
         renderCV(); saveToLocal();
     };
 
-    // --- BUG FIX: MOBILE TAB NAVIGATION ---
-    const tabEdit = document.getElementById('tab-edit');
-    const tabPrev = document.getElementById('tab-prev');
-    const pnlEdit = document.getElementById('panel-editor');
-    const pnlPrev = document.getElementById('panel-preview');
-
+    // --- TABS ---
+    const tabEdit = document.getElementById('tab-edit'), tabPrev = document.getElementById('tab-prev'), pnlEdit = document.getElementById('panel-editor'), pnlPrev = document.getElementById('panel-preview');
     if(tabEdit && tabPrev){
-        tabEdit.addEventListener('click', () => {
-            pnlEdit.classList.remove('hidden'); pnlEdit.classList.add('w-full');
-            pnlPrev.classList.add('hidden'); pnlPrev.classList.remove('flex', 'w-full');
-            
-            tabEdit.classList.replace('bg-[#0f172a]', 'bg-[#1e293b]');
-            tabPrev.classList.replace('bg-[#1e293b]', 'bg-[#0f172a]');
-            tabEdit.classList.add('border-[#d4af37]/50', 'text-[#d4af37]');
-            tabPrev.classList.remove('border-[#d4af37]/50', 'text-[#d4af37]');
-            tabPrev.classList.add('text-slate-400', 'border-transparent');
-        });
-
-        tabPrev.addEventListener('click', () => {
-            pnlPrev.classList.remove('hidden'); pnlPrev.classList.add('flex', 'w-full');
-            pnlEdit.classList.add('hidden'); pnlEdit.classList.remove('w-full');
-            
-            tabPrev.classList.replace('bg-[#0f172a]', 'bg-[#1e293b]');
-            tabEdit.classList.replace('bg-[#1e293b]', 'bg-[#0f172a]');
-            tabPrev.classList.add('border-[#d4af37]/50', 'text-[#d4af37]');
-            tabEdit.classList.remove('border-[#d4af37]/50', 'text-[#d4af37]');
-            tabEdit.classList.add('text-slate-400', 'border-transparent');
-        });
+        tabEdit.onclick = () => { pnlEdit.classList.remove('hidden'); pnlEdit.classList.add('w-full'); pnlPrev.classList.add('hidden'); pnlPrev.classList.remove('flex'); tabEdit.classList.replace('bg-[#0f172a]', 'bg-[#1e293b]'); tabPrev.classList.replace('bg-[#1e293b]', 'bg-[#0f172a]'); tabEdit.classList.add('border-[#d4af37]/50', 'text-[#d4af37]'); tabPrev.classList.remove('border-[#d4af37]/50', 'text-[#d4af37]'); tabPrev.classList.add('text-slate-400', 'border-transparent'); };
+        tabPrev.onclick = () => { pnlPrev.classList.remove('hidden'); pnlPrev.classList.add('flex', 'w-full'); pnlEdit.classList.add('hidden'); pnlEdit.classList.remove('w-full'); tabPrev.classList.replace('bg-[#0f172a]', 'bg-[#1e293b]'); tabEdit.classList.replace('bg-[#1e293b]', 'bg-[#0f172a]'); tabPrev.classList.add('border-[#d4af37]/50', 'text-[#d4af37]'); tabEdit.classList.remove('border-[#d4af37]/50', 'text-[#d4af37]'); tabEdit.classList.add('text-slate-400', 'border-transparent'); };
     }
 
-    // --- RENDER ENGINE ---
+    // --- RENDER ENGINE (LIVE DOM) ---
     function renderCV() {
         let cMain = '#0f172a', cAcc = '#d4af37';
         if(cvConfig.theme === 'theme-emerald') { cMain = '#064e3b'; cAcc = '#10b981'; }
@@ -288,37 +239,37 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${cvData.photo ? `<div class="z-10 relative shrink-0"><img src="${cvData.photo}" class="w-[100px] h-[130px] object-cover border-[3px] b-gold shadow-lg rounded"></div>` : ''}
                     <div class="flex flex-1 items-center z-10 relative">
                         <div>
-                            <h1 class="f-serif text-5xl font-bold tracking-wide uppercase mb-2">${cvData.name || 'NAMA LENGKAP'}</h1>
-                            <h2 class="t-gold font-bold tracking-widest uppercase text-sm">${cvData.title || 'PROFESI / GELAR'}</h2>
+                            <h1 class="f-serif text-5xl font-bold tracking-wide uppercase mb-2">${getVal('name') || 'NAMA LENGKAP'}</h1>
+                            <h2 class="t-gold font-bold tracking-widest uppercase text-sm">${getVal('title') || 'PROFESI / GELAR'}</h2>
                         </div>
                     </div>
                 </div>
                 <div class="flex-grow grid grid-cols-12">
                     <div class="col-span-4 bg-slate-50 p-8 border-r border-gray-200 flex flex-col gap-6">
-                        ${cvData.profile ? `<div><h3 class="f-serif t-navy text-lg font-bold border-b-2 b-gold pb-2 mb-3 uppercase">Profil</h3><p class="text-[11px] text-gray-600 leading-relaxed text-justify">${cvData.profile}</p></div>` : ''}
+                        ${getVal('profile') ? `<div><h3 class="f-serif t-navy text-lg font-bold border-b-2 b-gold pb-2 mb-3 uppercase">Profil</h3><p class="text-[11px] text-gray-600 leading-relaxed text-justify">${getVal('profile')}</p></div>` : ''}
                         <div class="pt-1">
                             <div class="space-y-2 text-[11px] text-gray-700 font-medium">
-                                ${cvData.ttl ? `<p class="flex items-start"><i class="fas fa-calendar-alt w-5 mt-0.5 t-gold"></i> <span>${cvData.ttl}</span></p>` : ''}
-                                ${cvData.phone ? `<p class="flex items-center"><i class="fab fa-whatsapp w-5 t-gold"></i> <span>${cvData.phone}</span></p>` : ''}
-                                ${cvData.email ? `<p class="flex items-center"><i class="fas fa-envelope w-5 t-gold"></i> <span class="break-all">${cvData.email}</span></p>` : ''}
-                                ${cvData.port ? `<p class="flex items-center"><i class="fas fa-globe w-5 t-gold"></i> <span class="break-all">${cvData.port}</span></p>` : ''}
-                                ${cvData.address ? `<p class="flex items-start"><i class="fas fa-map-marker-alt w-5 mt-0.5 t-gold"></i> <span>${cvData.address}</span></p>` : ''}
+                                ${getVal('ttl') ? `<p class="flex items-start"><i class="fas fa-calendar-alt w-5 mt-0.5 t-gold"></i> <span>${getVal('ttl')}</span></p>` : ''}
+                                ${getVal('phone') ? `<p class="flex items-center"><i class="fab fa-whatsapp w-5 t-gold"></i> <span>${getVal('phone')}</span></p>` : ''}
+                                ${getVal('email') ? `<p class="flex items-center"><i class="fas fa-envelope w-5 t-gold"></i> <span class="break-all text-[9px]">${getVal('email')}</span></p>` : ''}
+                                ${getVal('port') ? `<p class="flex items-center"><i class="fas fa-globe w-5 t-gold"></i> <span class="break-all text-[9px]">${getVal('port')}</span></p>` : ''}
+                                ${getVal('address') ? `<p class="flex items-start"><i class="fas fa-map-marker-alt w-5 mt-0.5 t-gold"></i> <span>${getVal('address')}</span></p>` : ''}
                             </div>
                         </div>
-                        ${cvData.cert ? `<div><h3 class="f-serif t-navy text-lg font-bold border-b-2 b-gold pb-2 mb-3 uppercase">Lisensi / Sertifikasi</h3><div class="bg-white p-3 border border-gray-200 rounded shadow-sm border-l-4 bl-gold"><div class="text-[11px] text-gray-700 font-medium">${cvData.cert.split('\n').join('<br>')}</div></div></div>` : ''}
-                        ${cvData.skills ? `<div><h3 class="f-serif t-navy text-lg font-bold border-b-2 b-gold pb-2 mb-3 uppercase">Kompetensi</h3>${formatTags(cvData.skills)}</div>` : ''}
+                        ${getVal('cert') ? `<div><h3 class="f-serif t-navy text-lg font-bold border-b-2 b-gold pb-2 mb-3 uppercase">Sertifikasi</h3><div class="bg-white p-3 border border-gray-200 rounded shadow-sm border-l-4 bl-gold"><div class="text-[11px] text-gray-700 font-medium">${getVal('cert').split('\n').join('<br>')}</div></div></div>` : ''}
+                        ${getVal('skills') ? `<div><h3 class="f-serif t-navy text-lg font-bold border-b-2 b-gold pb-2 mb-3 uppercase">Kompetensi</h3>${formatTags(getVal('skills'))}</div>` : ''}
                     </div>
                     <div class="col-span-8 p-8 flex flex-col justify-between">
                         <div class="flex flex-col gap-8">
-                            ${cvData.experiences.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-briefcase t-gold mr-3"></i> Pengalaman Kerja</h3>${renderItems(cvData.experiences)}</div>` : ''}
+                            ${cvData.experiences.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-briefcase t-gold mr-3"></i> Pengalaman</h3>${renderItems(cvData.experiences)}</div>` : ''}
                             ${cvData.educations.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-graduation-cap t-gold mr-3"></i> Pendidikan</h3>${renderItems(cvData.educations)}</div>` : ''}
-                            ${cvData.projects.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-project-diagram t-gold mr-3"></i> Proyek & Portofolio</h3>${renderItems(cvData.projects)}</div>` : ''}
+                            ${cvData.projects.length > 0 ? `<div><h3 class="f-serif t-navy text-2xl font-bold border-b-2 b-gold pb-2 mb-5 uppercase flex items-center"><i class="fas fa-project-diagram t-gold mr-3"></i> Proyek</h3>${renderItems(cvData.projects)}</div>` : ''}
                         </div>
                         <div class="mt-12 pt-4 border-t border-gray-200 flex justify-end">
                             <div class="text-center">
                                 <p class="text-[11px] text-gray-600 mb-2">Hormat saya,</p>
                                 ${cvData.signature ? `<img src="${cvData.signature}" class="h-16 mx-auto mb-1" style="mix-blend-mode: multiply;">` : '<div class="h-16"></div>'}
-                                <p class="text-xs t-navy font-bold border-b border-[#0f172a] inline-block pb-1 px-4">${cvData.name || 'Nama Lengkap'}</p>
+                                <p class="text-xs t-navy font-bold border-b border-[#0f172a] inline-block pb-1 px-4">${getVal('name') || 'Nama Lengkap'}</p>
                             </div>
                         </div>
                     </div>
@@ -327,11 +278,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById('btn-export-cv').onclick = () => {
-        const opt = { margin:0, filename:`${cvData.name || 'CV'}_IkramCyber.pdf`, image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2,useCORS:true}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'} };
+        const opt = { margin:0, filename:`${getVal('name') || 'CV'}_IkramCyber.pdf`, image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2,useCORS:true}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'} };
         html2pdf().set(opt).from(paper).save();
     };
 
-    // Initialize
     loadFromLocal();
     renderCV();
 });
