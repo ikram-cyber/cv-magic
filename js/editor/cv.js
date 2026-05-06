@@ -188,9 +188,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btn-reset').onclick = () => { if(confirm('Hapus semua data?')) { localStorage.removeItem('cv_magic_storage'); location.reload(); } };
 
+    // --- AUTO PROFILE GENERATOR (RESTORED TO FULL VERSION) ---
     document.getElementById('btn-gen-profile').onclick = () => {
         const exp = document.getElementById('cv-sel-exp').value;
-        let text = exp === 'pro' ? "Profesional berpengalaman dengan rekam jejak yang solid." : "Lulusan baru yang sangat termotivasi dan siap bekerja keras.";
+        let text = '';
+        if(exp === 'pro') text = "Profesional berpengalaman dengan rekam jejak yang solid dalam memimpin proyek, mengoptimalkan proses operasional, dan memberikan solusi strategis. Terbiasa bekerja di lingkungan serba cepat, memadukan keahlian teknis dengan kemampuan analitis untuk mencapai target perusahaan secara konsisten.";
+        if(exp === 'fresh') text = "Lulusan baru yang sangat termotivasi, disiplin, dan memiliki semangat belajar tinggi. Memiliki fondasi akademis yang kuat dan siap untuk mengaplikasikan ilmu dalam lingkungan kerja profesional, serta mampu beradaptasi cepat dalam tim untuk memberikan kontribusi positif.";
+        if(exp === 'zero') text = "Individu yang berdedikasi tinggi, tekun, dan siap bekerja keras. Memiliki kemampuan komunikasi yang baik, jujur, serta kemauan kuat untuk mempelajari keterampilan baru demi mendukung kelancaran operasional dan kesuksesan tim.";
+        
         document.getElementById('cv-profile').value = text;
         renderCV(); saveToLocal();
     };
@@ -202,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tabPrev.onclick = () => { pnlPrev.classList.remove('hidden'); pnlPrev.classList.add('flex', 'w-full'); pnlEdit.classList.add('hidden'); pnlEdit.classList.remove('w-full'); tabPrev.classList.replace('bg-[#0f172a]', 'bg-[#1e293b]'); tabEdit.classList.replace('bg-[#1e293b]', 'bg-[#0f172a]'); tabPrev.classList.add('border-[#d4af37]/50', 'text-[#d4af37]'); tabEdit.classList.remove('border-[#d4af37]/50', 'text-[#d4af37]'); tabEdit.classList.add('text-slate-400', 'border-transparent'); };
     }
 
-    // --- RENDER ENGINE (LIVE DOM) ---
+    // --- RENDER ENGINE ---
     function renderCV() {
         let cMain = '#0f172a', cAcc = '#d4af37';
         if(cvConfig.theme === 'theme-emerald') { cMain = '#064e3b'; cAcc = '#10b981'; }
