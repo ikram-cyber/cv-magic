@@ -26,7 +26,7 @@
         .text-gold { color: #d4af37; }
         .bg-gold { background-color: #d4af37; }
         .border-gold { border-color: #d4af37; }
-        
+
         /* Custom Scrollbar untuk Editor */
         .custom-scroll::-webkit-scrollbar { width: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: #0f172a; }
@@ -34,21 +34,22 @@
     </style>
 </head>
 <body class="overflow-hidden h-screen w-screen flex flex-col bg-[#0b1120]">
-    
-    <nav class="bg-[#0f172a] flex text-xs font-black tracking-widest z-50 shrink-0 border-b border-[#d4af37]/20">
+
+    <nav class="bg-[#0f172a] flex text-[10px] md:text-xs font-black tracking-widest z-50 shrink-0 border-b border-[#d4af37]/20">
         <a href="index.html" class="flex-1 text-center py-4 bg-gradient-to-r from-[#b38728] to-[#d4af37] text-black shadow-inner"><i class="fas fa-user-tie"></i> DESAIN CV</a>
-        <a href="Slamaran.html" class="flex-1 text-center py-4 text-slate-400 hover:text-[#d4af37] transition"><i class="fas fa-envelope"></i> SURAT LAMARAN</a>
+        <a href="Slamaran.html" class="flex-1 text-center py-4 text-slate-400 hover:text-[#d4af37] transition border-l border-slate-800"><i class="fas fa-envelope"></i> LAMARAN</a>
+        <a href="gabung.html" class="flex-1 text-center py-4 text-slate-400 hover:text-[#d4af37] transition border-l border-slate-800"><i class="fas fa-layer-group"></i> GABUNG BERKAS</a>
     </nav>
-    
+
     <div class="bg-[#0f172a] p-2 flex shrink-0 md:hidden z-40 border-b border-slate-800">
         <button id="tab-edit" class="flex-1 py-2 bg-[#1e293b] text-[#d4af37] font-bold rounded-lg text-xs border border-[#d4af37]/50 shadow-md">EDITOR CV</button>
         <button id="tab-prev" class="flex-1 py-2 text-slate-400 font-bold text-xs">LIHAT HASIL</button>
     </div>
-    
+
     <main class="flex-1 flex overflow-hidden relative">
-        
+
         <section id="panel-editor" class="w-full md:w-[450px] h-full overflow-y-auto p-5 pb-24 border-r border-slate-800 custom-scroll space-y-6 bg-[#0b1120]">
-            
+
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                 <h2 class="text-xl font-black text-white tracking-widest"><i class="fas fa-sliders-h text-[#d4af37] mr-2"></i>EDITOR</h2>
                 <button id="btn-reset" class="text-[10px] bg-red-900/30 text-red-400 px-3 py-1.5 rounded border border-red-500/30 hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash"></i> RESET</button>
@@ -74,15 +75,10 @@
                 </div>
             </div>
 
-            <div class="flex gap-4">
-                <div class="flex-1 bg-[#0f172a] p-3 rounded-xl border border-slate-700 text-center relative overflow-hidden group hover:border-[#d4af37]/50 transition">
-                    <i class="fas fa-camera text-[#d4af37] mb-1 text-lg"></i><p class="text-[10px] font-bold text-slate-300">PAS FOTO</p>
-                    <input type="file" id="cv-photo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10">
-                    <button id="btn-remove-photo" class="absolute top-1 right-1 bg-red-600 text-white text-[10px] w-6 h-6 rounded-full z-20 hidden shadow-lg hover:bg-red-500 flex items-center justify-center" title="Hapus Foto"><i class="fas fa-times"></i></button>
-                </div>
-                <div class="flex-1 bg-[#0f172a] p-3 rounded-xl border border-slate-700 text-center cursor-pointer hover:border-[#d4af37]/50 transition" id="btn-open-sig">
-                    <i class="fas fa-pen-nib text-[#d4af37] mb-1 text-lg"></i><p class="text-[10px] font-bold text-slate-300">TANDA TANGAN</p>
-                </div>
+            <div class="w-full bg-[#0f172a] p-3 rounded-xl border border-slate-700 text-center relative overflow-hidden group hover:border-[#d4af37]/50 transition">
+                <i class="fas fa-camera text-[#d4af37] mb-1 text-lg"></i><p class="text-[10px] font-bold text-slate-300">PAS FOTO PROFIL</p>
+                <input type="file" id="cv-photo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10">
+                <button id="btn-remove-photo" class="absolute top-1 right-1 bg-red-600 text-white text-[10px] w-6 h-6 rounded-full z-20 hidden shadow-lg hover:bg-red-500 flex items-center justify-center" title="Hapus Foto"><i class="fas fa-times"></i></button>
             </div>
 
             <div class="space-y-3 bg-[#0f172a] p-4 rounded-xl border border-slate-800">
@@ -166,23 +162,6 @@
             </div>
         </section>
     </main>
-
-    <div id="modal-sig" class="fixed inset-0 bg-black/90 z-[60] hidden flex items-center justify-center p-4">
-        <div class="bg-[#0f172a] border border-[#d4af37]/30 w-full max-w-sm rounded-2xl p-4 space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-[#d4af37] font-bold text-xs tracking-widest">TANDA TANGAN</h3>
-                <label class="text-[10px] bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5 rounded cursor-pointer transition text-white font-bold">
-                    <i class="fas fa-upload"></i> UPLOAD
-                    <input type="file" id="cv-sig-upload" accept="image/*" class="hidden">
-                </label>
-            </div>
-            <canvas id="cv-sig-pad" width="800" height="400" class="w-full bg-white rounded-xl aspect-video touch-none cursor-crosshair border border-slate-300"></canvas>
-            <div class="flex gap-2">
-                <button id="btn-clear-sig" class="flex-1 bg-red-900/50 border border-red-500 py-3 rounded-lg font-bold text-xs text-red-400 hover:bg-red-600 hover:text-white transition">HAPUS</button>
-                <button id="btn-save-sig" class="flex-1 bg-[#d4af37] py-3 rounded-lg font-bold text-xs text-black hover:bg-[#b38728] transition">SIMPAN</button>
-            </div>
-        </div>
-    </div>
 
     <script src="js/editor/cv.js"></script>
 </body>
