@@ -16,12 +16,12 @@
         h2 { margin: 0 0 5px 0; color: var(--c-navy); text-transform: uppercase; font-weight: 900; letter-spacing: 1px; }
         p.subtitle { margin: 0 0 20px 0; font-size: 12px; color: #64748b; font-weight: bold; }
 
-        /* Area Upload */
-        .upload-area { border: 2px dashed #cbd5e1; border-radius: 8px; padding: 30px 20px; text-align: center; cursor: pointer; transition: 0.3s; background: #f1f5f9; margin-bottom: 20px; }
+        /* Area Upload - FIX UI MOBILE */
+        .upload-area { display: flex; flex-direction: column; align-items: center; width: 100%; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 30px 20px; text-align: center; cursor: pointer; transition: 0.3s; background: #f1f5f9; margin-bottom: 20px; }
         .upload-area:hover, .upload-area.dragover { border-color: var(--c-gold); background: #fefce8; }
         .upload-area i { font-size: 40px; color: var(--c-gold); margin-bottom: 10px; }
         .upload-area p { margin: 0; font-size: 13px; font-weight: bold; color: var(--c-navy); }
-        .upload-area span { font-size: 11px; color: #64748b; }
+        .upload-area span { font-size: 11px; color: #64748b; text-align: center; }
         #file-input { display: none; }
 
         /* List File */
@@ -32,7 +32,7 @@
         .file-info { display: flex; align-items: center; gap: 12px; overflow: hidden; }
         .file-icon { font-size: 20px; color: #ef4444; }
         .file-icon.img-icon { color: #3b82f6; }
-        .file-name { font-size: 13px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
+        .file-name { font-size: 13px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
         .file-size { font-size: 10px; color: #64748b; font-weight: bold; }
 
         .file-actions { display: flex; gap: 5px; }
@@ -56,6 +56,12 @@
         .copyright p { font-size: 10px; font-weight: bold; color: #64748b; letter-spacing: 2px; text-transform: uppercase; margin: 0; }
         .copyright a { color: var(--c-gold); text-decoration: none; transition: 0.3s; }
         .copyright a:hover { color: var(--c-navy); }
+        
+        /* Media Query untuk HP kecil */
+        @media (max-width: 400px) {
+            .file-name { max-width: 120px; }
+            .btn-action { padding: 5px 8px; }
+        }
     </style>
 </head>
 <body>
@@ -123,14 +129,13 @@
             const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
             for (let file of files) {
                 if (allowedTypes.includes(file.type)) {
-                    // Generate ID unik untuk fungsi hapus/pindah
                     const fileObj = { id: Date.now() + Math.random(), file: file };
                     filesArray.push(fileObj);
                 } else {
                     alert(`Format tidak didukung: ${file.name}\nHanya menerima PDF, JPG, dan PNG.`);
                 }
             }
-            fileInput.value = ""; // Reset input
+            fileInput.value = ""; 
             renderFileList();
         }
 
@@ -167,7 +172,7 @@
                 fileListEl.appendChild(div);
             });
 
-            btnMerge.disabled = filesArray.length < 2; // Aktif kalau ada minimal 2 file
+            btnMerge.disabled = filesArray.length < 2; 
             if (filesArray.length === 0) {
                 fileListEl.innerHTML = `<div style="text-align:center; padding:10px; color:#94a3b8; font-size:12px; font-weight:bold;">Belum ada berkas.</div>`;
             }
@@ -185,29 +190,24 @@
             btnIcon.style.display = "none";
 
             try {
-                // Buat dokumen PDF kosong baru
                 const mergedPdf = await PDFLib.PDFDocument.create();
 
                 for (let item of filesArray) {
                     const fileBuffer = await item.file.arrayBuffer();
 
                     if (item.file.type === 'application/pdf') {
-                        // Jika PDF, load dan copy semua halamannya
                         const pdfDoc = await PDFLib.PDFDocument.load(fileBuffer);
                         const copiedPages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
                         copiedPages.forEach((page) => mergedPdf.addPage(page));
                     }
                     else if (item.file.type.startsWith('image/')) {
-                        // Jika Gambar (KTP/Ijazah JPG/PNG), embed ke halaman PDF baru (ukuran A4)
                         let image;
                         if (item.file.type === 'image/jpeg') image = await mergedPdf.embedJpg(fileBuffer);
                         else if (item.file.type === 'image/png') image = await mergedPdf.embedPng(fileBuffer);
 
-                        // Ukuran standar A4 (595.28 x 841.89)
                         const page = mergedPdf.addPage([595.28, 841.89]);
                         const { width, height } = page.getSize();
 
-                        // Skala gambar biar pas di A4 tanpa potong (kasih margin 50)
                         const imgDims = image.scaleToFit(width - 100, height - 100);
 
                         page.drawImage(image, {
@@ -219,14 +219,12 @@
                     }
                 }
 
-                // Save dan Download hasilnya
                 const pdfBytes = await mergedPdf.save();
                 const blob = new Blob([pdfBytes], { type: 'application/pdf' });
                 const url = URL.createObjectURL(blob);
 
                 const a = document.createElement('a');
                 a.href = url;
-                // Nama file otomatis pakai tanggal
                 a.download = `Berkas_Lamaran_Lengkap_${new Date().toISOString().slice(0,10)}.pdf`;
                 document.body.appendChild(a);
                 a.click();
