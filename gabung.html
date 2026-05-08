@@ -10,12 +10,12 @@
         :root { --c-navy: #0f172a; --c-gold: #d4af37; --c-bg: #f8fafc; --c-border: #e2e8f0; }
         * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
         body { background: var(--c-navy); color: white; margin: 0; padding: 20px; display: flex; justify-content: center; min-height: 100vh; }
-        
+
         .container { background: white; color: #333; max-width: 600px; width: 100%; border-radius: 12px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-top: 5px solid var(--c-gold); height: fit-content; }
-        
+
         h2 { margin: 0 0 5px 0; color: var(--c-navy); text-transform: uppercase; font-weight: 900; letter-spacing: 1px; }
         p.subtitle { margin: 0 0 20px 0; font-size: 12px; color: #64748b; font-weight: bold; }
-        
+
         /* Area Upload */
         .upload-area { border: 2px dashed #cbd5e1; border-radius: 8px; padding: 30px 20px; text-align: center; cursor: pointer; transition: 0.3s; background: #f1f5f9; margin-bottom: 20px; }
         .upload-area:hover, .upload-area.dragover { border-color: var(--c-gold); background: #fefce8; }
@@ -28,13 +28,13 @@
         .file-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .file-item { background: #f8fafc; border: 1px solid var(--c-border); padding: 10px 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
         .file-item.dragging { opacity: 0.5; background: #e2e8f0; border-style: dashed; }
-        
+
         .file-info { display: flex; align-items: center; gap: 12px; overflow: hidden; }
         .file-icon { font-size: 20px; color: #ef4444; }
         .file-icon.img-icon { color: #3b82f6; }
         .file-name { font-size: 13px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
         .file-size { font-size: 10px; color: #64748b; font-weight: bold; }
-        
+
         .file-actions { display: flex; gap: 5px; }
         .btn-action { background: white; border: 1px solid var(--c-border); border-radius: 4px; padding: 5px 10px; cursor: pointer; color: var(--c-navy); transition: 0.2s; }
         .btn-action:hover { background: var(--c-navy); color: var(--c-gold); }
@@ -49,9 +49,13 @@
         .loading-spinner { display: none; width: 20px; height: 20px; border: 3px solid rgba(212,175,55,0.3); border-radius: 50%; border-top-color: var(--c-gold); animation: spin 1s ease-in-out infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Navigasi */
+        /* Navigasi & Copyright */
         .nav-back { display: inline-block; margin-bottom: 20px; color: #cbd5e1; text-decoration: none; font-size: 12px; font-weight: bold; transition: 0.2s; }
         .nav-back:hover { color: var(--c-gold); }
+        .copyright { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--c-border); }
+        .copyright p { font-size: 10px; font-weight: bold; color: #64748b; letter-spacing: 2px; text-transform: uppercase; margin: 0; }
+        .copyright a { color: var(--c-gold); text-decoration: none; transition: 0.3s; }
+        .copyright a:hover { color: var(--c-navy); }
     </style>
 </head>
 <body>
@@ -77,6 +81,10 @@
                 <div class="loading-spinner" id="spinner"></div>
                 <span id="btn-text">GABUNGKAN JADI 1 PDF</span>
             </button>
+
+            <div class="copyright">
+                <p>&copy; 2026 <a href="https://ikram-cyber.web.id" target="_blank">IKRAM CYBER SYSTEM</a></p>
+            </div>
         </div>
     </div>
 
@@ -188,7 +196,7 @@
                         const pdfDoc = await PDFLib.PDFDocument.load(fileBuffer);
                         const copiedPages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
                         copiedPages.forEach((page) => mergedPdf.addPage(page));
-                    } 
+                    }
                     else if (item.file.type.startsWith('image/')) {
                         // Jika Gambar (KTP/Ijazah JPG/PNG), embed ke halaman PDF baru (ukuran A4)
                         let image;
@@ -198,10 +206,10 @@
                         // Ukuran standar A4 (595.28 x 841.89)
                         const page = mergedPdf.addPage([595.28, 841.89]);
                         const { width, height } = page.getSize();
-                        
+
                         // Skala gambar biar pas di A4 tanpa potong (kasih margin 50)
                         const imgDims = image.scaleToFit(width - 100, height - 100);
-                        
+
                         page.drawImage(image, {
                             x: page.getWidth() / 2 - imgDims.width / 2,
                             y: page.getHeight() / 2 - imgDims.height / 2,
@@ -215,7 +223,7 @@
                 const pdfBytes = await mergedPdf.save();
                 const blob = new Blob([pdfBytes], { type: 'application/pdf' });
                 const url = URL.createObjectURL(blob);
-                
+
                 const a = document.createElement('a');
                 a.href = url;
                 // Nama file otomatis pakai tanggal
@@ -223,18 +231,18 @@
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                alert("Boom! Berkas berhasil digabung jadi 1 PDF siap kirim!");
+                URL.revokeObjectURL(url);                         
+                
+                alert("Boom! Berkas berhasil digabung jadi 1 PDF siap kirim!");                                                                 
             } catch (error) {
-                console.error(error);
+                console.error(error);                                             
                 alert("Waduh, ada error pas ngegabungin berkas Bos. Pastikan file tidak rusak atau di-password.");
-            } finally {
+            } finally {                                                           
                 btnMerge.disabled = false;
-                btnText.innerText = "GABUNGKAN JADI 1 PDF";
+                btnText.innerText = "GABUNGKAN JADI 1 PDF";                       
                 spinner.style.display = "none";
-                btnIcon.style.display = "inline-block";
-            }
+                btnIcon.style.display = "inline-block";                       
+            }                                                             
         });
     </script>
 </body>
